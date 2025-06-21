@@ -17,6 +17,7 @@ export const useAuth = () => {
   const [loading, setLoading] = useState(true);
 
   const fetchUserProfile = async (userId: string): Promise<Profile | null> => {
+    console.log('🔍 fetchUserProfile: Starting profile fetch for userId:', userId);
     try {
       const { data, error } = await supabase
         .from('profiles')
@@ -25,24 +26,31 @@ export const useAuth = () => {
         .single();
 
       if (error) {
+        console.error('❌ fetchUserProfile: Supabase error:', error);
         console.error('Error fetching profile:', error);
         return null;
       }
 
+      console.log('✅ fetchUserProfile: Profile data received:', data);
       return data;
     } catch (error) {
+      console.error('❌ fetchUserProfile: Unexpected error:', error);
       console.error('Error fetching profile:', error);
       return null;
     }
   };
 
   const setUserWithProfile = async (authUser: any) => {
+    console.log('👤 setUserWithProfile: Starting with authUser:', authUser);
     if (!authUser) {
+      console.log('👤 setUserWithProfile: No authUser provided, setting user to null');
       setUser(null);
       return;
     }
 
+    console.log('👤 setUserWithProfile: Fetching profile for user ID:', authUser.id);
     const profile = await fetchUserProfile(authUser.id);
+    console.log('👤 setUserWithProfile: Profile fetched:', profile);
     
     setUser({
       id: authUser.id,
@@ -52,38 +60,56 @@ export const useAuth = () => {
       last_name: profile?.last_name,
       avatar_url: profile?.avatar_url,
     });
+    console.log('👤 setUserWithProfile: User state updated');
   };
 
   useEffect(() => {
     // Check for existing session
     const checkUser = async () => {
+      console.log('🚀 checkUser: Starting authentication check');
       try {
+        console.log('🚀 checkUser: Calling auth.getSession()');
         const { data, error } = await auth.getSession();
+        console.log('🚀 checkUser: getSession result - data:', data, 'error:', error);
         if (error) {
+          console.error('❌ checkUser: Session check failed:', error);
           console.error('Session check failed:', error);
         } else if (data.session?.user) {
+          console.log('✅ checkUser: Valid session found, setting user with profile');
           await setUserWithProfile(data.session.user);
+          console.log('✅ checkUser: User profile set successfully');
+        } else {
+          console.log('ℹ️ checkUser: No valid session found');
         }
       } catch (error) {
+        console.error('❌ checkUser: Unexpected error during auth check:', error);
         console.error('Auth check failed:', error);
       } finally {
+        console.log('🏁 checkUser: Setting loading to false');
         setLoading(false);
       }
     };
 
+    console.log('🎬 useAuth: useEffect triggered, calling checkUser');
     checkUser();
 
     // Listen for auth state changes
+    console.log('👂 useAuth: Setting up auth state change listener');
     const { data: { subscription } } = auth.onAuthStateChange(async (event, session) => {
+      console.log('🔄 useAuth: Auth state change detected - event:', event, 'session:', session);
       if (event === 'SIGNED_IN' && session?.user) {
+        console.log('✅ useAuth: User signed in, setting user with profile');
         await setUserWithProfile(session.user);
       } else if (event === 'SIGNED_OUT') {
+        console.log('👋 useAuth: User signed out, clearing user state');
         setUser(null);
       }
+      console.log('🏁 useAuth: Auth state change processed, setting loading to false');
       setLoading(false);
     });
 
     return () => {
+      console.log('🧹 useAuth: Cleaning up auth state change subscription');
       subscription.unsubscribe();
     };
   }, []);
