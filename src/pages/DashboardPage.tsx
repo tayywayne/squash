@@ -1,52 +1,72 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, MessageSquare, Clock, CheckCircle, Users } from 'lucide-react';
+import { useAuth } from '../hooks/useAuth';
 import MoodIndicator from '../components/MoodIndicator';
+import { conflictService, Conflict } from '../utils/conflicts';
 import { MoodLevel } from '../types';
 
 const DashboardPage: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<'active' | 'history'>('active');
   const [currentMood, setCurrentMood] = useState<MoodLevel>('meh');
+  const [conflicts, setConflicts] = useState<Conflict[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Mock data
-  const activeConflicts = [
-    {
-      id: '1',
-      title: 'The Great Dishes Debate',
-      otherUser: 'Sarah',
-      status: 'waiting_for_them',
-      createdAt: '2 hours ago',
-      mood: 'annoyed' as MoodLevel,
-    },
-    {
-      id: '2', 
-      title: 'Project Deadline Drama',
-      otherUser: 'Mike',
-      status: 'ready_for_ai',
-      createdAt: '1 day ago',
-      mood: 'rage' as MoodLevel,
-    }
-  ];
+  // Load user conflicts
+  React.useEffect(() => {
+    const loadConflicts = async () => {
+      if (!user?.id) return;
+      
+      try {
+        const userConflicts = await conflictService.getUserConflicts(user.id);
+        setConflicts(userConflicts);
+      } catch (error) {
+        console.error('Error loading conflicts:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const recentSquashes = [
-    {
-      id: '1',
-      title: 'Netflix Password Controversy',
-      otherUser: 'Alex',
-      outcome: 'resolved',
-      resolvedAt: '3 days ago',
-      aiSummary: 'Classic boundary confusion resolved with clear expectations.',
-    },
-    {
-      id: '2',
-      title: 'Group Chat Ghosting',
-      otherUser: 'Jamie',
-      outcome: 'still_beefing',
-      resolvedAt: '1 week ago',
-      aiSummary: 'Communication styles clashed. Follow-up recommended.',
+    loadConflicts();
+  }, [user?.id]);
+
+  const activeConflicts = conflicts.filter(c => c.status === 'pending' || c.status === 'active');
+  const resolvedConflicts = conflicts.filter(c => c.status === 'resolved');
+
+  const formatTimeAgo = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
+    
+    if (diffInHours < 1) return 'Just now';
+    if (diffInHours < 24) return `${diffInHours} hours ago`;
+    const diffInDays = Math.floor(diffInHours / 24);
+    if (diffInDays < 7) return `${diffInDays} days ago`;
+    return `${Math.floor(diffInDays / 7)} weeks ago`;
+  };
+
+  const getOtherUserDisplay = (conflict: Conflict) => {
+    if (user?.id === conflict.user1_id) {
+      return conflict.user2_email;
     }
-  ];
+    return 'You were invited';
+  };
+
+  const getConflictStatus = (conflict: Conflict) => {
+    if (conflict.status === 'pending') {
+      if (user?.id === conflict.user1_id) {
+        return { label: 'Waiting for them', color: 'bg-yellow-100 text-yellow-800' };
+      } else {
+        return { label: 'Your turn to respond', color: 'bg-blue-100 text-blue-800' };
+      }
+    }
+    if (conflict.status === 'active') {
+      return { label: 'AI mediation ready', color: 'bg-green-100 text-green-800' };
+    }
+    return { label: 'Resolved', color: 'bg-gray-100 text-gray-800' };
+  };
 
   return (
     <div className="max-w-4xl mx-auto p-6">
@@ -78,7 +98,7 @@ const DashboardPage: React.FC = () => {
           <div className="flex items-center">
             <MessageSquare className="h-8 w-8 text-coral-500" />
             <div className="ml-4">
-              <p className="text-2xl font-bold text-gray-900">2</p>
+              <p className="text-2xl font-bold text-gray-900">{activeConflicts.length}</p>
               <p className="text-gray-600">Active Conflicts</p>
             </div>
           </div>
@@ -88,7 +108,7 @@ const DashboardPage: React.FC = () => {
           <div className="flex items-center">
             <CheckCircle className="h-8 w-8 text-teal-500" />
             <div className="ml-4">
-              <p className="text-2xl font-bold text-gray-900">7</p>
+              <p className="text-2xl font-bold text-gray-900">{resolvedConflicts.length}</p>
               <p className="text-gray-600">Squashes Resolved</p>
             </div>
           </div>
@@ -98,7 +118,7 @@ const DashboardPage: React.FC = () => {
           <div className="flex items-center">
             <Users className="h-8 w-8 text-lavender-500" />
             <div className="ml-4">
-              <p className="text-2xl font-bold text-gray-900">5</p>
+              <p className="text-2xl font-bold text-gray-900">{conflicts.length}</p>
               <p className="text-gray-600">People Tolerate You</p>
             </div>
           </div>
@@ -127,7 +147,7 @@ const DashboardPage: React.FC = () => {
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
-              My Squashes ({recentSquashes.length})
+              My Squashes ({resolvedConflicts.length})
             </button>
           </nav>
         </div>
@@ -155,66 +175,97 @@ const DashboardPage: React.FC = () => {
           </button>
 
           {/* Active Conflicts */}
-          {activeConflicts.map((conflict) => (
-            <div key={conflict.id} className="bg-white p-6 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center space-x-3 mb-2">
-                    <h3 className="text-lg font-semibold text-gray-900">{conflict.title}</h3>
-                    <MoodIndicator mood={conflict.mood} size="sm" />
-                  </div>
-                  <p className="text-gray-600 mb-2">vs. {conflict.otherUser}</p>
-                  <div className="flex items-center space-x-4 text-sm text-gray-500">
-                    <span className="flex items-center">
-                      <Clock className="h-4 w-4 mr-1" />
-                      {conflict.createdAt}
-                    </span>
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      conflict.status === 'waiting_for_them' 
-                        ? 'bg-yellow-100 text-yellow-800' 
-                        : 'bg-green-100 text-green-800'
-                    }`}>
-                      {conflict.status === 'waiting_for_them' ? 'Waiting for them' : 'Ready for AI mediation'}
-                    </span>
+          {loading ? (
+            <div className="text-center py-8">
+              <div className="animate-pulse-slow mb-4">
+                <div className="text-4xl">⏳</div>
+              </div>
+              <p className="text-gray-600">Loading your conflicts...</p>
+            </div>
+          ) : activeConflicts.length === 0 ? (
+            <div className="text-center py-8">
+              <div className="text-4xl mb-4">😌</div>
+              <p className="text-gray-600">No active conflicts. Living your best drama-free life!</p>
+            </div>
+          ) : (
+            activeConflicts.map((conflict) => {
+              const status = getConflictStatus(conflict);
+              return (
+                <div key={conflict.id} className="bg-white p-6 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-3 mb-2">
+                        <h3 className="text-lg font-semibold text-gray-900">{conflict.title}</h3>
+                        <MoodIndicator mood={conflict.user1_mood as MoodLevel} size="sm" />
+                      </div>
+                      <p className="text-gray-600 mb-2">vs. {getOtherUserDisplay(conflict)}</p>
+                      <div className="flex items-center space-x-4 text-sm text-gray-500">
+                        <span className="flex items-center">
+                          <Clock className="h-4 w-4 mr-1" />
+                          {formatTimeAgo(conflict.created_at)}
+                        </span>
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${status.color}`}>
+                          {status.label}
+                        </span>
+                      </div>
+                    </div>
+                    <button 
+                      onClick={() => navigate(`/conflict/${conflict.id}`)}
+                      className="text-coral-500 hover:text-coral-600 font-medium"
+                    >
+                      Continue →
+                    </button>
                   </div>
                 </div>
-                <button className="text-coral-500 hover:text-coral-600 font-medium">
-                  Continue →
-                </button>
-              </div>
-            </div>
-          ))}
+              );
+            })
+          )}
         </div>
       ) : (
         <div className="space-y-4">
           {/* Recent Squashes */}
-          {recentSquashes.map((squash) => (
-            <div key={squash.id} className="bg-white p-6 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{squash.title}</h3>
-                  <p className="text-gray-600 mb-2">vs. {squash.otherUser}</p>
-                  <p className="text-sm text-gray-700 mb-3 italic">"{squash.aiSummary}"</p>
-                  <div className="flex items-center space-x-4 text-sm text-gray-500">
-                    <span className="flex items-center">
-                      <Clock className="h-4 w-4 mr-1" />
-                      {squash.resolvedAt}
-                    </span>
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      squash.outcome === 'resolved' 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-red-100 text-red-800'
-                    }`}>
-                      {squash.outcome === 'resolved' ? '✅ Resolved' : '🔥 Still Beefing'}
-                    </span>
+          {loading ? (
+            <div className="text-center py-8">
+              <div className="animate-pulse-slow mb-4">
+                <div className="text-4xl">⏳</div>
+              </div>
+              <p className="text-gray-600">Loading your history...</p>
+            </div>
+          ) : resolvedConflicts.length === 0 ? (
+            <div className="text-center py-8">
+              <div className="text-4xl mb-4">📚</div>
+              <p className="text-gray-600">No resolved conflicts yet. Start squashing some beef!</p>
+            </div>
+          ) : (
+            resolvedConflicts.map((conflict) => (
+              <div key={conflict.id} className="bg-white p-6 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">{conflict.title}</h3>
+                    <p className="text-gray-600 mb-2">vs. {getOtherUserDisplay(conflict)}</p>
+                    {conflict.ai_summary && (
+                      <p className="text-sm text-gray-700 mb-3 italic">"{conflict.ai_summary}"</p>
+                    )}
+                    <div className="flex items-center space-x-4 text-sm text-gray-500">
+                      <span className="flex items-center">
+                        <Clock className="h-4 w-4 mr-1" />
+                        {conflict.resolved_at ? formatTimeAgo(conflict.resolved_at) : formatTimeAgo(conflict.created_at)}
+                      </span>
+                      <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        ✅ Resolved
+                      </span>
+                    </div>
+                  </div>
+                  <button 
+                    onClick={() => navigate(`/conflict/${conflict.id}`)}
+                    className="text-coral-500 hover:text-coral-600 font-medium"
+                  >
+                    View Details →
+                  </button>
                   </div>
                 </div>
-                <button className="text-coral-500 hover:text-coral-600 font-medium">
-                  View Details →
-                </button>
-              </div>
-            </div>
-          ))}
+              ))
+          )}
         </div>
       )}
     </div>

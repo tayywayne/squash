@@ -4,6 +4,7 @@ import { Mail, MessageSquare, ArrowLeft, Send } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import MoodIndicator from '../components/MoodIndicator';
 import Toast from '../components/Toast';
+import { conflictService } from '../utils/conflicts';
 import { MoodLevel } from '../types';
 
 const NewConflictPage: React.FC = () => {
@@ -42,22 +43,33 @@ const NewConflictPage: React.FC = () => {
     setLoading(true);
     
     try {
-      // TODO: Implement actual conflict creation with Supabase
-      // For now, simulate the process
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      if (!user?.id) {
+        throw new Error('User not authenticated');
+      }
+
+      const conflictId = await conflictService.createConflict({
+        title: formData.title,
+        otherUserEmail: formData.otherUserEmail,
+        description: formData.description,
+        mood: currentMood
+      }, user.id);
       
       setToast({ 
-        message: 'Conflict initiated! Invitation sent. Time to get this sorted.', 
+        message: 'Conflict created! The other party will be notified. Time to get this sorted.', 
         type: 'success' 
       });
       
       // Navigate to dashboard after a brief delay
       setTimeout(() => {
-        navigate('/dashboard');
+        navigate(`/conflict/${conflictId}`);
       }, 1500);
       
     } catch (error) {
-      setToast({ message: 'Failed to create conflict. Try again?', type: 'error' });
+      console.error('Error creating conflict:', error);
+      setToast({ 
+        message: 'Failed to create conflict. Check your connection and try again?', 
+        type: 'error' 
+      });
     } finally {
       setLoading(false);
     }

@@ -1,4 +1,117 @@
-// Mock OpenAI integration for development
+// OpenAI integration for conflict resolution
+const OPENAI_API_KEY = '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';
+const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';
+
+interface OpenAIResponse {
+  choices: {
+    message: {
+      content: string;
+    };
+  }[];
+}
+
+const makeOpenAIRequest = async (messages: any[]): Promise<string> => {
+  try {
+    const response = await fetch(OPENAI_API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages,
+        max_tokens: 500,
+        temperature: 0.7,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`OpenAI API error: ${response.status}`);
+    }
+
+    const data: OpenAIResponse = await response.json();
+    return data.choices[0]?.message?.content || '';
+  } catch (error) {
+    console.error('OpenAI API error:', error);
+    throw error;
+  }
+};
+
+export const openAI = {
+  translateMessage: async (rawMessage: string, mood: string): Promise<string> => {
+    const messages = [
+      {
+        role: 'system',
+        content: `You are a conflict resolution assistant. Your job is to translate raw, emotional messages into kinder, more constructive versions while preserving the core message and intent. The person writing this is feeling "${mood}".
+
+Guidelines:
+- Keep the core message and concerns intact
+- Remove inflammatory language, personal attacks, or blame
+- Use "I" statements instead of "you" accusations
+- Focus on feelings and specific behaviors rather than character judgments
+- Maintain the person's authentic voice but make it more constructive
+- Keep it concise and clear
+- Don't add new information or change the fundamental complaint
+
+Return only the translated message, nothing else.`
+      },
+      {
+        role: 'user',
+        content: rawMessage
+      }
+    ];
+
+    return await makeOpenAIRequest(messages);
+  },
+
+  generateResolution: async (user1Message: string, user2Message: string): Promise<{ summary: string; suggestion: string }> => {
+    const messages = [
+      {
+        role: 'system',
+        content: `You are an AI mediator helping resolve conflicts between two people. You have their translated, constructive statements. Your job is to:
+
+1. Provide a fair summary of both perspectives
+2. Offer a balanced resolution that helps both parties understand each other
+3. Focus on mutual understanding, not assigning blame
+4. Be empathetic but practical
+5. Use a slightly sassy but caring tone (like a wise friend who tells it like it is)
+
+Format your response as JSON with two fields:
+- "summary": A fair summary of what you're hearing from both sides
+- "suggestion": Practical next steps for resolution
+
+Keep each field to 2-3 sentences maximum.`
+      },
+      {
+        role: 'user',
+        content: `Person 1's perspective: ${user1Message}
+
+Person 2's perspective: ${user2Message}
+
+Please provide a resolution.`
+      }
+    ];
+
+    const response = await makeOpenAIRequest(messages);
+    
+    try {
+      const parsed = JSON.parse(response);
+      return {
+        summary: parsed.summary || '',
+        suggestion: parsed.suggestion || ''
+      };
+    } catch (error) {
+      // Fallback if JSON parsing fails
+      return {
+        summary: "Both perspectives show valid concerns that deserve attention. There seems to be a communication gap that's causing frustration on both sides.",
+        suggestion: "Try having a calm conversation where each person explains their feelings without interruption. Focus on understanding rather than being right."
+      };
+    }
+  }
+};
+
+// Keep the mock for development/fallback
 export const mockOpenAI = {
   mediateConflict: async (userMessage1: string, userMessage2: string) => {
     // Simulate AI processing delay
