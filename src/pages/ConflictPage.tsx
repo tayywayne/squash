@@ -328,11 +328,12 @@ const ConflictPage: React.FC = () => {
             </div>
 
             <div className="flex space-x-4">
-              <button className="flex-1 bg-teal-500 hover:bg-teal-600 text-white py-3 px-4 rounded-lg transition-colors">
+              <button 
                 onClick={() => handleSatisfactionVote(true)}
                 disabled={loading}
                 className="flex-1 bg-teal-500 hover:bg-teal-600 text-white py-3 px-4 rounded-lg transition-colors disabled:opacity-50"
               >
+                Mark as Resolved
               </button>
               <button 
                 onClick={() => handleSatisfactionVote(false)}
