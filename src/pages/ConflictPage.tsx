@@ -49,11 +49,31 @@ const ConflictPage: React.FC = () => {
   const canRespond = conflict?.status === 'pending' && (user?.email === conflict?.user2_email || isUser2);
   const isResolved = conflict?.status === 'resolved';
   
-  const getPhase = (): 'input' | 'waiting' | 'mediation' | 'reactions' => {
+  // Check if core issues step should be available
+  const canSubmitCoreIssue = conflict?.rehash_attempted_at && 
+    (conflict?.user1_satisfaction === false || conflict?.user2_satisfaction === false) &&
+    !conflict?.core_issues_attempted_at;
+  
+  const needsCoreIssueFromUser = canSubmitCoreIssue && 
+    ((isUser1 && !conflict?.user1_core_issue) || (isUser2 && !conflict?.user2_core_issue));
+  
+  const hasCoreReflection = conflict?.ai_core_reflection && conflict?.ai_core_suggestion;
+  
+  const getPhase = (): 'input' | 'waiting' | 'mediation' | 'reactions' | 'core-issues' | 'core-reflection' => {
     if (!conflict) return 'input';
     
     if (conflict.status === 'pending' && !conflict.user2_raw_message) {
       return canRespond ? 'input' : 'waiting';
+    }
+    
+    // Core issues phase - after rehash when users need to clarify core issues
+    if (needsCoreIssueFromUser) {
+      return 'core-issues';
+    }
+    
+    // Core reflection phase - when AI has generated reflection on core issues
+    if (hasCoreReflection) {
+      return 'core-reflection';
     }
     
     if ((conflict.status === 'active' || conflict.status === 'resolved') && conflict.ai_summary && conflict.ai_suggestion) {
@@ -64,6 +84,8 @@ const ConflictPage: React.FC = () => {
   };
 
   const phase = getPhase();
+
+  const [coreIssueMessage, setCoreIssueMessage] = useState('');
 
   const handleSubmitMessage = async () => {
     if (!userMessage.trim()) return;
@@ -82,6 +104,28 @@ const ConflictPage: React.FC = () => {
     } catch (error) {
       console.error('Error submitting response:', error);
       setToast({ message: 'Failed to submit response. Try again?', type: 'error' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSubmitCoreIssue = async () => {
+    if (!coreIssueMessage.trim()) return;
+    
+    if (!conflictId || !user?.id) return;
+
+    setLoading(true);
+    try {
+      await conflictService.submitCoreIssue(conflictId, coreIssueMessage, user.id);
+      setToast({ message: 'Core issue submitted! Waiting for the other person...', type: 'success' });
+      
+      // Reload conflict data
+      const updatedConflict = await conflictService.getConflictById(conflictId);
+      setConflict(updatedConflict);
+      setCoreIssueMessage('');
+    } catch (error) {
+      console.error('Error submitting core issue:', error);
+      setToast({ message: 'Failed to submit core issue. Try again?', type: 'error' });
     } finally {
       setLoading(false);
     }
@@ -167,13 +211,17 @@ const ConflictPage: React.FC = () => {
             {phase === 'waiting' && '2/3 - Waiting for Response'}
             {phase === 'mediation' && '2/3 - AI Processing'}
             {phase === 'reactions' && '3/3 - Reactions & Next Steps'}
+            {phase === 'core-issues' && '4/4 - Clarify Core Issues'}
+            {phase === 'core-reflection' && '4/4 - Final Reflection'}
           </span>
         </div>
         <div className="w-full bg-gray-200 rounded-full h-2">
           <div 
             className="bg-coral-500 h-2 rounded-full transition-all duration-500"
             style={{ 
-              width: phase === 'input' ? '33%' : phase === 'waiting' || phase === 'mediation' ? '66%' : '100%' 
+              width: phase === 'input' ? '25%' : 
+                     phase === 'waiting' || phase === 'mediation' ? '50%' : 
+                     phase === 'reactions' ? '75%' : '100%' 
             }}
           />
         </div>
@@ -288,6 +336,162 @@ const ConflictPage: React.FC = () => {
               </div>
               <p className="text-gray-600">AI is analyzing both perspectives and generating a resolution...</p>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Core Issues Phase */}
+      {phase === 'core-issues' && (
+        <div className="space-y-6">
+          <div className="bg-white p-6 rounded-lg border border-gray-200">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+              🎯 Clarify Your Core Issue
+            </h2>
+            
+            <div className="bg-orange-50 p-4 rounded-lg mb-6 border border-orange-200">
+              <p className="text-orange-800 text-sm">
+                <strong>We're trying a different approach.</strong> Previous solutions haven't fully resolved this conflict. 
+                Let's get to the heart of what you most want the other person to understand.
+              </p>
+            </div>
+            
+            <p className="text-gray-600 mb-4">
+              Answer this question as clearly and specifically as possible:
+            </p>
+            
+            <div className="bg-blue-50 p-4 rounded-lg mb-6 border border-blue-200">
+              <h3 className="font-semibold text-blue-900 mb-2">
+                "What is the one thing you most want the other person to understand about your perspective?"
+              </h3>
+              <p className="text-sm text-blue-700">
+                Focus on what you want them to truly "get" about how you see this situation or how it affects you.
+              </p>
+            </div>
+            
+            <textarea
+              value={coreIssueMessage}
+              onChange={(e) => setCoreIssueMessage(e.target.value)}
+              placeholder="The one thing I most want them to understand is..."
+              className="w-full h-32 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-coral-500 focus:border-coral-500 resize-none"
+              maxLength={500}
+            />
+            
+            <div className="flex justify-between items-center mt-4">
+              <span className="text-sm text-gray-500">
+                {coreIssueMessage.length}/500 characters
+              </span>
+              <button
+                onClick={handleSubmitCoreIssue}
+                disabled={!coreIssueMessage.trim() || loading}
+                className="flex items-center space-x-2 bg-coral-500 hover:bg-coral-600 text-white px-6 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                    <span>Submitting...</span>
+                  </>
+                ) : (
+                  <>
+                    <Send size={18} />
+                    <span>Submit Core Issue</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+          
+          {/* Show waiting state if user has submitted but other hasn't */}
+          {((isUser1 && conflict?.user1_core_issue && !conflict?.user2_core_issue) ||
+            (isUser2 && conflict?.user2_core_issue && !conflict?.user1_core_issue)) && (
+            <div className="bg-yellow-50 p-6 rounded-lg border border-yellow-200">
+              <div className="text-center">
+                <div className="text-4xl mb-2">⏳</div>
+                <h3 className="font-semibold text-yellow-900 mb-2">Waiting for Their Core Issue</h3>
+                <p className="text-sm text-yellow-700">
+                  You've shared what you most want them to understand. Waiting for them to do the same...
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Core Reflection Phase */}
+      {phase === 'core-reflection' && conflict.ai_core_reflection && conflict.ai_core_suggestion && (
+        <div className="space-y-6">
+          <div className="bg-white p-6 rounded-lg border border-gray-200">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+              🎯 AI Mediator's Final Reflection
+            </h2>
+            
+            <div className="mb-4 p-3 bg-purple-50 border border-purple-200 rounded-lg">
+              <p className="text-sm text-purple-800">
+                <strong>Core Issues Addressed:</strong> Based on what each of you most wants to be understood, here's a final perspective.
+              </p>
+            </div>
+            
+            {/* Show what each person most wants understood */}
+            <div className="space-y-3 mb-6">
+              <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                <h4 className="font-medium text-blue-900 mb-2">
+                  {isUser1 ? 'What you most want understood:' : 'What they most want understood:'}
+                </h4>
+                <p className="text-sm text-blue-800 italic">
+                  "{conflict.user1_core_issue}"
+                </p>
+              </div>
+              
+              <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                <h4 className="font-medium text-green-900 mb-2">
+                  {isUser2 ? 'What you most want understood:' : 'What they most want understood:'}
+                </h4>
+                <p className="text-sm text-green-800 italic">
+                  "{conflict.user2_core_issue}"
+                </p>
+              </div>
+            </div>
+            
+            <div className="space-y-4">
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h3 className="font-medium text-gray-900 mb-2">Final Reflection:</h3>
+                <p className="text-gray-700">
+                  {conflict.ai_core_reflection}
+                </p>
+              </div>
+              
+              <div className="bg-teal-50 p-4 rounded-lg">
+                <h3 className="font-medium text-teal-900 mb-2">Final Approach:</h3>
+                <p className="text-teal-800">
+                  {conflict.ai_core_suggestion}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Final Resolution Tools */}
+          <div className={`bg-white p-6 rounded-lg border border-gray-200 ${isResolved ? 'opacity-75' : ''}`}>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              Does this final reflection help you understand each other?
+            </h3>
+            
+            {!isResolved && (
+              <div className="flex space-x-4">
+                <button 
+                  onClick={() => handleSatisfactionVote(true)}
+                  disabled={loading}
+                  className="flex-1 bg-teal-500 hover:bg-teal-600 text-white py-3 px-4 rounded-lg transition-colors disabled:opacity-50"
+                >
+                  Yes, This Helps - Mark Resolved
+                </button>
+                <button 
+                  onClick={() => handleSatisfactionVote(false)}
+                  disabled={loading}
+                  className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 py-3 px-4 rounded-lg transition-colors disabled:opacity-50"
+                >
+                  Still Not Quite Right
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
