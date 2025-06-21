@@ -1,16 +1,54 @@
 import React, { useState } from 'react';
-import { User, Bell, Trash2, Download, Shield } from 'lucide-react';
+import { User, Bell, Trash2, Download, Shield, Edit3, Save, X, Camera } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import Toast from '../components/Toast';
 
 const ProfilePage: React.FC = () => {
-  const { user, signOut } = useAuth();
+  const { user, signOut, updateProfile } = useAuth();
+  const [isEditing, setIsEditing] = useState(false);
+  const [editForm, setEditForm] = useState({
+    username: user?.username || '',
+    avatar_url: user?.avatar_url || '',
+  });
+  const [loading, setLoading] = useState(false);
   const [notifications, setNotifications] = useState({
     conflictUpdates: true,
     followUps: true,
     weeklyDigest: false,
   });
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
+
+  const handleEditToggle = () => {
+    if (isEditing) {
+      // Reset form to current user data
+      setEditForm({
+        username: user?.username || '',
+        avatar_url: user?.avatar_url || '',
+      });
+    }
+    setIsEditing(!isEditing);
+  };
+
+  const handleSaveProfile = async () => {
+    setLoading(true);
+    try {
+      const { error } = await updateProfile({
+        username: editForm.username.trim() || undefined,
+        avatar_url: editForm.avatar_url.trim() || undefined,
+      });
+
+      if (error) {
+        setToast({ message: 'Failed to update profile. Try again?', type: 'error' });
+      } else {
+        setToast({ message: 'Profile updated successfully!', type: 'success' });
+        setIsEditing(false);
+      }
+    } catch (error) {
+      setToast({ message: 'Something went wrong. Please try again.', type: 'error' });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleNotificationChange = (key: keyof typeof notifications) => {
     setNotifications(prev => ({
@@ -52,13 +90,88 @@ const ProfilePage: React.FC = () => {
       <div className="space-y-6">
         {/* User Info */}
         <div className="bg-white p-6 rounded-lg border border-gray-200">
-          <div className="flex items-center space-x-4 mb-6">
-            <div className="w-16 h-16 bg-coral-100 rounded-full flex items-center justify-center">
-              <User size={32} className="text-coral-600" />
+          <div className="flex items-start justify-between mb-6">
+            <div className="flex items-center space-x-4">
+              <div className="relative">
+                {user?.avatar_url ? (
+                  <img
+                    src={user.avatar_url}
+                    alt="Profile"
+                    className="w-16 h-16 rounded-full object-cover border-2 border-gray-200"
+                  />
+                ) : (
+                  <div className="w-16 h-16 bg-coral-100 rounded-full flex items-center justify-center">
+                    <User size={32} className="text-coral-600" />
+                  </div>
+                )}
+                {isEditing && (
+                  <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center">
+                    <Camera size={20} className="text-white" />
+                  </div>
+                )}
+              </div>
+              <div>
+                {isEditing ? (
+                  <div className="space-y-2">
+                    <input
+                      type="text"
+                      value={editForm.username}
+                      onChange={(e) => setEditForm(prev => ({ ...prev, username: e.target.value }))}
+                      placeholder="Enter username"
+                      className="text-xl font-semibold text-gray-900 bg-transparent border-b border-gray-300 focus:border-coral-500 outline-none"
+                    />
+                    <input
+                      type="url"
+                      value={editForm.avatar_url}
+                      onChange={(e) => setEditForm(prev => ({ ...prev, avatar_url: e.target.value }))}
+                      placeholder="Avatar URL (optional)"
+                      className="text-sm text-gray-600 bg-transparent border-b border-gray-300 focus:border-coral-500 outline-none w-full"
+                    />
+                  </div>
+                ) : (
+                  <>
+                    <h2 className="text-xl font-semibold text-gray-900">
+                      {user?.username || 'Set your username'}
+                    </h2>
+                    <p className="text-gray-600">{user?.email}</p>
+                    <p className="text-sm text-gray-500">Conflict Resolution Specialist</p>
+                  </>
+                )}
+              </div>
             </div>
-            <div>
-              <h2 className="text-xl font-semibold text-gray-900">{user?.email}</h2>
-              <p className="text-gray-600">Conflict Resolution Specialist</p>
+            
+            <div className="flex space-x-2">
+              {isEditing ? (
+                <>
+                  <button
+                    onClick={handleSaveProfile}
+                    disabled={loading}
+                    className="flex items-center space-x-1 bg-coral-500 hover:bg-coral-600 text-white px-3 py-2 rounded-lg transition-colors disabled:opacity-50"
+                  >
+                    {loading ? (
+                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                    ) : (
+                      <Save size={16} />
+                    )}
+                    <span>Save</span>
+                  </button>
+                  <button
+                    onClick={handleEditToggle}
+                    className="flex items-center space-x-1 bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-2 rounded-lg transition-colors"
+                  >
+                    <X size={16} />
+                    <span>Cancel</span>
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={handleEditToggle}
+                  className="flex items-center space-x-1 text-coral-600 hover:text-coral-700 font-medium"
+                >
+                  <Edit3 size={16} />
+                  <span>Edit Profile</span>
+                </button>
+              )}
             </div>
           </div>
 
@@ -202,6 +315,22 @@ const ProfilePage: React.FC = () => {
             </p>
             <p>
               <strong>Reality check:</strong> Sometimes you're both right. Sometimes you're both wrong. Sometimes it doesn't matter who's right.
+            </p>
+          </div>
+        </div>
+
+        {/* Profile Tips */}
+        <div className="bg-lavender-50 p-6 rounded-lg border border-lavender-200">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">👤 Profile Tips</h2>
+          <div className="space-y-3 text-sm text-gray-700">
+            <p>
+              <strong>Username:</strong> Choose something that represents you well. Other users will see this when you're in conflicts together.
+            </p>
+            <p>
+              <strong>Avatar:</strong> A friendly photo helps humanize conflicts. People are more likely to be respectful when they can see who they're talking to.
+            </p>
+            <p>
+              <strong>Privacy:</strong> Your profile is visible to other users you're in conflicts with. Keep it professional but personable.
             </p>
           </div>
         </div>

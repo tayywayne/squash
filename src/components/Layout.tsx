@@ -40,7 +40,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             </div>
             
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-600">Hey, {user?.email}</span>
+              <span className="text-sm text-gray-600">
+                Hey, {user?.username || user?.email}
+              </span>
               <button
                 onClick={handleSignOut}
                 className="flex items-center space-x-1 text-gray-600 hover:text-coral-500 transition-colors"
