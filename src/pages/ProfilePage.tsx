@@ -7,8 +7,11 @@ import Toast from '../components/Toast';
 const ProfilePage: React.FC = () => {
   const { user, signOut, updateProfile } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
-  const editingDisabled = true; // Temporarily disable editing
+  const editingDisabled = false; // Re-enable editing
   const [editForm, setEditForm] = useState({
+    first_name: user?.first_name || '',
+    last_name: user?.last_name || '',
+    username: user?.username || '',
     avatar_url: user?.avatar_url || '',
   });
   const [loading, setLoading] = useState(false);
@@ -46,10 +49,12 @@ const ProfilePage: React.FC = () => {
   const resolutionRate = totalConflictsCount > 0 ? Math.round((resolvedConflictsCount / totalConflictsCount) * 100) : 0;
 
   const handleEditToggle = () => {
-    if (editingDisabled) return; // Prevent editing when disabled
     if (isEditing) {
       // Reset form to current user data
       setEditForm({
+        first_name: user?.first_name || '',
+        last_name: user?.last_name || '',
+        username: user?.username || '',
         avatar_url: user?.avatar_url || '',
       });
     }
@@ -60,6 +65,9 @@ const ProfilePage: React.FC = () => {
     setLoading(true);
     try {
       const { error } = await updateProfile({
+        first_name: editForm.first_name.trim() || undefined,
+        last_name: editForm.last_name.trim() || undefined,
+        username: editForm.username.trim() || undefined,
         avatar_url: editForm.avatar_url.trim() || undefined,
       });
 
@@ -140,18 +148,29 @@ const ProfilePage: React.FC = () => {
                 {isEditing ? (
                   <div className="space-y-2">
                     <div className="space-y-2">
-                      <div className="text-lg font-semibold text-gray-900">
-                        {user?.first_name && user?.last_name 
-                          ? `${user.first_name} ${user.last_name}` 
-                          : 'Name not set'
-                        }
+                      <div className="grid grid-cols-2 gap-2">
+                        <input
+                          type="text"
+                          value={editForm.first_name}
+                          onChange={(e) => setEditForm(prev => ({ ...prev, first_name: e.target.value }))}
+                          placeholder="First name"
+                          className="text-lg font-semibold text-gray-900 bg-transparent border-b border-gray-300 focus:border-coral-500 outline-none"
+                        />
+                        <input
+                          type="text"
+                          value={editForm.last_name}
+                          onChange={(e) => setEditForm(prev => ({ ...prev, last_name: e.target.value }))}
+                          placeholder="Last name"
+                          className="text-lg font-semibold text-gray-900 bg-transparent border-b border-gray-300 focus:border-coral-500 outline-none"
+                        />
                       </div>
-                      <div className="text-gray-600">
-                        @{user?.username || 'Username not set'}
-                      </div>
-                      <p className="text-xs text-gray-500">
-                        Name and username cannot be changed after account creation
-                      </p>
+                      <input
+                        type="text"
+                        value={editForm.username}
+                        onChange={(e) => setEditForm(prev => ({ ...prev, username: e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, '') }))}
+                        placeholder="Username"
+                        className="text-gray-600 bg-transparent border-b border-gray-300 focus:border-coral-500 outline-none"
+                      />
                     </div>
                     <input
                       type="url"
@@ -203,23 +222,13 @@ const ProfilePage: React.FC = () => {
                   </button>
                 </>
               ) : (
-                <>
-                  {!editingDisabled && (
-                    <button
-                      onClick={handleEditToggle}
-                      className="flex items-center space-x-1 text-coral-600 hover:text-coral-700 font-medium"
-                    >
-                      <Edit3 size={16} />
-                      <span>Edit Profile</span>
-                    </button>
-                  )}
-                  {editingDisabled && (
-                    <div className="flex items-center space-x-1 text-gray-400">
-                      <Edit3 size={16} />
-                      <span className="text-sm">Editing temporarily disabled</span>
-                    </div>
-                  )}
-                </>
+                <button
+                  onClick={handleEditToggle}
+                  className="flex items-center space-x-1 text-coral-600 hover:text-coral-700 font-medium"
+                >
+                  <Edit3 size={16} />
+                  <span>Edit Profile</span>
+                </button>
               )}
             </div>
           </div>
