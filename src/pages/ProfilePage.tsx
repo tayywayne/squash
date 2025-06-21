@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import { User, Bell, Trash2, Download, Shield, Edit3, Save, X, Camera } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
+import { conflictService, Conflict } from '../utils/conflicts';
 import Toast from '../components/Toast';
 
 const ProfilePage: React.FC = () => {
   const { user, signOut, updateProfile } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({
-    username: user?.username || '',
-    first_name: user?.first_name || '',
-    last_name: user?.last_name || '',
     avatar_url: user?.avatar_url || '',
   });
   const [loading, setLoading] = useState(false);
+  const [conflicts, setConflicts] = useState<Conflict[]>([]);
+  const [statsLoading, setStatsLoading] = useState(true);
   const [notifications, setNotifications] = useState({
     conflictUpdates: true,
     followUps: true,
@@ -20,13 +20,34 @@ const ProfilePage: React.FC = () => {
   });
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
 
+  // Load user conflicts for statistics
+  React.useEffect(() => {
+    const loadConflictStats = async () => {
+      if (!user?.id || !user?.email) return;
+      
+      setStatsLoading(true);
+      try {
+        const userConflicts = await conflictService.getUserConflicts(user.id, user.email);
+        setConflicts(userConflicts);
+      } catch (error) {
+        console.error('Error loading conflict stats:', error);
+      } finally {
+        setStatsLoading(false);
+      }
+    };
+
+    loadConflictStats();
+  }, [user?.id, user?.email]);
+
+  // Calculate statistics
+  const totalConflictsCount = conflicts.length;
+  const resolvedConflictsCount = conflicts.filter(c => c.status === 'resolved').length;
+  const resolutionRate = totalConflictsCount > 0 ? Math.round((resolvedConflictsCount / totalConflictsCount) * 100) : 0;
+
   const handleEditToggle = () => {
     if (isEditing) {
       // Reset form to current user data
       setEditForm({
-        username: user?.username || '',
-        first_name: user?.first_name || '',
-        last_name: user?.last_name || '',
         avatar_url: user?.avatar_url || '',
       });
     }
@@ -37,9 +58,6 @@ const ProfilePage: React.FC = () => {
     setLoading(true);
     try {
       const { error } = await updateProfile({
-        username: editForm.username.trim() || undefined,
-        first_name: editForm.first_name.trim() || undefined,
-        last_name: editForm.last_name.trim() || undefined,
         avatar_url: editForm.avatar_url.trim() || undefined,
       });
 
@@ -119,29 +137,20 @@ const ProfilePage: React.FC = () => {
               <div>
                 {isEditing ? (
                   <div className="space-y-2">
-                    <div className="grid grid-cols-2 gap-2">
-                      <input
-                        type="text"
-                        value={editForm.first_name}
-                        onChange={(e) => setEditForm(prev => ({ ...prev, first_name: e.target.value }))}
-                        placeholder="First name"
-                        className="text-lg font-semibold text-gray-900 bg-transparent border-b border-gray-300 focus:border-coral-500 outline-none"
-                      />
-                      <input
-                        type="text"
-                        value={editForm.last_name}
-                        onChange={(e) => setEditForm(prev => ({ ...prev, last_name: e.target.value }))}
-                        placeholder="Last name"
-                        className="text-lg font-semibold text-gray-900 bg-transparent border-b border-gray-300 focus:border-coral-500 outline-none"
-                      />
+                    <div className="space-y-2">
+                      <div className="text-lg font-semibold text-gray-900">
+                        {user?.first_name && user?.last_name 
+                          ? `${user.first_name} ${user.last_name}` 
+                          : 'Name not set'
+                        }
+                      </div>
+                      <div className="text-gray-600">
+                        @{user?.username || 'Username not set'}
+                      </div>
+                      <p className="text-xs text-gray-500">
+                        Name and username cannot be changed after account creation
+                      </p>
                     </div>
-                    <input
-                      type="text"
-                      value={editForm.username}
-                      onChange={(e) => setEditForm(prev => ({ ...prev, username: e.target.value }))}
-                      placeholder="Enter username"
-                      className="text-xl font-semibold text-gray-900 bg-transparent border-b border-gray-300 focus:border-coral-500 outline-none"
-                    />
                     <input
                       type="url"
                       value={editForm.avatar_url}
@@ -203,20 +212,31 @@ const ProfilePage: React.FC = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-            <div className="p-4 bg-gray-50 rounded-lg">
-              <p className="text-2xl font-bold text-coral-500">12</p>
-              <p className="text-sm text-gray-600">Total Conflicts</p>
+          {statsLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="p-4 bg-gray-50 rounded-lg animate-pulse">
+                  <div className="h-8 bg-gray-200 rounded mb-2"></div>
+                  <div className="h-4 bg-gray-200 rounded"></div>
+                </div>
+              ))}
             </div>
-            <div className="p-4 bg-gray-50 rounded-lg">
-              <p className="text-2xl font-bold text-teal-500">8</p>
-              <p className="text-sm text-gray-600">Successfully Resolved</p>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <p className="text-2xl font-bold text-coral-500">{totalConflictsCount}</p>
+                <p className="text-sm text-gray-600">Total Conflicts</p>
+              </div>
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <p className="text-2xl font-bold text-teal-500">{resolvedConflictsCount}</p>
+                <p className="text-sm text-gray-600">Successfully Resolved</p>
+              </div>
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <p className="text-2xl font-bold text-lavender-500">{resolutionRate}%</p>
+                <p className="text-sm text-gray-600">Resolution Rate</p>
+              </div>
             </div>
-            <div className="p-4 bg-gray-50 rounded-lg">
-              <p className="text-2xl font-bold text-lavender-500">67%</p>
-              <p className="text-sm text-gray-600">Resolution Rate</p>
-            </div>
-          </div>
+          )}
         </div>
 
         {/* Notification Settings */}
