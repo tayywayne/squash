@@ -191,7 +191,7 @@ const ProfilePage: React.FC = () => {
                     {user?.username && (
                       <p className="text-gray-600">@{user.username}</p>
                     )}
-                    <p className="text-gray-600">{user?.email}</p>
+                    <p className="text-gray-500 text-sm">{user?.email}</p>
                     <p className="text-sm text-gray-500">Conflict Resolution Specialist</p>
                   </>
                 )}
