@@ -25,7 +25,17 @@ const LoginPage: React.FC = () => {
         : await signUp(email, password);
 
       if (error) {
-        setToast({ message: error.message || 'Authentication failed', type: 'error' });
+        let errorMessage = 'Authentication failed';
+        
+        if (error.message.includes('email_address_invalid')) {
+          errorMessage = 'This email address is not valid. Please check your email format or try a different email address.';
+        } else if (error.message.includes('Email address') && error.message.includes('invalid')) {
+          errorMessage = 'This email address is not accepted. Please try a different email address.';
+        } else {
+          errorMessage = error.message || 'Authentication failed';
+        }
+        
+        setToast({ message: errorMessage, type: 'error' });
       } else {
         setToast({ 
           message: isLogin ? 'Welcome back, conflict resolver!' : 'Account created! Time to squash some beef.', 
@@ -34,7 +44,8 @@ const LoginPage: React.FC = () => {
         setTimeout(() => navigate('/dashboard'), 1000);
       }
     } catch (error) {
-      setToast({ message: 'Something went wrong. Try again?', type: 'error' });
+      console.error('Authentication error:', error);
+      setToast({ message: 'Something went wrong. Please try again with a different email address.', type: 'error' });
     } finally {
       setLoading(false);
     }
