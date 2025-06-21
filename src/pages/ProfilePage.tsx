@@ -11,7 +11,6 @@ const ProfilePage: React.FC = () => {
   const [editForm, setEditForm] = useState({
     first_name: user?.first_name || '',
     last_name: user?.last_name || '',
-    username: user?.username || '',
     avatar_url: user?.avatar_url || '',
   });
   const [loading, setLoading] = useState(false);
@@ -54,7 +53,6 @@ const ProfilePage: React.FC = () => {
       setEditForm({
         first_name: user?.first_name || '',
         last_name: user?.last_name || '',
-        username: user?.username || '',
         avatar_url: user?.avatar_url || '',
       });
     }
@@ -67,7 +65,6 @@ const ProfilePage: React.FC = () => {
       const { error } = await updateProfile({
         first_name: editForm.first_name.trim() || undefined,
         last_name: editForm.last_name.trim() || undefined,
-        username: editForm.username.trim() || undefined,
         avatar_url: editForm.avatar_url.trim() || undefined,
       });
 
@@ -164,13 +161,12 @@ const ProfilePage: React.FC = () => {
                           className="text-lg font-semibold text-gray-900 bg-transparent border-b border-gray-300 focus:border-coral-500 outline-none"
                         />
                       </div>
-                      <input
-                        type="text"
-                        value={editForm.username}
-                        onChange={(e) => setEditForm(prev => ({ ...prev, username: e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, '') }))}
-                        placeholder="Username"
-                        className="text-gray-600 bg-transparent border-b border-gray-300 focus:border-coral-500 outline-none"
-                      />
+                      <div className="text-gray-600">
+                        @{user?.username || 'Username not set'}
+                      </div>
+                      <p className="text-xs text-gray-500">
+                        Username cannot be changed after account creation
+                      </p>
                     </div>
                     <input
                       type="url"
