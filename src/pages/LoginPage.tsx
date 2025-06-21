@@ -27,7 +27,9 @@ const LoginPage: React.FC = () => {
       if (error) {
         let errorMessage = 'Authentication failed';
         
-        if (error.message.includes('email_address_invalid')) {
+        if (error.message.includes('Email not confirmed')) {
+          errorMessage = 'Please confirm your email address to log in. Check your inbox for a verification link.';
+        } else if (error.message.includes('email_address_invalid')) {
           errorMessage = 'This email address is not valid. Please check your email format or try a different email address.';
         } else if (error.message.includes('Email address') && error.message.includes('invalid')) {
           errorMessage = 'This email address is not accepted. Please try a different email address.';
