@@ -366,54 +366,6 @@ const ConflictPage: React.FC = () => {
             )}
           </div>
 
-          {/* Show satisfaction status - keep this section as is */}
-          {(conflict.user1_satisfaction !== null || conflict.user2_satisfaction !== null) && (
-            <div className="bg-white p-6 rounded-lg border border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Resolution Status</h3>
-              <div className="space-y-2">
-                {conflict.user1_satisfaction !== null && (
-                  <p className="text-sm text-gray-600">
-                    User 1: {conflict.user1_satisfaction ? '✅ Satisfied' : '❌ Needs more work'}
-                  </p>
-                )}
-                {conflict.user2_satisfaction !== null && (
-                  <p className="text-sm text-gray-600">
-                    User 2: {conflict.user2_satisfaction ? '✅ Satisfied' : '❌ Needs more work'}
-                  </p>
-                )}
-                {conflict.status === 'resolved' && (
-                  <div className="mt-4 p-4 bg-green-50 rounded-lg">
-                    <p className="text-green-800 font-medium">🎉 Conflict Successfully Resolved!</p>
-                    <p className="text-sm text-green-700 mt-1">Both parties are satisfied with the resolution.</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  );
-};
-
-export default ConflictPage;
-              <button 
-                onClick={() => handleSatisfactionVote(true)}
-                disabled={loading}
-                className="flex-1 bg-teal-500 hover:bg-teal-600 text-white py-3 px-4 rounded-lg transition-colors disabled:opacity-50"
-              >
-                Mark as Resolved
-              </button>
-              <button 
-                onClick={() => handleSatisfactionVote(false)}
-                disabled={loading}
-                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 py-3 px-4 rounded-lg transition-colors disabled:opacity-50"
-              >
-                Need More Help
-              </button>
-            </div>
-          </div>
-
           {/* Show satisfaction status */}
           {(conflict.user1_satisfaction !== null || conflict.user2_satisfaction !== null) && (
             <div className="bg-white p-6 rounded-lg border border-gray-200">
