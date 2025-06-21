@@ -453,24 +453,94 @@ const ConflictPage: React.FC = () => {
               Does this final reflection help you understand each other?
             </h3>
             
+            {/* Show current user's vote status and waiting state */}
             {!isResolved && (
-              <div className="flex space-x-4">
-                <button 
-                  onClick={() => handleSatisfactionVote(true)}
-                  disabled={loading}
-                  className="flex-1 bg-teal-500 hover:bg-teal-600 text-white py-3 px-4 rounded-lg transition-colors disabled:opacity-50"
-                >
-                  {loading ? 'Processing...' : 'Yes, This Helps - Mark Resolved'}
-                </button>
-                <button 
-                  onClick={() => handleSatisfactionVote(false)}
-                  disabled={loading}
-                  className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 py-3 px-4 rounded-lg transition-colors disabled:opacity-50"
-                >
-                  {loading ? 'Processing...' : 'Still Not Quite Right'}
-                </button>
-              </div>
+              <>
+                {/* Check if current user has already voted */}
+                {((isUser1 && conflict.user1_satisfaction !== null) || (isUser2 && conflict.user2_satisfaction !== null)) ? (
+                  <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 mb-4">
+                    <div className="flex items-center space-x-2 mb-2">
+                      <div className="text-2xl">⏳</div>
+                      <h4 className="font-semibold text-blue-900">Waiting for the Other Person</h4>
+                    </div>
+                    <p className="text-sm text-blue-700">
+                      You've voted on this final reflection. Waiting for them to decide if this helps them understand the situation better.
+                    </p>
+                    <div className="mt-3 text-sm text-blue-600">
+                      <p>Your vote: <strong>{(isUser1 ? conflict.user1_satisfaction : conflict.user2_satisfaction) ? 'This helps - Mark Resolved' : 'Still not quite right'}</strong></p>
+                    </div>
+                  </div>
+                ) : (
+                  /* Show voting buttons if current user hasn't voted yet */
+                  <div className="flex space-x-4 mb-4">
+                    <button 
+                      onClick={() => handleSatisfactionVote(true)}
+                      disabled={loading}
+                      className="flex-1 bg-teal-500 hover:bg-teal-600 text-white py-3 px-4 rounded-lg transition-colors disabled:opacity-50"
+                    >
+                      {loading ? 'Processing...' : 'Yes, This Helps - Mark Resolved'}
+                    </button>
+                    <button 
+                      onClick={() => handleSatisfactionVote(false)}
+                      disabled={loading}
+                      className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 py-3 px-4 rounded-lg transition-colors disabled:opacity-50"
+                    >
+                      {loading ? 'Processing...' : 'Still Not Quite Right'}
+                    </button>
+                  </div>
+                )}
+              </>
             )}
+            
+            {/* Show voting status for both users */}
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <h4 className="font-medium text-gray-900 mb-3">Voting Status:</h4>
+              <div className="flex space-x-4">
+                <div className="flex-1 text-center">
+                  <p className="text-sm font-medium text-gray-700 mb-1">
+                    {isUser1 ? 'Your Vote' : 'User 1'}
+                  </p>
+                  <div className="text-2xl mb-1">
+                    {conflict.user1_satisfaction === null 
+                      ? '⏳' 
+                      : conflict.user1_satisfaction 
+                        ? '✅' 
+                        : '❌'
+                    }
+                  </div>
+                  <p className="text-xs text-gray-600">
+                    {conflict.user1_satisfaction === null 
+                      ? 'Pending' 
+                      : conflict.user1_satisfaction 
+                        ? 'Resolved' 
+                        : 'Needs work'
+                    }
+                  </p>
+                </div>
+                
+                <div className="flex-1 text-center">
+                  <p className="text-sm font-medium text-gray-700 mb-1">
+                    {isUser2 ? 'Your Vote' : 'User 2'}
+                  </p>
+                  <div className="text-2xl mb-1">
+                    {conflict.user2_satisfaction === null 
+                      ? '⏳' 
+                      : conflict.user2_satisfaction 
+                        ? '✅' 
+                        : '❌'
+                    }
+                  </div>
+                  <p className="text-xs text-gray-600">
+                    {conflict.user2_satisfaction === null 
+                      ? 'Pending' 
+                      : conflict.user2_satisfaction 
+                        ? 'Resolved' 
+                        : 'Needs work'
+                    }
+                  </p>
+                </div>
+              </div>
+            </div>
             
             {isResolved && (
               <div className="bg-green-50 p-4 rounded-lg border border-green-200">
