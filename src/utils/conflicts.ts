@@ -29,6 +29,11 @@ export interface Conflict {
   ai_rehash_summary?: string;
   ai_rehash_suggestion?: string;
   rehash_attempted_at?: string;
+  user1_core_issue?: string;
+  user2_core_issue?: string;
+  ai_core_reflection?: string;
+  ai_core_suggestion?: string;
+  core_issues_attempted_at?: string;
 }
 
 export const conflictService = {
@@ -228,6 +233,74 @@ export const conflictService = {
       }
     } catch (error) {
       console.error('Error updating satisfaction:', error);
+      throw error;
+    }
+  },
+
+  submitCoreIssue: async (conflictId: string, coreIssue: string, userId: string): Promise<void> => {
+    try {
+      const conflict = await conflictService.getConflictById(conflictId);
+      if (!conflict) {
+        throw new Error('Conflict not found');
+      }
+
+      const updateData: any = {};
+      
+      if (conflict.user1_id === userId) {
+        updateData.user1_core_issue = coreIssue;
+      } else if (conflict.user2_id === userId) {
+        updateData.user2_core_issue = coreIssue;
+      } else {
+        throw new Error('User not authorized to update this conflict');
+      }
+
+      // Check if both users have now submitted their core issues
+      const otherUserCoreIssue = conflict.user1_id === userId 
+        ? conflict.user2_core_issue 
+        : conflict.user1_core_issue;
+
+      const currentUserCoreIssue = coreIssue;
+      
+      // If both core issues are now available, generate AI reflection
+      if (otherUserCoreIssue && currentUserCoreIssue) {
+        try {
+          console.log('Both core issues submitted, generating AI reflection...');
+          const coreReflection = await openAI.generateCoreIssuesReflection(
+            conflict.user1_id === userId ? currentUserCoreIssue : otherUserCoreIssue,
+            conflict.user2_id === userId ? currentUserCoreIssue : otherUserCoreIssue,
+            conflict.user1_raw_message,
+            conflict.user2_raw_message || '',
+            conflict.ai_summary || '',
+            conflict.ai_suggestion || '',
+            conflict.ai_rehash_summary || '',
+            conflict.ai_rehash_suggestion || ''
+          );
+          
+          updateData.ai_core_reflection = coreReflection.reflection;
+          updateData.ai_core_suggestion = coreReflection.suggestion;
+          updateData.core_issues_attempted_at = new Date().toISOString();
+          
+          // Reset satisfaction votes so both users can vote on the new reflection
+          updateData.user1_satisfaction = null;
+          updateData.user2_satisfaction = null;
+          
+          console.log('AI core issues reflection completed successfully');
+        } catch (error) {
+          console.error('Error during AI core issues reflection:', error);
+          // Continue with the core issue update even if AI reflection fails
+        }
+      }
+
+      const { error } = await supabase
+        .from('conflicts')
+        .update(updateData)
+        .eq('id', conflictId);
+
+      if (error) {
+        throw error;
+      }
+    } catch (error) {
+      console.error('Error submitting core issue:', error);
       throw error;
     }
   }
