@@ -7,6 +7,7 @@ import Toast from '../components/Toast';
 const ProfilePage: React.FC = () => {
   const { user, signOut, updateProfile } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
+  const editingDisabled = true; // Temporarily disable editing
   const [editForm, setEditForm] = useState({
     avatar_url: user?.avatar_url || '',
   });
@@ -45,6 +46,7 @@ const ProfilePage: React.FC = () => {
   const resolutionRate = totalConflictsCount > 0 ? Math.round((resolvedConflictsCount / totalConflictsCount) * 100) : 0;
 
   const handleEditToggle = () => {
+    if (editingDisabled) return; // Prevent editing when disabled
     if (isEditing) {
       // Reset form to current user data
       setEditForm({
@@ -178,7 +180,7 @@ const ProfilePage: React.FC = () => {
             </div>
             
             <div className="flex space-x-2">
-              {isEditing ? (
+              {isEditing && !editingDisabled ? (
                 <>
                   <button
                     onClick={handleSaveProfile}
@@ -201,13 +203,23 @@ const ProfilePage: React.FC = () => {
                   </button>
                 </>
               ) : (
-                <button
-                  onClick={handleEditToggle}
-                  className="flex items-center space-x-1 text-coral-600 hover:text-coral-700 font-medium"
-                >
-                  <Edit3 size={16} />
-                  <span>Edit Profile</span>
-                </button>
+                <>
+                  {!editingDisabled && (
+                    <button
+                      onClick={handleEditToggle}
+                      className="flex items-center space-x-1 text-coral-600 hover:text-coral-700 font-medium"
+                    >
+                      <Edit3 size={16} />
+                      <span>Edit Profile</span>
+                    </button>
+                  )}
+                  {editingDisabled && (
+                    <div className="flex items-center space-x-1 text-gray-400">
+                      <Edit3 size={16} />
+                      <span className="text-sm">Editing temporarily disabled</span>
+                    </div>
+                  )}
+                </>
               )}
             </div>
           </div>
