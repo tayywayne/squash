@@ -460,15 +460,27 @@ const ConflictPage: React.FC = () => {
                   disabled={loading}
                   className="flex-1 bg-teal-500 hover:bg-teal-600 text-white py-3 px-4 rounded-lg transition-colors disabled:opacity-50"
                 >
-                  Yes, This Helps - Mark Resolved
+                  {loading ? 'Processing...' : 'Yes, This Helps - Mark Resolved'}
                 </button>
                 <button 
                   onClick={() => handleSatisfactionVote(false)}
                   disabled={loading}
                   className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 py-3 px-4 rounded-lg transition-colors disabled:opacity-50"
                 >
-                  Still Not Quite Right
+                  {loading ? 'Processing...' : 'Still Not Quite Right'}
                 </button>
+              </div>
+            )}
+            
+            {isResolved && (
+              <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                <div className="flex items-center space-x-2 mb-2">
+                  <div className="text-2xl">🎉</div>
+                  <h4 className="font-semibold text-green-900">Conflict Successfully Resolved!</h4>
+                </div>
+                <p className="text-sm text-green-700">
+                  This conflict has been marked as resolved through the core issues reflection process.
+                </p>
               </div>
             )}
           </div>
