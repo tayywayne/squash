@@ -171,7 +171,7 @@ Please provide a resolution.`
         suggestion: mockResult.suggestion
       };
     }
-  }
+  },
 
   rehashConflict: async (
     user1Message: string, 
