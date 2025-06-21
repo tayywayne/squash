@@ -240,6 +240,84 @@ The previous resolution didn't fully satisfy both parties. Please provide a fres
         suggestion: "Take a step back and try this: each person should write down what they actually need to feel respected in this situation (not what the other person should do differently), then compare notes. Sometimes the real issue is different from what it appears to be on the surface."
       };
     }
+  },
+
+  generateCoreIssuesReflection: async (
+    user1CoreIssue: string,
+    user2CoreIssue: string,
+    user1RawMessage: string,
+    user2RawMessage: string,
+    originalSummary: string,
+    originalSuggestion: string,
+    rehashSummary: string,
+    rehashSuggestion: string
+  ): Promise<{ reflection: string; suggestion: string }> => {
+    try {
+      console.log('Attempting to generate core issues reflection with OpenAI...');
+      const messages = [
+        {
+          role: 'system',
+          content: `You are an AI mediator working on a conflict that has persisted through multiple resolution attempts. You now have each person's core issue - what they most want the other person to understand.
+
+Your job is to:
+1. Reflect on what each person most wants to be understood
+2. Identify the deeper disconnect that previous attempts missed
+3. Offer a final, focused approach that directly addresses these core needs for understanding
+4. Be more personal and direct since this is the third attempt
+
+Tone: More direct and cutting to the heart of the matter, but still compassionate. Think "okay, let's get real here."
+
+Format your response as JSON with two fields:
+- "reflection": Focus on what each person most wants to be understood and why previous attempts may have missed this
+- "suggestion": Very specific, actionable steps that directly address these core understanding needs
+
+Keep each field to 2-3 sentences maximum.`
+        },
+        {
+          role: 'user',
+          content: `Core Issues - What each person most wants understood:
+Person 1: ${user1CoreIssue}
+Person 2: ${user2CoreIssue}
+
+Original context:
+Person 1's original message: ${user1RawMessage}
+Person 2's original message: ${user2RawMessage}
+
+Previous resolution attempts that didn't work:
+First attempt - Summary: ${originalSummary}
+First attempt - Suggestion: ${originalSuggestion}
+
+Second attempt - Summary: ${rehashSummary}
+Second attempt - Suggestion: ${rehashSuggestion}
+
+Please provide a reflection that addresses what each person most wants to be understood, and suggest a final approach.`
+        }
+      ];
+
+      const response = await makeOpenAIRequest(messages);
+      
+      try {
+        const parsed = JSON.parse(response);
+        console.log('OpenAI core issues reflection successful');
+        return {
+          reflection: parsed.reflection || '',
+          suggestion: parsed.suggestion || ''
+        };
+      } catch (error) {
+        console.warn('JSON parsing failed for core issues reflection, using fallback');
+        return {
+          reflection: "Looking at what each of you most wants to be understood, it's clear that the previous attempts may have focused on solutions rather than truly hearing these core needs. Sometimes conflicts persist because we're trying to fix the wrong thing.",
+          suggestion: "Here's what I want you to try: each person should directly acknowledge what the other most wants to be understood, using their exact words. Don't try to solve anything yet - just show that you truly hear their core concern. Understanding often has to come before resolution."
+        };
+      }
+    } catch (error) {
+      console.warn('OpenAI API failed for core issues reflection, using enhanced fallback');
+      
+      return {
+        reflection: "After multiple attempts, it's clear that what each of you most wants to be understood hasn't been fully acknowledged yet. This is often the missing piece - not just finding a solution, but ensuring each person feels truly heard at the deepest level.",
+        suggestion: "Try this final approach: each person should repeat back what the other most wants to be understood, in your own words, and ask 'Did I get that right?' Don't move forward until you both feel your core concern has been truly heard and acknowledged."
+      };
+    }
   }
 };
 
