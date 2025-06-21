@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Plus, MessageSquare, Clock, CheckCircle, Users } from 'lucide-react';
 import MoodIndicator from '../components/MoodIndicator';
 import { MoodLevel } from '../types';
 
 const DashboardPage: React.FC = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'active' | 'history'>('active');
   const [currentMood, setCurrentMood] = useState<MoodLevel>('meh');
 
@@ -135,7 +137,10 @@ const DashboardPage: React.FC = () => {
       {activeTab === 'active' ? (
         <div className="space-y-4">
           {/* New Conflict Button */}
-          <button className="w-full p-6 border-2 border-dashed border-gray-300 rounded-lg hover:border-coral-400 hover:bg-coral-50 transition-colors group">
+          <button 
+            onClick={() => navigate('/new-conflict')}
+            className="w-full p-6 border-2 border-dashed border-gray-300 rounded-lg hover:border-coral-400 hover:bg-coral-50 transition-colors group"
+          >
             <div className="flex items-center justify-center">
               <Plus className="h-8 w-8 text-gray-400 group-hover:text-coral-500" />
               <div className="ml-4">

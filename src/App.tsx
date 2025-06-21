@@ -4,6 +4,7 @@ import { useAuth } from './hooks/useAuth';
 import Layout from './components/Layout';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
+import NewConflictPage from './pages/NewConflictPage';
 import ConflictPage from './pages/ConflictPage';
 import ProfilePage from './pages/ProfilePage';
 
@@ -35,6 +36,7 @@ function App() {
               <Layout>
                 <Routes>
                   <Route path="/dashboard" element={<DashboardPage />} />
+                  <Route path="/new-conflict" element={<NewConflictPage />} />
                   <Route path="/conflicts" element={<DashboardPage />} />
                   <Route path="/history" element={<DashboardPage />} />
                   <Route path="/conflict/:conflictId" element={<ConflictPage />} />
