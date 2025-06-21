@@ -1,5 +1,5 @@
 // OpenAI integration for conflict resolution
-const OPENAI_API_KEY = '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';
+const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY || '';
 const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';
 
 interface OpenAIResponse {
@@ -11,6 +11,11 @@ interface OpenAIResponse {
 }
 
 const makeOpenAIRequest = async (messages: any[]): Promise<string> => {
+  // If no API key is available, throw an error to trigger fallback
+  if (!OPENAI_API_KEY) {
+    throw new Error('No OpenAI API key available');
+  }
+
   try {
     const response = await fetch(OPENAI_API_URL, {
       method: 'POST',
@@ -40,10 +45,11 @@ const makeOpenAIRequest = async (messages: any[]): Promise<string> => {
 
 export const openAI = {
   translateMessage: async (rawMessage: string, mood: string): Promise<string> => {
-    const messages = [
-      {
-        role: 'system',
-        content: `You are a conflict resolution assistant. Your job is to translate raw, emotional messages into kinder, more constructive versions while preserving the core message and intent. The person writing this is feeling "${mood}".
+    try {
+      const messages = [
+        {
+          role: 'system',
+          content: `You are a conflict resolution assistant. Your job is to translate raw, emotional messages into kinder, more constructive versions while preserving the core message and intent. The person writing this is feeling "${mood}".
 
 Guidelines:
 - Keep the core message and concerns intact
@@ -55,21 +61,29 @@ Guidelines:
 - Don't add new information or change the fundamental complaint
 
 Return only the translated message, nothing else.`
-      },
-      {
-        role: 'user',
-        content: rawMessage
-      }
-    ];
+        },
+        {
+          role: 'user',
+          content: rawMessage
+        }
+      ];
 
-    return await makeOpenAIRequest(messages);
+      return await makeOpenAIRequest(messages);
+    } catch (error) {
+      console.warn('OpenAI API failed, using fallback translation');
+      // Fallback: return a cleaned up version of the message
+      return rawMessage.replace(/\b(stupid|dumb|idiot|hate)\b/gi, '[frustrated]')
+                      .replace(/you always|you never/gi, 'sometimes')
+                      .trim();
+    }
   },
 
   generateResolution: async (user1Message: string, user2Message: string): Promise<{ summary: string; suggestion: string }> => {
-    const messages = [
-      {
-        role: 'system',
-        content: `You are an AI mediator helping resolve conflicts between two people. You have their translated, constructive statements. Your job is to:
+    try {
+      const messages = [
+        {
+          role: 'system',
+          content: `You are an AI mediator helping resolve conflicts between two people. You have their translated, constructive statements. Your job is to:
 
 1. Provide a fair summary of both perspectives
 2. Offer a balanced resolution that helps both parties understand each other
@@ -82,30 +96,39 @@ Format your response as JSON with two fields:
 - "suggestion": Practical next steps for resolution
 
 Keep each field to 2-3 sentences maximum.`
-      },
-      {
-        role: 'user',
-        content: `Person 1's perspective: ${user1Message}
+        },
+        {
+          role: 'user',
+          content: `Person 1's perspective: ${user1Message}
 
 Person 2's perspective: ${user2Message}
 
 Please provide a resolution.`
-      }
-    ];
+        }
+      ];
 
-    const response = await makeOpenAIRequest(messages);
-    
-    try {
-      const parsed = JSON.parse(response);
-      return {
-        summary: parsed.summary || '',
-        suggestion: parsed.suggestion || ''
-      };
+      const response = await makeOpenAIRequest(messages);
+      
+      try {
+        const parsed = JSON.parse(response);
+        return {
+          summary: parsed.summary || '',
+          suggestion: parsed.suggestion || ''
+        };
+      } catch (error) {
+        // Fallback if JSON parsing fails
+        return {
+          summary: "Both perspectives show valid concerns that deserve attention. There seems to be a communication gap that's causing frustration on both sides.",
+          suggestion: "Try having a calm conversation where each person explains their feelings without interruption. Focus on understanding rather than being right."
+        };
+      }
     } catch (error) {
-      // Fallback if JSON parsing fails
+      console.warn('OpenAI API failed, using mock resolution');
+      // Use the mock service as fallback
+      const mockResult = await mockOpenAI.mediateConflict(user1Message, user2Message);
       return {
-        summary: "Both perspectives show valid concerns that deserve attention. There seems to be a communication gap that's causing frustration on both sides.",
-        suggestion: "Try having a calm conversation where each person explains their feelings without interruption. Focus on understanding rather than being right."
+        summary: mockResult.summary,
+        suggestion: mockResult.suggestion
       };
     }
   }
