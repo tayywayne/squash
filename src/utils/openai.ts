@@ -32,13 +32,20 @@ const makeOpenAIRequest = async (messages: any[]): Promise<string> => {
     });
 
     if (!response.ok) {
+      if (response.status === 429) {
+        throw new Error('RATE_LIMIT_EXCEEDED');
+      }
       throw new Error(`OpenAI API error: ${response.status}`);
     }
 
     const data: OpenAIResponse = await response.json();
     return data.choices[0]?.message?.content || '';
   } catch (error) {
-    console.error('OpenAI API error:', error);
+    if (error instanceof Error && error.message === 'RATE_LIMIT_EXCEEDED') {
+      console.warn('OpenAI rate limit exceeded, using fallback');
+    } else {
+      console.error('OpenAI API error:', error);
+    }
     throw error;
   }
 };
