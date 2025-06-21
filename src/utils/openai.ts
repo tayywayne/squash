@@ -172,6 +172,75 @@ Please provide a resolution.`
       };
     }
   }
+
+  rehashConflict: async (
+    user1Message: string, 
+    user2Message: string, 
+    previousSummary: string, 
+    previousSuggestion: string
+  ): Promise<{ summary: string; suggestion: string }> => {
+    try {
+      console.log('Attempting to rehash conflict with OpenAI...');
+      const messages = [
+        {
+          role: 'system',
+          content: `You are an AI mediator helping to rehash a conflict that wasn't fully resolved. The parties have indicated they're not satisfied with the previous resolution attempt.
+
+Your job is to:
+1. Re-examine both perspectives with fresh eyes
+2. Identify what might have been missed in the previous mediation
+3. Offer a new approach or deeper insight that could help break the deadlock
+4. Be more specific and actionable in your suggestions
+5. Acknowledge that the previous attempt didn't fully work
+
+Tone: Slightly more direct and practical than before, but still empathetic. Think "okay, let's try a different angle here."
+
+Format your response as JSON with two fields:
+- "summary": A fresh take on what's really going on, acknowledging the previous attempt
+- "suggestion": More specific, actionable next steps that address why the first resolution didn't stick
+
+Keep each field to 2-3 sentences maximum.`
+        },
+        {
+          role: 'user',
+          content: `Original perspectives:
+Person 1: ${user1Message}
+Person 2: ${user2Message}
+
+Previous AI summary: ${previousSummary}
+Previous AI suggestion: ${previousSuggestion}
+
+The previous resolution didn't fully satisfy both parties. Please provide a fresh perspective and new approach.`
+        }
+      ];
+
+      const response = await makeOpenAIRequest(messages);
+      
+      try {
+        const parsed = JSON.parse(response);
+        console.log('OpenAI rehash successful');
+        return {
+          summary: parsed.summary || '',
+          suggestion: parsed.suggestion || ''
+        };
+      } catch (error) {
+        console.warn('JSON parsing failed for rehash, using fallback');
+        // Fallback if JSON parsing fails
+        return {
+          summary: "Looking at this again, it seems like the core issue might be deeper than initially thought. Sometimes conflicts persist because the underlying needs or expectations weren't fully addressed in the first round.",
+          suggestion: "Try a more structured approach: each person should clearly state what they need (not just what they want the other person to stop doing), and then work together to find specific ways to meet those needs."
+        };
+      }
+    } catch (error) {
+      console.warn('OpenAI API failed for rehash, using enhanced fallback');
+      
+      // Enhanced fallback for rehash
+      return {
+        summary: "Since the first resolution attempt didn't fully work, let's dig deeper. Often when conflicts persist, it's because there are unspoken expectations or different communication styles at play that weren't addressed initially.",
+        suggestion: "Take a step back and try this: each person should write down what they actually need to feel respected in this situation (not what the other person should do differently), then compare notes. Sometimes the real issue is different from what it appears to be on the surface."
+      };
+    }
+  }
 };
 
 // Keep the mock for development/fallback
@@ -184,6 +253,16 @@ export const mockOpenAI = {
       summary: `Here's what I'm hearing: One of you feels like your boundaries weren't respected, while the other feels like they were just trying to help. Classic miscommunication vibes. Both perspectives are valid, but let's work on actually hearing each other instead of just waiting for your turn to be right.`,
       suggestion: `Try this: Take turns explaining how you felt without using "you always" or "you never." Start with "I felt..." instead. And maybe acknowledge that you both probably had good intentions, even if the execution was messier than a toddler's art project. Sometimes the goal isn't to win – it's to understand why you're both so worked up in the first place.`,
       tone: 'sassy-therapist'
+    };
+  },
+
+  rehashConflict: async (user1Message: string, user2Message: string, previousSummary: string, previousSuggestion: string) => {
+    // Simulate AI processing delay
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    return {
+      summary: "Okay, round two. The first attempt didn't stick, which usually means we're dealing with something deeper than surface-level disagreement. There might be different communication styles or unmet needs that weren't fully addressed.",
+      suggestion: "Let's try a different approach: instead of focusing on who's right, each person should identify what they need to feel heard and respected. Then work backwards from there to find concrete actions that meet both sets of needs."
     };
   }
 };

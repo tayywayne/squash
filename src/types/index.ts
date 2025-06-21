@@ -13,6 +13,9 @@ export interface Conflict {
   created_at: string;
   resolved_at?: string;
   title: string;
+  ai_rehash_summary?: string;
+  ai_rehash_suggestion?: string;
+  rehash_attempted_at?: string;
 }
 
 export interface ConflictMessage {

@@ -26,6 +26,9 @@ export interface Conflict {
   user2_satisfaction?: boolean;
   created_at: string;
   resolved_at?: string;
+  ai_rehash_summary?: string;
+  ai_rehash_suggestion?: string;
+  rehash_attempted_at?: string;
 }
 
 export const conflictService = {
@@ -178,6 +181,33 @@ export const conflictService = {
       if (satisfaction && otherUserSatisfied) {
         updateData.status = 'resolved';
         updateData.resolved_at = new Date().toISOString();
+      } else if (!satisfaction || (otherUserSatisfied === false)) {
+        // Conflict is unresolved - trigger rehash if we have the necessary data
+        if (conflict.user1_translated_message && 
+            conflict.user2_translated_message && 
+            conflict.ai_summary && 
+            conflict.ai_suggestion) {
+          
+          try {
+            console.log('Triggering AI rehash for unresolved conflict...');
+            const rehashResult = await openAI.rehashConflict(
+              conflict.user1_translated_message,
+              conflict.user2_translated_message,
+              conflict.ai_summary,
+              conflict.ai_suggestion
+            );
+            
+            updateData.ai_rehash_summary = rehashResult.summary;
+            updateData.ai_rehash_suggestion = rehashResult.suggestion;
+            updateData.rehash_attempted_at = new Date().toISOString();
+            updateData.status = 'active'; // Set back to active for further mediation
+            
+            console.log('AI rehash completed successfully');
+          } catch (error) {
+            console.error('Error during AI rehash:', error);
+            // Continue with the satisfaction update even if rehash fails
+          }
+        }
       }
 
       const { error } = await supabase
