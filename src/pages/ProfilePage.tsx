@@ -8,6 +8,8 @@ const ProfilePage: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({
     username: user?.username || '',
+    first_name: user?.first_name || '',
+    last_name: user?.last_name || '',
     avatar_url: user?.avatar_url || '',
   });
   const [loading, setLoading] = useState(false);
@@ -23,6 +25,8 @@ const ProfilePage: React.FC = () => {
       // Reset form to current user data
       setEditForm({
         username: user?.username || '',
+        first_name: user?.first_name || '',
+        last_name: user?.last_name || '',
         avatar_url: user?.avatar_url || '',
       });
     }
@@ -34,6 +38,8 @@ const ProfilePage: React.FC = () => {
     try {
       const { error } = await updateProfile({
         username: editForm.username.trim() || undefined,
+        first_name: editForm.first_name.trim() || undefined,
+        last_name: editForm.last_name.trim() || undefined,
         avatar_url: editForm.avatar_url.trim() || undefined,
       });
 
@@ -113,6 +119,22 @@ const ProfilePage: React.FC = () => {
               <div>
                 {isEditing ? (
                   <div className="space-y-2">
+                    <div className="grid grid-cols-2 gap-2">
+                      <input
+                        type="text"
+                        value={editForm.first_name}
+                        onChange={(e) => setEditForm(prev => ({ ...prev, first_name: e.target.value }))}
+                        placeholder="First name"
+                        className="text-lg font-semibold text-gray-900 bg-transparent border-b border-gray-300 focus:border-coral-500 outline-none"
+                      />
+                      <input
+                        type="text"
+                        value={editForm.last_name}
+                        onChange={(e) => setEditForm(prev => ({ ...prev, last_name: e.target.value }))}
+                        placeholder="Last name"
+                        className="text-lg font-semibold text-gray-900 bg-transparent border-b border-gray-300 focus:border-coral-500 outline-none"
+                      />
+                    </div>
                     <input
                       type="text"
                       value={editForm.username}
@@ -131,8 +153,14 @@ const ProfilePage: React.FC = () => {
                 ) : (
                   <>
                     <h2 className="text-xl font-semibold text-gray-900">
-                      {user?.username || 'Set your username'}
+                      {user?.first_name && user?.last_name 
+                        ? `${user.first_name} ${user.last_name}` 
+                        : user?.username || 'Set your name'
+                      }
                     </h2>
+                    {user?.username && (
+                      <p className="text-gray-600">@{user.username}</p>
+                    )}
                     <p className="text-gray-600">{user?.email}</p>
                     <p className="text-sm text-gray-500">Conflict Resolution Specialist</p>
                   </>

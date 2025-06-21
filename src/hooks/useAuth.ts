@@ -7,6 +7,8 @@ interface AuthUser {
   id: string;
   email: string;
   username?: string;
+  first_name?: string;
+  last_name?: string;
   avatar_url?: string;
 }
 
@@ -46,6 +48,8 @@ export const useAuth = () => {
       id: authUser.id,
       email: authUser.email || '',
       username: profile?.username,
+      first_name: profile?.first_name,
+      last_name: profile?.last_name,
       avatar_url: profile?.avatar_url,
     });
   };
@@ -92,9 +96,37 @@ export const useAuth = () => {
     return { error };
   };
 
-  const signUp = async (email: string, password: string) => {
+  const signUp = async (
+    email: string, 
+    password: string, 
+    firstName?: string, 
+    lastName?: string, 
+    username?: string
+  ) => {
     const { data, error } = await auth.signUp(email, password);
-    if (data.user) {
+    
+    if (data.user && !error) {
+      // Update the profile with additional information
+      if (firstName || lastName || username) {
+        try {
+          const { error: profileError } = await supabase
+            .from('profiles')
+            .update({
+              first_name: firstName?.trim() || null,
+              last_name: lastName?.trim() || null,
+              username: username?.trim() || null,
+            })
+            .eq('id', data.user.id);
+
+          if (profileError) {
+            console.error('Error updating profile:', profileError);
+            // Don't fail the signup if profile update fails
+          }
+        } catch (profileError) {
+          console.error('Error updating profile:', profileError);
+        }
+      }
+      
       await setUserWithProfile(data.user);
     }
     return { error };
@@ -108,7 +140,12 @@ export const useAuth = () => {
     return { error };
   };
 
-  const updateProfile = async (updates: { username?: string; avatar_url?: string }) => {
+  const updateProfile = async (updates: { 
+    username?: string; 
+    first_name?: string; 
+    last_name?: string; 
+    avatar_url?: string 
+  }) => {
     if (!user?.id) return { error: new Error('No user logged in') };
 
     try {

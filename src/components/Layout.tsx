@@ -41,7 +41,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             
             <div className="flex items-center space-x-4">
               <span className="text-sm text-gray-600">
-                Hey, {user?.username || user?.email}
+                Hey, {user?.first_name || user?.username || user?.email}
               </span>
               <button
                 onClick={handleSignOut}
