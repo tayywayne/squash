@@ -405,6 +405,84 @@ const ConflictPage: React.FC = () => {
               </div>
             </div>
           )}
+
+          {/* Always show current voting status */}
+          <div className="bg-white p-6 rounded-lg border border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Current Voting Status</h3>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div>
+                  <p className="font-medium text-gray-900">
+                    {isUser1 ? 'Your vote' : 'User 1'}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    {conflict.user1_satisfaction === null 
+                      ? 'Pending vote on current resolution' 
+                      : conflict.user1_satisfaction 
+                        ? 'Satisfied with resolution' 
+                        : 'Needs more work'
+                    }
+                  </p>
+                </div>
+                <div className="text-2xl">
+                  {conflict.user1_satisfaction === null 
+                    ? '⏳' 
+                    : conflict.user1_satisfaction 
+                      ? '✅' 
+                      : '❌'
+                  }
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div>
+                  <p className="font-medium text-gray-900">
+                    {isUser2 ? 'Your vote' : 'User 2'}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    {conflict.user2_satisfaction === null 
+                      ? 'Pending vote on current resolution' 
+                      : conflict.user2_satisfaction 
+                        ? 'Satisfied with resolution' 
+                        : 'Needs more work'
+                    }
+                  </p>
+                </div>
+                <div className="text-2xl">
+                  {conflict.user2_satisfaction === null 
+                    ? '⏳' 
+                    : conflict.user2_satisfaction 
+                      ? '✅' 
+                      : '❌'
+                  }
+                </div>
+              </div>
+
+              {conflict.status === 'resolved' && (
+                <div className="mt-4 p-4 bg-green-50 rounded-lg border border-green-200">
+                  <div className="flex items-center space-x-2 mb-2">
+                    <div className="text-2xl">🎉</div>
+                    <h4 className="font-semibold text-green-900">Conflict Successfully Resolved!</h4>
+                  </div>
+                  <p className="text-sm text-green-700">
+                    Both parties have voted and are satisfied with the resolution.
+                  </p>
+                </div>
+              )}
+
+              {conflict.status === 'active' && conflict.user1_satisfaction !== null && conflict.user2_satisfaction !== null && (
+                <div className="mt-4 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                  <div className="flex items-center space-x-2 mb-2">
+                    <div className="text-2xl">🔄</div>
+                    <h4 className="font-semibold text-yellow-900">Waiting for Both Parties</h4>
+                  </div>
+                  <p className="text-sm text-yellow-700">
+                    Both parties need to be satisfied for the conflict to be marked as resolved.
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       )}
     </div>
