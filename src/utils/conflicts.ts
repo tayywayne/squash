@@ -53,6 +53,7 @@ export const conflictService = {
         .single();
 
       if (error) {
+        console.error('Supabase error details:', error);
         throw error;
       }
 
