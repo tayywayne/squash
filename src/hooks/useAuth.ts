@@ -19,14 +19,17 @@ export const useAuth = () => {
   const fetchUserProfile = async (userId: string): Promise<Profile | null> => {
     console.log('🔍 fetchUserProfile: Starting profile fetch for userId:', userId);
     try {
+      console.log('🔍 fetchUserProfile: Executing Supabase query for profile...');
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', userId)
         .maybeSingle();
+      console.log('🔍 fetchUserProfile: Supabase query completed.');
 
       if (error) {
         console.error('❌ fetchUserProfile: Supabase error:', error);
+        console.error('❌ fetchUserProfile: Full error details:', JSON.stringify(error, null, 2));
         console.error('Error fetching profile:', error);
         return null;
       }
@@ -35,6 +38,8 @@ export const useAuth = () => {
       return data;
     } catch (error) {
       console.error('❌ fetchUserProfile: Unexpected error:', error);
+      console.error('❌ fetchUserProfile: Error type:', typeof error);
+      console.error('❌ fetchUserProfile: Error stack:', error instanceof Error ? error.stack : 'No stack trace');
       console.error('Error fetching profile:', error);
       return null;
     }
