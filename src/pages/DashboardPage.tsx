@@ -35,6 +35,27 @@ const DashboardPage: React.FC = () => {
   const activeConflicts = conflicts.filter(c => c.status === 'pending' || c.status === 'active');
   const resolvedConflicts = conflicts.filter(c => c.status === 'resolved');
 
+  // Calculate unique connected accounts
+  const uniqueConnectedAccounts = React.useMemo(() => {
+    const uniqueConnections = new Set<string>();
+    
+    conflicts.forEach(conflict => {
+      if (user?.id === conflict.user1_id) {
+        // Current user is user1, so add user2's identifier
+        if (conflict.user2_id) {
+          uniqueConnections.add(conflict.user2_id);
+        } else {
+          uniqueConnections.add(conflict.user2_email);
+        }
+      } else {
+        // Current user is user2, so add user1's identifier
+        uniqueConnections.add(conflict.user1_id);
+      }
+    });
+    
+    return uniqueConnections.size;
+  }, [conflicts, user?.id]);
+
   const formatTimeAgo = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
@@ -118,7 +139,7 @@ const DashboardPage: React.FC = () => {
           <div className="flex items-center">
             <Users className="h-8 w-8 text-lavender-500" />
             <div className="ml-4">
-              <p className="text-2xl font-bold text-gray-900">{conflicts.length}</p>
+              <p className="text-2xl font-bold text-gray-900">{uniqueConnectedAccounts}</p>
               <p className="text-gray-600">People Tolerate You</p>
             </div>
           </div>
