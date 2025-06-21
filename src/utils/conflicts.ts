@@ -182,11 +182,12 @@ export const conflictService = {
         updateData.status = 'resolved';
         updateData.resolved_at = new Date().toISOString();
       } else if (!satisfaction || (otherUserSatisfied === false)) {
-        // Conflict is unresolved - trigger rehash if we have the necessary data
+        // Conflict is unresolved - trigger rehash if we have the necessary data and haven't already rehashed
         if (conflict.user1_translated_message && 
             conflict.user2_translated_message && 
             conflict.ai_summary && 
-            conflict.ai_suggestion) {
+            conflict.ai_suggestion &&
+            !conflict.ai_rehash_summary) { // Only rehash if we haven't already
           
           try {
             console.log('Triggering AI rehash for unresolved conflict...');
@@ -202,11 +203,18 @@ export const conflictService = {
             updateData.rehash_attempted_at = new Date().toISOString();
             updateData.status = 'active'; // Set back to active for further mediation
             
+            // Reset satisfaction votes so both users can vote on the rehashed content
+            updateData.user1_satisfaction = null;
+            updateData.user2_satisfaction = null;
+            
             console.log('AI rehash completed successfully');
           } catch (error) {
             console.error('Error during AI rehash:', error);
             // Continue with the satisfaction update even if rehash fails
           }
+        } else if (conflict.ai_rehash_summary) {
+          // If we already have rehashed content, just keep the conflict active
+          updateData.status = 'active';
         }
       }
 
