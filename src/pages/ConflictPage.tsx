@@ -430,27 +430,6 @@ const ConflictPage: React.FC = () => {
               </p>
             </div>
             
-            {/* Show what each person most wants understood */}
-            <div className="space-y-3 mb-6">
-              <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                <h4 className="font-medium text-blue-900 mb-2">
-                  {isUser1 ? 'What you most want understood:' : 'What they most want understood:'}
-                </h4>
-                <p className="text-sm text-blue-800 italic">
-                  "{conflict.user1_core_issue}"
-                </p>
-              </div>
-              
-              <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                <h4 className="font-medium text-green-900 mb-2">
-                  {isUser2 ? 'What you most want understood:' : 'What they most want understood:'}
-                </h4>
-                <p className="text-sm text-green-800 italic">
-                  "{conflict.user2_core_issue}"
-                </p>
-              </div>
-            </div>
-            
             <div className="space-y-4">
               <div className="bg-gray-50 p-4 rounded-lg">
                 <h3 className="font-medium text-gray-900 mb-2">Final Reflection:</h3>
