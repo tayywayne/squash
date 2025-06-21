@@ -1,5 +1,5 @@
 // OpenAI integration for conflict resolution
-const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY || '';
+const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
 const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';
 
 interface OpenAIResponse {
@@ -13,7 +13,8 @@ interface OpenAIResponse {
 const makeOpenAIRequest = async (messages: any[]): Promise<string> => {
   // If no API key is available, throw an error to trigger fallback
   if (!OPENAI_API_KEY) {
-    throw new Error('No OpenAI API key available');
+    console.warn('No OpenAI API key available, using fallback');
+    throw new Error('NO_API_KEY');
   }
 
   try {
@@ -32,8 +33,13 @@ const makeOpenAIRequest = async (messages: any[]): Promise<string> => {
     });
 
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error('OpenAI API response:', response.status, errorText);
       if (response.status === 429) {
         throw new Error('RATE_LIMIT_EXCEEDED');
+      }
+      if (response.status === 401) {
+        throw new Error('INVALID_API_KEY');
       }
       throw new Error(`OpenAI API error: ${response.status}`);
     }
@@ -41,11 +47,7 @@ const makeOpenAIRequest = async (messages: any[]): Promise<string> => {
     const data: OpenAIResponse = await response.json();
     return data.choices[0]?.message?.content || '';
   } catch (error) {
-    if (error instanceof Error && error.message === 'RATE_LIMIT_EXCEEDED') {
-      console.warn('OpenAI rate limit exceeded, using fallback');
-    } else {
-      console.error('OpenAI API error:', error);
-    }
+    console.error('OpenAI API error:', error);
     throw error;
   }
 };
@@ -53,6 +55,7 @@ const makeOpenAIRequest = async (messages: any[]): Promise<string> => {
 export const openAI = {
   translateMessage: async (rawMessage: string, mood: string): Promise<string> => {
     try {
+      console.log('Attempting to translate message with OpenAI...');
       const messages = [
         {
           role: 'system',
@@ -75,13 +78,43 @@ Return only the translated message, nothing else.`
         }
       ];
 
-      return await makeOpenAIRequest(messages);
+      const result = await makeOpenAIRequest(messages);
+      console.log('OpenAI translation successful');
+      return result;
     } catch (error) {
-      console.warn('OpenAI API failed, using fallback translation');
-      // Fallback: return a cleaned up version of the message
-      return rawMessage.replace(/\b(stupid|dumb|idiot|hate)\b/gi, '[frustrated]')
-                      .replace(/you always|you never/gi, 'sometimes')
-                      .trim();
+      console.warn('OpenAI API failed, using enhanced fallback translation:', error);
+      
+      // Enhanced fallback: create a more thoughtful version manually
+      let translatedMessage = rawMessage;
+      
+      // Replace harsh language with softer alternatives
+      translatedMessage = translatedMessage
+        .replace(/\b(stupid|dumb|idiot|moron)\b/gi, 'frustrating')
+        .replace(/\b(hate|despise)\b/gi, 'really dislike')
+        .replace(/\b(you always|you never)\b/gi, 'it seems like you often')
+        .replace(/\b(you're wrong|you're stupid)\b/gi, 'I see this differently')
+        .replace(/\b(shut up|whatever)\b/gi, 'I need some space to think')
+        .replace(/\b(don't care|couldn't care less)\b/gi, 'find it hard to prioritize')
+        .replace(/\b(your fault|you did this)\b/gi, 'this situation happened when')
+        .replace(/\b(you make me|you caused)\b/gi, 'I felt')
+        .replace(/\b(selfish|inconsiderate)\b/gi, 'focused on your own needs')
+        .replace(/\b(lazy|useless)\b/gi, 'not as engaged as I hoped');
+      
+      // Add "I feel" statements where appropriate
+      if (!translatedMessage.toLowerCase().includes('i feel') && !translatedMessage.toLowerCase().includes('i felt')) {
+        if (mood === 'rage' || mood === 'annoyed') {
+          translatedMessage = `I feel really frustrated about this situation. ${translatedMessage}`;
+        } else if (mood === 'meh') {
+          translatedMessage = `I feel confused about this situation. ${translatedMessage}`;
+        }
+      }
+      
+      // Ensure it's different from the original to show translation occurred
+      if (translatedMessage === rawMessage) {
+        translatedMessage = `I want to share how this situation affected me: ${rawMessage}`;
+      }
+      
+      return translatedMessage.trim();
     }
   },
 
