@@ -25,6 +25,13 @@ export const useAuth = () => {
         .select('*')
         .eq('id', userId)
         .maybeSingle();
+      
+      // Log the raw Supabase response
+      console.log('🔍 fetchUserProfile: Raw Supabase response:');
+      console.log('  - data:', data);
+      console.log('  - error:', error);
+      console.log('  - data type:', typeof data);
+      console.log('  - error type:', typeof error);
       console.log('🔍 fetchUserProfile: Supabase query completed.');
 
       if (error) {
