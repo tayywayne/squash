@@ -194,7 +194,7 @@ const NewConflictPage: React.FC = () => {
             />
             <div className="flex justify-between items-center mt-2">
               <p className="text-xs text-gray-500">
-                Be honest but fair. Remember, they'll see this too.
+                They wont see anything you write, so have at it.
               </p>
               <span className="text-xs text-gray-500">
                 {formData.description.length}/1000
