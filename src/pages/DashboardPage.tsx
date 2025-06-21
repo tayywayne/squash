@@ -17,10 +17,10 @@ const DashboardPage: React.FC = () => {
   // Load user conflicts
   React.useEffect(() => {
     const loadConflicts = async () => {
-      if (!user?.id) return;
+      if (!user?.id || !user?.email) return;
       
       try {
-        const userConflicts = await conflictService.getUserConflicts(user.id);
+        const userConflicts = await conflictService.getUserConflicts(user.id, user.email);
         setConflicts(userConflicts);
       } catch (error) {
         console.error('Error loading conflicts:', error);
@@ -30,7 +30,7 @@ const DashboardPage: React.FC = () => {
     };
 
     loadConflicts();
-  }, [user?.id]);
+  }, [user?.id, user?.email]);
 
   const activeConflicts = conflicts.filter(c => c.status === 'pending' || c.status === 'active');
   const resolvedConflicts = conflicts.filter(c => c.status === 'resolved');

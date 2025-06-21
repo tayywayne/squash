@@ -86,12 +86,12 @@ export const conflictService = {
     }
   },
 
-  getUserConflicts: async (userId: string): Promise<Conflict[]> => {
+  getUserConflicts: async (userId: string, userEmail: string): Promise<Conflict[]> => {
     try {
       const { data, error } = await supabase
         .from('conflicts')
         .select('*')
-        .or(`user1_id.eq.${userId},user2_id.eq.${userId}`)
+        .or(`user1_id.eq.${userId},user2_id.eq.${userId},user2_email.eq.${userEmail}`)
         .order('created_at', { ascending: false });
 
       if (error) {
