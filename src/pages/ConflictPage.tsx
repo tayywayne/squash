@@ -297,18 +297,33 @@ const ConflictPage: React.FC = () => {
         <div className="space-y-6">
           <div className="bg-white p-6 rounded-lg border border-gray-200">
             <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-              🤖 AI Mediator's Take
+              {conflict.ai_rehash_summary && conflict.ai_rehash_suggestion 
+                ? '🤖 AI Mediator\'s Rehash' 
+                : '🤖 AI Mediator\'s Take'
+              }
             </h2>
+            
+            {conflict.ai_rehash_summary && conflict.ai_rehash_suggestion && (
+              <div className="mb-4 p-3 bg-orange-50 border border-orange-200 rounded-lg">
+                <p className="text-sm text-orange-800">
+                  <strong>Fresh perspective:</strong> Since the first resolution didn't fully work, here's a new approach to help move things forward.
+                </p>
+              </div>
+            )}
             
             <div className="space-y-4">
               <div className="bg-gray-50 p-4 rounded-lg">
                 <h3 className="font-medium text-gray-900 mb-2">What I'm Hearing:</h3>
-                <p className="text-gray-700">{conflict.ai_summary}</p>
+                <p className="text-gray-700">
+                  {conflict.ai_rehash_summary || conflict.ai_summary}
+                </p>
               </div>
               
               <div className="bg-teal-50 p-4 rounded-lg">
                 <h3 className="font-medium text-teal-900 mb-2">Suggested Next Steps:</h3>
-                <p className="text-teal-800">{conflict.ai_suggestion}</p>
+                <p className="text-teal-800">
+                  {conflict.ai_rehash_suggestion || conflict.ai_suggestion}
+                </p>
               </div>
             </div>
           </div>
