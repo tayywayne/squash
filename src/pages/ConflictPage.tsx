@@ -55,7 +55,7 @@ const ConflictPage: React.FC = () => {
       return canRespond ? 'input' : 'waiting';
     }
     
-    if (conflict.status === 'active' && conflict.ai_summary && conflict.ai_suggestion) {
+    if ((conflict.status === 'active' || conflict.status === 'resolved') && conflict.ai_summary && conflict.ai_suggestion) {
       return 'reactions';
     }
     
