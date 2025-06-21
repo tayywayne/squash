@@ -36,7 +36,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-2">
               <div className="text-2xl">🥊</div>
-              <h1 className="text-xl font-bold text-gray-900">Squash'n'Go</h1>
+              <h1 className="text-xl font-bold text-gray-900">Squashie</h1>
             </div>
             
             <div className="flex items-center space-x-4">
