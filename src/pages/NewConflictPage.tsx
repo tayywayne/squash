@@ -66,8 +66,9 @@ const NewConflictPage: React.FC = () => {
       
     } catch (error) {
       console.error('Error creating conflict:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
       setToast({ 
-        message: 'Failed to create conflict. Check your connection and try again?', 
+        message: `Failed to create conflict: ${errorMessage}. Check your connection and try again?`, 
         type: 'error' 
       });
     } finally {
