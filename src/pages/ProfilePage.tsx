@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { User, Bell, Trash2, Download, Shield, Edit3, Save, X, Camera } from 'lucide-react';
+import { User, Bell, Trash2, Download, Shield, Edit3, Save, X, Camera, Upload, AlertCircle } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { conflictService, Conflict } from '../utils/conflicts';
+import { storageService } from '../utils/storage';
 import Toast from '../components/Toast';
 
 const ProfilePage: React.FC = () => {
@@ -11,8 +12,10 @@ const ProfilePage: React.FC = () => {
   const [editForm, setEditForm] = useState({
     first_name: user?.first_name || '',
     last_name: user?.last_name || '',
-    avatar_url: user?.avatar_url || '',
   });
+  const [selectedAvatarFile, setSelectedAvatarFile] = useState<File | null>(null);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [loading, setLoading] = useState(false);
   const [conflicts, setConflicts] = useState<Conflict[]>([]);
   const [statsLoading, setStatsLoading] = useState(true);
@@ -29,8 +32,9 @@ const ProfilePage: React.FC = () => {
       setEditForm({
         first_name: user.first_name || '',
         last_name: user.last_name || '',
-        avatar_url: user.avatar_url || '',
       });
+      setSelectedAvatarFile(null);
+      setAvatarPreview(null);
     }
   }, [isEditing, user]);
 
@@ -64,19 +68,67 @@ const ProfilePage: React.FC = () => {
       setEditForm({
         first_name: user?.first_name || '',
         last_name: user?.last_name || '',
-        avatar_url: user?.avatar_url || '',
       });
+      setSelectedAvatarFile(null);
+      setAvatarPreview(null);
     }
     setIsEditing(!isEditing);
+  };
+
+  const handleAvatarFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedAvatarFile(file);
+      
+      // Create preview URL
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setAvatarPreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setSelectedAvatarFile(null);
+      setAvatarPreview(null);
+    }
   };
 
   const handleSaveProfile = async () => {
     setLoading(true);
     try {
+      let avatarUrl = user?.avatar_url;
+      
+      // Handle avatar upload if a new file was selected
+      if (selectedAvatarFile && user?.id) {
+        setUploadingAvatar(true);
+        
+        // Delete old avatar if it exists and is from our storage
+        if (user.avatar_url && user.avatar_url.includes('supabase')) {
+          try {
+            await storageService.deleteUserAvatar(user.avatar_url);
+          } catch (error) {
+            console.warn('Failed to delete old avatar:', error);
+            // Continue with upload even if deletion fails
+          }
+        }
+        
+        // Upload new avatar
+        const uploadResult = await storageService.uploadUserAvatar(selectedAvatarFile, user.id);
+        
+        if (uploadResult.error) {
+          setToast({ message: uploadResult.error, type: 'error' });
+          setUploadingAvatar(false);
+          setLoading(false);
+          return;
+        }
+        
+        avatarUrl = uploadResult.url;
+        setUploadingAvatar(false);
+      }
+      
       const { error } = await updateProfile({
         first_name: editForm.first_name.trim() || undefined,
         last_name: editForm.last_name.trim() || undefined,
-        avatar_url: editForm.avatar_url.trim() || undefined,
+        avatar_url: avatarUrl || undefined,
       });
 
       if (error) {
@@ -84,11 +136,14 @@ const ProfilePage: React.FC = () => {
       } else {
         setToast({ message: 'Profile updated successfully!', type: 'success' });
         setIsEditing(false);
+        setSelectedAvatarFile(null);
+        setAvatarPreview(null);
       }
     } catch (error) {
       setToast({ message: 'Something went wrong. Please try again.', type: 'error' });
     } finally {
       setLoading(false);
+      setUploadingAvatar(false);
     }
   };
 
@@ -135,7 +190,13 @@ const ProfilePage: React.FC = () => {
           <div className="flex items-start justify-between mb-6">
             <div className="flex items-center space-x-4">
               <div className="relative">
-                {user?.avatar_url ? (
+                {avatarPreview ? (
+                  <img
+                    src={avatarPreview}
+                    alt="Avatar preview"
+                    className="w-16 h-16 rounded-full object-cover border-2 border-coral-300"
+                  />
+                ) : user?.avatar_url ? (
                   <img
                     src={user.avatar_url}
                     alt="Profile"
@@ -146,9 +207,9 @@ const ProfilePage: React.FC = () => {
                     <User size={32} className="text-coral-600" />
                   </div>
                 )}
-                {isEditing && (
+                {uploadingAvatar && (
                   <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center">
-                    <Camera size={20} className="text-white" />
+                    <div className="animate-spin rounded-full h-6 w-6 border-2 border-white border-t-transparent"></div>
                   </div>
                 )}
               </div>
@@ -179,13 +240,40 @@ const ProfilePage: React.FC = () => {
                         Username cannot be changed after account creation
                       </p>
                     </div>
-                    <input
-                      type="url"
-                      value={editForm.avatar_url}
-                      onChange={(e) => setEditForm(prev => ({ ...prev, avatar_url: e.target.value }))}
-                      placeholder="Avatar URL (optional)"
-                      className="text-sm text-gray-600 bg-transparent border-b border-gray-300 focus:border-coral-500 outline-none w-full"
-                    />
+                    
+                    {/* Avatar Upload Section */}
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Profile Photo
+                      </label>
+                      <div className="flex items-center space-x-3">
+                        <label className="cursor-pointer bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center space-x-2">
+                          <Upload size={16} />
+                          <span>Choose Photo</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleAvatarFileChange}
+                            className="hidden"
+                            disabled={uploadingAvatar}
+                          />
+                        </label>
+                        {selectedAvatarFile && (
+                          <span className="text-sm text-gray-600">
+                            {selectedAvatarFile.name}
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-xs text-gray-500">
+                        JPG, PNG, or GIF. Max 5MB.
+                      </p>
+                      {selectedAvatarFile && (
+                        <div className="flex items-center space-x-2 text-sm text-green-600">
+                          <AlertCircle size={16} />
+                          <span>New photo ready to upload</span>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 ) : (
                   <>
@@ -210,18 +298,19 @@ const ProfilePage: React.FC = () => {
                 <>
                   <button
                     onClick={handleSaveProfile}
-                    disabled={loading}
+                    disabled={loading || uploadingAvatar}
                     className="flex items-center space-x-1 bg-coral-500 hover:bg-coral-600 text-white px-3 py-2 rounded-lg transition-colors disabled:opacity-50"
                   >
-                    {loading ? (
+                    {loading || uploadingAvatar ? (
                       <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
                     ) : (
                       <Save size={16} />
                     )}
-                    <span>Save</span>
+                    <span>{uploadingAvatar ? 'Uploading...' : loading ? 'Saving...' : 'Save'}</span>
                   </button>
                   <button
                     onClick={handleEditToggle}
+                    disabled={loading || uploadingAvatar}
                     className="flex items-center space-x-1 bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-2 rounded-lg transition-colors"
                   >
                     <X size={16} />
