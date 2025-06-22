@@ -9,6 +9,7 @@ import NewConflictPage from './pages/NewConflictPage';
 import ConflictPage from './pages/ConflictPage';
 import ProfilePage from './pages/ProfilePage';
 import OtherUserProfilePage from './pages/OtherUserProfilePage';
+import LeaderboardPage from './pages/LeaderboardPage';
 
 function App() {
   const { user, loading } = useAuth();
@@ -47,6 +48,7 @@ function App() {
                     <Route path="/resolution/:resolutionId" element={<ConflictPage />} />
                     <Route path="/profile" element={<ProfilePage />} />
                     <Route path="/user-profile/:userId" element={<OtherUserProfilePage />} />
+                    <Route path="/leaderboard" element={<LeaderboardPage />} />
                     <Route path="/" element={<Navigate to="/dashboard" replace />} />
                   </Routes>
                 </Layout>

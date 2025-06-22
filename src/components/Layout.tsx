@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Home, MessageSquare, History, User, LogOut } from 'lucide-react';
+import { Home, MessageSquare, History, User, LogOut, Trophy } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 
 interface LayoutProps {
@@ -16,6 +16,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     { name: 'Dashboard', href: '/dashboard', icon: Home, emoji: '🏠' },
     { name: 'Conflicts', href: '/conflicts', icon: MessageSquare, emoji: '💬' },
     { name: 'History', href: '/history', icon: History, emoji: '📚' },
+    { name: 'Leaderboard', href: '/leaderboard', icon: Trophy, emoji: '🏆' },
     { name: 'Profile', href: '/profile', icon: User, emoji: '👤' },
   ];
 
