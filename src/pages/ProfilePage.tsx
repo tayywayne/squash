@@ -267,7 +267,8 @@ const ProfilePage: React.FC = () => {
           )}
         </div>
 
-        {/* Notification Settings */}
+        {/* Notification Settings - Hidden until functionality is implemented */}
+        {/* 
         <div className="bg-white p-6 rounded-lg border border-gray-200">
           <div className="flex items-center space-x-2 mb-4">
             <Bell className="h-5 w-5 text-gray-600" />
@@ -333,8 +334,10 @@ const ProfilePage: React.FC = () => {
             </div>
           </div>
         </div>
+        */}
 
-        {/* Privacy & Data */}
+        {/* Privacy & Data - Hidden until functionality is implemented */}
+        {/* 
         <div className="bg-white p-6 rounded-lg border border-gray-200">
           <div className="flex items-center space-x-2 mb-4">
             <Shield className="h-5 w-5 text-gray-600" />
@@ -375,6 +378,7 @@ const ProfilePage: React.FC = () => {
             </div>
           </div>
         </div>
+        */}
 
         {/* Tips & Philosophy */}
         <div className="bg-gradient-to-r from-coral-50 to-teal-50 p-6 rounded-lg border border-gray-200">
