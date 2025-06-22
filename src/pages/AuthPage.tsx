@@ -113,9 +113,9 @@ const LoginPage: React.FC = () => {
         {/* Logo & Welcome */}
         <div className="text-center mb-8">
           <div className="text-6xl mb-4">🥊</div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Squash'n'Go</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Squashie</h1>
           <p className="text-gray-600 text-lg leading-relaxed">
-            Welcome to Squash'n'Go – because not everyone can afford a therapist.
+            Welcome to Squashie – because not everyone can afford a therapist.
           </p>
           <p className="text-sm text-gray-500 mt-2">
             Settle your beef with AI-powered mediation. It's like couples therapy, but sassier.
