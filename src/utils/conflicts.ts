@@ -303,5 +303,41 @@ export const conflictService = {
       console.error('Error submitting core issue:', error);
       throw error;
     }
+  },
+
+  getGlobalConflictStats: async (): Promise<{ totalConflicts: number; resolvedConflicts: number; resolutionRate: number }> => {
+    try {
+      // Get total conflicts count
+      const { count: totalCount, error: totalError } = await supabase
+        .from('conflicts')
+        .select('*', { count: 'exact', head: true });
+
+      if (totalError) {
+        throw totalError;
+      }
+
+      // Get resolved conflicts count
+      const { count: resolvedCount, error: resolvedError } = await supabase
+        .from('conflicts')
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'resolved');
+
+      if (resolvedError) {
+        throw resolvedError;
+      }
+
+      const totalConflicts = totalCount || 0;
+      const resolvedConflicts = resolvedCount || 0;
+      const resolutionRate = totalConflicts > 0 ? Math.round((resolvedConflicts / totalConflicts) * 100) : 0;
+
+      return {
+        totalConflicts,
+        resolvedConflicts,
+        resolutionRate
+      };
+    } catch (error) {
+      console.error('Error fetching global conflict stats:', error);
+      throw error;
+    }
   }
 };

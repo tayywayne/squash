@@ -2,7 +2,8 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './hooks/useAuth';
 import Layout from './components/Layout';
-import LoginPage from './pages/LoginPage';
+import AuthPage from './pages/AuthPage';
+import HomePage from './pages/HomePage';
 import DashboardPage from './pages/DashboardPage';
 import NewConflictPage from './pages/NewConflictPage';
 import ConflictPage from './pages/ConflictPage';
@@ -25,31 +26,39 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route 
-          path="/login" 
-          element={user ? <Navigate to="/dashboard" replace /> : <LoginPage />} 
-        />
-        <Route
-          path="/*"
-          element={
-            user ? (
-              <Layout>
-                <Routes>
-                  <Route path="/dashboard" element={<DashboardPage />} />
-                  <Route path="/new-conflict" element={<NewConflictPage />} />
-                  <Route path="/conflicts" element={<DashboardPage />} />
-                  <Route path="/history" element={<DashboardPage />} />
-                  <Route path="/conflict/:conflictId" element={<ConflictPage />} />
-                  <Route path="/resolution/:resolutionId" element={<ConflictPage />} />
-                  <Route path="/profile" element={<ProfilePage />} />
-                  <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                </Routes>
-              </Layout>
-            ) : (
-              <Navigate to="/login" replace />
-            )
-          }
-        />
+        {user ? (
+          // Authenticated routes
+          <>
+            <Route 
+              path="/login" 
+              element={<Navigate to="/dashboard" replace />} 
+            />
+            <Route
+              path="/*"
+              element={
+                <Layout>
+                  <Routes>
+                    <Route path="/dashboard" element={<DashboardPage />} />
+                    <Route path="/new-conflict" element={<NewConflictPage />} />
+                    <Route path="/conflicts" element={<DashboardPage />} />
+                    <Route path="/history" element={<DashboardPage />} />
+                    <Route path="/conflict/:conflictId" element={<ConflictPage />} />
+                    <Route path="/resolution/:resolutionId" element={<ConflictPage />} />
+                    <Route path="/profile" element={<ProfilePage />} />
+                    <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                  </Routes>
+                </Layout>
+              }
+            />
+          </>
+        ) : (
+          // Unauthenticated routes
+          <>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/login" element={<AuthPage />} />
+            <Route path="/*" element={<Navigate to="/" replace />} />
+          </>
+        )}
       </Routes>
     </Router>
   );
