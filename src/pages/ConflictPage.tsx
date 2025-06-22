@@ -3,14 +3,17 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Send, ThumbsUp, ThumbsDown, Heart, Laugh, Angry } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { conflictService, Conflict } from '../utils/conflicts';
+import { profileService } from '../utils/profiles';
 import MoodIndicator from '../components/MoodIndicator';
 import Toast from '../components/Toast';
+import { Profile } from '../types';
 
 const ConflictPage: React.FC = () => {
   const { conflictId } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
   const [conflict, setConflict] = useState<Conflict | null>(null);
+  const [otherUserProfile, setOtherUserProfile] = useState<Profile | null>(null);
   const [userMessage, setUserMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
@@ -33,6 +36,17 @@ const ConflictPage: React.FC = () => {
         }
 
         setConflict(conflictData);
+        
+        // Load other user's profile if available
+        const otherUserId = user?.id === conflictData.user1_id ? conflictData.user2_id : conflictData.user1_id;
+        if (otherUserId) {
+          try {
+            const profile = await profileService.getProfileById(otherUserId);
+            setOtherUserProfile(profile);
+          } catch (error) {
+            console.error('Error loading other user profile:', error);
+          }
+        }
       } catch (error) {
         console.error('Error loading conflict:', error);
         setToast({ message: 'Failed to load conflict', type: 'error' });
@@ -42,7 +56,7 @@ const ConflictPage: React.FC = () => {
     };
 
     loadConflict();
-  }, [conflictId, navigate]);
+  }, [conflictId, navigate, user?.id]);
 
   const isUser1 = user?.id === conflict?.user1_id;
   const isUser2 = user?.id === conflict?.user2_id;
@@ -86,6 +100,47 @@ const ConflictPage: React.FC = () => {
   const phase = getPhase();
 
   const [coreIssueMessage, setCoreIssueMessage] = useState('');
+
+  const getOtherUserDisplay = (conflict: Conflict) => {
+    if (user?.id === conflict.user1_id) {
+      // Current user is user1, so show user2's info
+      if (conflict.user2_id && otherUserProfile) {
+        const displayName = otherUserProfile.first_name && otherUserProfile.last_name 
+          ? `${otherUserProfile.first_name} ${otherUserProfile.last_name}`
+          : otherUserProfile.username || conflict.user2_email;
+        
+        return (
+          <button
+            onClick={() => navigate(`/user-profile/${conflict.user2_id}`)}
+            className="text-coral-500 hover:text-coral-600 font-medium underline"
+          >
+            {displayName}
+          </button>
+        );
+      } else {
+        // User2 hasn't registered yet, just show email
+        return <span className="text-gray-600">{conflict.user2_email}</span>;
+      }
+    } else {
+      // Current user is user2, so show user1's info
+      if (otherUserProfile) {
+        const displayName = otherUserProfile.first_name && otherUserProfile.last_name 
+          ? `${otherUserProfile.first_name} ${otherUserProfile.last_name}`
+          : otherUserProfile.username || 'User 1';
+        
+        return (
+          <button
+            onClick={() => navigate(`/user-profile/${conflict.user1_id}`)}
+            className="text-coral-500 hover:text-coral-600 font-medium underline"
+          >
+            {displayName}
+          </button>
+        );
+      } else {
+        return <span className="text-gray-600">You were invited</span>;
+      }
+    }
+  };
 
   const handleSubmitMessage = async () => {
     if (!userMessage.trim()) return;
@@ -198,7 +253,11 @@ const ConflictPage: React.FC = () => {
           {conflict.title}
         </h1>
         <p className="text-gray-600">
-          Conflict ID: #{conflictId?.slice(0, 8)} • Status: {conflict.status}
+          <span className="flex items-center space-x-2">
+            <span>vs. {getOtherUserDisplay(conflict)}</span>
+            <span>•</span>
+            <span>Status: {conflict.status}</span>
+          </span>
         </p>
       </div>
 
