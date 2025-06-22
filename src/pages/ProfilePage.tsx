@@ -23,6 +23,17 @@ const ProfilePage: React.FC = () => {
   });
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
 
+  // Initialize edit form when entering edit mode
+  React.useEffect(() => {
+    if (isEditing && user) {
+      setEditForm({
+        first_name: user.first_name || '',
+        last_name: user.last_name || '',
+        avatar_url: user.avatar_url || '',
+      });
+    }
+  }, [isEditing, user]);
+
   // Load user conflicts for statistics
   React.useEffect(() => {
     const loadConflictStats = async () => {
