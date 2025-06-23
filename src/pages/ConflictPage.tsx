@@ -609,7 +609,7 @@ const ConflictPage: React.FC = () => {
             <div className="text-4xl mb-3">🎬</div>
             <h3 className="text-xl font-bold text-white mb-2">Final Judgment Issued</h3>
             <p className="text-gray-300 text-sm">
-              The AI has issued its final, dramatic ruling. This conflict has been closed through the power of artificial sass and digital wisdom.
+              The AI has issued its final ruling. This conflict has been closed. 
             </p>
           </div>
         </div>
