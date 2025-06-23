@@ -241,14 +241,7 @@ const ProfilePage: React.FC = () => {
                   >
                     <X size={16} />
                     <span>Cancel</span>
-                  <div className="flex items-center space-x-2 text-sm text-gray-500">
-                    <span>Conflict Resolution Specialist</span>
-                    {user?.supporter_level && user?.supporter_emoji && (
-                      <span className="text-coral-500 font-medium">
-                        • Supporter {user.supporter_emoji}
-                      </span>
-                    )}
-                  </div>
+                  </button>
                 </>
               ) : (
                 <button
@@ -343,119 +336,6 @@ const ProfilePage: React.FC = () => {
             </p>
           </div>
         )}
-
-        {/* Notification Settings - Hidden until functionality is implemented */}
-        {/* 
-        <div className="bg-white p-6 rounded-lg border border-gray-200">
-          <div className="flex items-center space-x-2 mb-4">
-            <Bell className="h-5 w-5 text-gray-600" />
-            <h2 className="text-xl font-semibold text-gray-900">Notification Preferences</h2>
-          </div>
-          
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="font-medium text-gray-900">Conflict Updates</h3>
-                <p className="text-sm text-gray-600">Get notified when someone responds to your conflicts</p>
-              </div>
-              <button
-                onClick={() => handleNotificationChange('conflictUpdates')}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  notifications.conflictUpdates ? 'bg-coral-500' : 'bg-gray-300'
-                }`}
-              >
-                <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    notifications.conflictUpdates ? 'translate-x-6' : 'translate-x-1'
-                  }`}
-                />
-              </button>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="font-medium text-gray-900">Follow-up Reminders</h3>
-                <p className="text-sm text-gray-600">Gentle nudges to check in on resolved conflicts</p>
-              </div>
-              <button
-                onClick={() => handleNotificationChange('followUps')}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  notifications.followUps ? 'bg-coral-500' : 'bg-gray-300'
-                }`}
-              >
-                <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    notifications.followUps ? 'translate-x-6' : 'translate-x-1'
-                  }`}
-                />
-              </button>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="font-medium text-gray-900">Weekly Digest</h3>
-                <p className="text-sm text-gray-600">Summary of your conflict resolution journey</p>
-              </div>
-              <button
-                onClick={() => handleNotificationChange('weeklyDigest')}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  notifications.weeklyDigest ? 'bg-coral-500' : 'bg-gray-300'
-                }`}
-              >
-                <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    notifications.weeklyDigest ? 'translate-x-6' : 'translate-x-1'
-                  }`}
-                />
-              </button>
-            </div>
-          </div>
-        </div>
-        */}
-
-        {/* Privacy & Data - Hidden until functionality is implemented */}
-        {/* 
-        <div className="bg-white p-6 rounded-lg border border-gray-200">
-          <div className="flex items-center space-x-2 mb-4">
-            <Shield className="h-5 w-5 text-gray-600" />
-            <h2 className="text-xl font-semibold text-gray-900">Privacy & Data</h2>
-          </div>
-          
-          <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-              <div>
-                <h3 className="font-medium text-gray-900">Export Your Data</h3>
-                <p className="text-sm text-gray-600">Download all your conflicts and resolutions</p>
-              </div>
-              <button
-                onClick={handleExportData}
-                className="flex items-center space-x-2 text-teal-600 hover:text-teal-700 font-medium"
-              >
-                <Download size={18} />
-                <span>Export</span>
-              </button>
-            </div>
-
-            <div className="border border-red-200 rounded-lg p-4 bg-red-50">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="font-medium text-red-900">Danger Zone</h3>
-                  <p className="text-sm text-red-700">
-                    Delete your account and all associated data. This action cannot be undone.
-                  </p>
-                </div>
-                <button
-                  onClick={handleDeleteAccount}
-                  className="flex items-center space-x-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors"
-                >
-                  <Trash2 size={18} />
-                  <span>Delete Account</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-        */}
 
         {/* Tips & Philosophy */}
         <div className="bg-gradient-to-r from-coral-50 to-teal-50 p-6 rounded-lg border border-gray-200">
