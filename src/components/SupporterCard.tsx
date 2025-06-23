@@ -18,8 +18,8 @@ const SupporterCard: React.FC<SupporterCardProps> = ({
     tip_1: {
       title: 'Band-Aid Buyer',
       gradient: 'bg-gradient-to-r from-blue-400 to-blue-600',
-      borderColor: 'border-emerald-300',
-      textColor: 'text-emerald-800',
+      borderColor: 'border-blue-300',
+      textColor: 'text-blue-800',
       blurb: 'Thanks for patching up our server costs! 🩹'
     },
     tip_2: {
