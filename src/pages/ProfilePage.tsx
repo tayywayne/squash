@@ -69,7 +69,7 @@ const ProfilePage: React.FC = () => {
     if (!user?.supporter_level) return '';
     
     const gradients = {
-      tip_1: 'bg-gradient-to-r from-emerald-100 to-emerald-300',
+      tip_1: 'bg-gradient-to-r from-blue-400 to-blue-600',
       tip_2: 'bg-gradient-to-r from-pink-100 to-pink-400', 
       tip_3: 'bg-gradient-to-r from-yellow-100 to-red-400'
     };
