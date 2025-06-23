@@ -12,11 +12,11 @@ const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY') || '', {
   apiVersion: '2023-10-16',
 })
 
-// Price ID mapping
+// Updated Price ID mapping with your actual Stripe Price IDs
 const PRICE_IDS = {
-  'tip_1': 'price_1Rd2w8RAbTz5SOSfQKkSD12o', // $1 - Buy Us a Band-Aid
-  'tip_2': 'price_1Rd2vkRAbTz5SOSfBSxQbd7n', // $5 - I'm the Problem  
-  'tip_3': 'price_1Rd2xJRAbTz5SOSfMNpQr8Yz', // $10 - Chaos Patron
+  'tip_1': 'price_1Rd2vLRAbTz5SOSffp100yKC', // $1 - Buy Us a Band-Aid 🩹
+  'tip_2': 'price_1Rd2vkRAbTz5SOSfBSxQbd7n', // $5 - I'm the Problem 💅
+  'tip_3': 'price_1Rd2w8RAbTz5SOSfQKkSD12o', // $10 - Chaos Patron 🔥👑
 }
 
 serve(async (req) => {
@@ -61,6 +61,8 @@ serve(async (req) => {
       )
     }
 
+    console.log(`Creating checkout session for user ${user_id}, tip level ${tip_level}, price ID ${priceId}`)
+
     // Create Stripe checkout session
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
@@ -77,6 +79,8 @@ serve(async (req) => {
         tip_level: tip_level,
       },
     })
+
+    console.log(`Checkout session created successfully: ${session.id}`)
 
     return new Response(
       JSON.stringify({ url: session.url }),
