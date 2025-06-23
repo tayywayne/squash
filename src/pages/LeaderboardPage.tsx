@@ -250,9 +250,6 @@ const LeaderboardPage: React.FC = () => {
                                 fallback="Anonymous User"
                               />
                             </button>
-                            {user.username && (
-                              <p className="text-sm text-gray-500">@{user.username}</p>
-                            )}
                           </div>
                         </div>
                       </td>
