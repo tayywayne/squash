@@ -285,7 +285,7 @@ const AIJudgmentFeedPage: React.FC = () => {
                     </div>
                     <div className="bg-black/30 p-4 rounded-lg border border-yellow-400/50">
                       <p className="text-gray-100 whitespace-pre-wrap leading-relaxed">
-                        {ruling.ai_final_ruling}
+                        {ruling.final_ai_ruling}
                       </p>
                     </div>
                   </div>
