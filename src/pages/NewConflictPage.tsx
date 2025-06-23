@@ -237,7 +237,7 @@ const NewConflictPage: React.FC = () => {
             </li>
             <li className="flex items-start">
               <span className="w-2 h-2 bg-teal-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-              <span>Describe how their actions affected you, not what you think they intended</span>
+              <span>This is a safe space to rant. But if your entire message is just ‘K’ or ‘lol okay’, please try again.</span>
             </li>
             <li className="flex items-start">
               <span className="w-2 h-2 bg-teal-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
