@@ -697,8 +697,8 @@ const ConflictPage: React.FC = () => {
                         rel="noopener noreferrer"
                         className="text-coral-500 hover:text-coral-600 font-medium flex items-center space-x-1"
                       >
-                        <span>View on Public Shame Wall</span>
-                        <span>↗</span>
+                       {/*  <span>View on Public Shame Wall</span>
+                        <span>↗</span>*/}
                       </a>
                     </div>
                   </div>
