@@ -629,14 +629,6 @@ const ConflictPage: React.FC = () => {
           </div>
           
           
-          {/* Final Status */}
-          <div className="bg-gray-900 p-6 rounded-lg border border-gray-700 text-center">
-            <div className="text-4xl mb-3">🎬</div>
-            <h3 className="text-xl font-bold text-white mb-2">Final Judgment Issued</h3>
-            <p className="text-gray-300 text-sm">
-              The AI has issued its final ruling. This conflict has been closed. 
-            </p>
-          </div>
           
           {/* Public Voting Results for Final Judgment */}
           {hasFinalRuling && conflict.ai_final_summary && (
