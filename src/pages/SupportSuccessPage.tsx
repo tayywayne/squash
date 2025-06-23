@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, CheckCircle, Sparkles } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Sparkles, ExternalLink } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import Toast from '../components/Toast';
 
@@ -197,7 +197,7 @@ const SupportSuccessPage: React.FC = () => {
       {/* Confirmation Buttons */}
       <div className="space-y-4 mb-8">
         <h2 className="text-lg font-semibold text-gray-900 text-center mb-6">
-          I just tipped:
+          Select the tip you just completed:
         </h2>
         
         {supportTiers.map((tier) => (
@@ -232,12 +232,19 @@ const SupportSuccessPage: React.FC = () => {
       {/* Help Text */}
       <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
         <h3 className="font-medium text-yellow-900 mb-2">
-          💡 Can't find your tip amount?
+          💡 Payment completed automatically?
         </h3>
         <p className="text-sm text-yellow-800">
-          Make sure you completed the payment on Stripe first. If you're still having trouble, 
-          you can always go back and try again, or contact us for help.
+          If you used our new integrated checkout, your supporter status should update automatically! 
+          If it doesn't appear within a few minutes, you can manually confirm it above.
         </p>
+        <button
+          onClick={() => navigate('/support-us')}
+          className="mt-2 text-yellow-900 underline hover:text-yellow-700 text-sm flex items-center space-x-1"
+        >
+          <ExternalLink size={14} />
+          <span>Go back to make a tip</span>
+        </button>
       </div>
 
       {/* Footer */}

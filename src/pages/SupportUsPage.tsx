@@ -1,9 +1,15 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Heart, ExternalLink, Gift, Crown, Ban as Bandage } from 'lucide-react';
+import { useAuth } from '../hooks/useAuth';
+import { stripeService } from '../utils/stripe';
+import Toast from '../components/Toast';
 
 const SupportUsPage: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const [loading, setLoading] = React.useState<string | null>(null);
+  const [toast, setToast] = React.useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
 
   const supportTiers = [
     {
@@ -12,7 +18,6 @@ const SupportUsPage: React.FC = () => {
       emoji: '🩹',
       price: '$1',
       description: 'For when we helped patch up a tiny disagreement',
-      stripeUrl: 'https://buy.stripe.com/test_9B6aEZ51rdSBczi5IS77O02',
       icon: Bandage,
       color: 'from-blue-400 to-blue-600',
       bgColor: 'bg-blue-50',
@@ -24,7 +29,6 @@ const SupportUsPage: React.FC = () => {
       emoji: '💅',
       price: '$5',
       description: 'Admitting you were wrong? That takes courage (and cash)',
-      stripeUrl: 'https://buy.stripe.com/test_00w9AV8dD29Tara2wG77O01',
       icon: Heart,
       color: 'from-pink-400 to-pink-600',
       bgColor: 'bg-pink-50',
@@ -36,7 +40,6 @@ const SupportUsPage: React.FC = () => {
       emoji: '🔥👑',
       price: '$10',
       description: 'You create drama, we solve it. Fair trade.',
-      stripeUrl: 'https://buy.stripe.com/test_3cIeVfgK9bKt9n68V477O00',
       icon: Crown,
       color: 'from-orange-400 to-red-600',
       bgColor: 'bg-orange-50',
@@ -44,8 +47,46 @@ const SupportUsPage: React.FC = () => {
     }
   ];
 
+  const handleTipClick = async (tierId: string) => {
+    if (!user) {
+      setToast({ message: 'Please log in to support us', type: 'error' });
+      return;
+    }
+
+    setLoading(tierId);
+    
+    try {
+      const { url, error } = await stripeService.createCheckoutSession({
+        user_id: user.id,
+        tip_level: tierId as 'tip_1' | 'tip_2' | 'tip_3'
+      });
+
+      if (error) {
+        setToast({ message: error, type: 'error' });
+      } else if (url) {
+        // Redirect to Stripe checkout
+        window.location.href = url;
+      } else {
+        setToast({ message: 'Failed to create checkout session', type: 'error' });
+      }
+    } catch (error) {
+      console.error('Error creating checkout session:', error);
+      setToast({ message: 'Something went wrong. Please try again.', type: 'error' });
+    } finally {
+      setLoading(null);
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto p-6">
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
+
       {/* Header */}
       <div className="mb-8">
         <button
@@ -83,18 +124,44 @@ const SupportUsPage: React.FC = () => {
               </p>
             </div>
             
-            <a
-              href={tier.stripeUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`w-full bg-gradient-to-r ${tier.color} hover:opacity-90 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-300 flex items-center justify-center space-x-2 group`}
+            <button
+              onClick={() => handleTipClick(tier.id)}
+              disabled={loading === tier.id || !user}
+              className={`w-full bg-gradient-to-r ${tier.color} hover:opacity-90 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-300 flex items-center justify-center space-x-2 group disabled:opacity-50 disabled:cursor-not-allowed`}
             >
-              <span>{tier.emoji} {tier.name} – {tier.price}</span>
-              <ExternalLink size={16} className="group-hover:translate-x-1 transition-transform" />
-            </a>
+              {loading === tier.id ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                  <span>Creating checkout...</span>
+                </>
+              ) : (
+                <>
+                  <span>{tier.emoji} {tier.name} – {tier.price}</span>
+                  <ExternalLink size={16} className="group-hover:translate-x-1 transition-transform" />
+                </>
+              )}
+            </button>
           </div>
         ))}
       </div>
+
+      {/* Login Required Notice */}
+      {!user && (
+        <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200 mb-8">
+          <h3 className="font-medium text-yellow-900 mb-2">
+            🔒 Login Required
+          </h3>
+          <p className="text-sm text-yellow-800">
+            You need to be logged in to support us and get your supporter badge. 
+            <button 
+              onClick={() => navigate('/login')}
+              className="text-yellow-900 underline hover:text-yellow-700 ml-1"
+            >
+              Log in here
+            </button>
+          </p>
+        </div>
+      )}
 
       {/* How It Works */}
       <div className="bg-white p-6 rounded-lg border border-gray-200 mb-8">
