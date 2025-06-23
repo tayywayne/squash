@@ -193,10 +193,10 @@ const DashboardPage: React.FC = () => {
           Time to face the music. How's your conflict resolution game today?
         </p>
         
-        {/* Mood Selector */}
+        {/* Mood Selector 
         <div className="mt-4 p-4 bg-white rounded-lg border border-gray-200">
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Current Mood Check-in:s
+            Current Mood Check-in:
           </label>
           <MoodIndicator 
             mood={currentMood} 
@@ -205,7 +205,7 @@ const DashboardPage: React.FC = () => {
           />
         </div>
       </div>
-
+*/}
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         <div className="bg-white p-6 rounded-lg border border-gray-200">
