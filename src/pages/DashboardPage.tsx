@@ -204,7 +204,7 @@ const DashboardPage: React.FC = () => {
             onMoodChange={setCurrentMood}
           />
         </div>
-      </div>*/}
+      </div> */}
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
