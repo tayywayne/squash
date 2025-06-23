@@ -655,8 +655,9 @@ const ConflictPage: React.FC = () => {
             {/* Show current user's vote status and waiting state */}
             {!isResolved && (
               <>
-                {/* Check if current user has already voted */}
-                {((isUser1 && conflict.user1_satisfaction !== null) || (isUser2 && conflict.user2_satisfaction !== null)) ? (
+                {/* Check if current user has already voted AND other user hasn't voted yet */}
+                {((isUser1 && conflict.user1_satisfaction !== null && conflict.user2_satisfaction === null) || 
+                  (isUser2 && conflict.user2_satisfaction !== null && conflict.user1_satisfaction === null)) ? (
                   <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 mb-4">
                     <div className="flex items-center space-x-2 mb-2">
                       <div className="text-2xl">⏳</div>
@@ -669,7 +670,7 @@ const ConflictPage: React.FC = () => {
                       <p>Your vote: <strong>{(isUser1 ? conflict.user1_satisfaction : conflict.user2_satisfaction) ? 'This helps - Mark Resolved' : 'Still not quite right'}</strong></p>
                     </div>
                   </div>
-                ) : (
+                ) : ((isUser1 && conflict.user1_satisfaction === null) || (isUser2 && conflict.user2_satisfaction === null)) ? (
                   /* Show voting buttons if current user hasn't voted yet */
                   <div className="flex space-x-4 mb-4">
                     <button 
@@ -687,6 +688,7 @@ const ConflictPage: React.FC = () => {
                       {loading ? 'Processing...' : 'Still Not Quite Right'}
                     </button>
                   </div>
+                ) : null /* Both users have voted, show neither waiting nor voting buttons */}
                 )}
               </>
             )}
