@@ -93,6 +93,80 @@ const DashboardPage: React.FC = () => {
   };
 
   const getConflictStatus = (conflict: Conflict) => {
+    // Check for final ruling phase
+    if (conflict.final_ai_ruling) {
+      return { label: 'Case closed by AI Judge', color: 'bg-purple-100 text-purple-800' };
+    }
+    
+    // Check for core issues phase
+    if (conflict.rehash_attempted_at && 
+        (conflict.user1_satisfaction === false || conflict.user2_satisfaction === false) &&
+        !conflict.core_issues_attempted_at) {
+      
+      // Check if current user needs to submit core issue
+      if ((user?.id === conflict.user1_id && !conflict.user1_core_issue) ||
+          (user?.id === conflict.user2_id && !conflict.user2_core_issue)) {
+        return { label: 'Your turn: clarify core issue', color: 'bg-orange-100 text-orange-800' };
+      }
+      
+      // Check if waiting for other user's core issue
+      if ((user?.id === conflict.user1_id && conflict.user1_core_issue && !conflict.user2_core_issue) ||
+          (user?.id === conflict.user2_id && conflict.user2_core_issue && !conflict.user1_core_issue)) {
+        return { label: 'Waiting for their core issue', color: 'bg-yellow-100 text-yellow-800' };
+      }
+    }
+    
+    // Check for core reflection phase (both core issues submitted, AI has reflected)
+    if (conflict.ai_core_reflection && conflict.ai_core_suggestion) {
+      // Check if current user needs to vote on core reflection
+      if ((user?.id === conflict.user1_id && conflict.user1_satisfaction === null) ||
+          (user?.id === conflict.user2_id && conflict.user2_satisfaction === null)) {
+        return { label: 'Vote on final reflection', color: 'bg-indigo-100 text-indigo-800' };
+      }
+      
+      // Check if waiting for other user's vote on core reflection
+      if ((user?.id === conflict.user1_id && conflict.user1_satisfaction !== null && conflict.user2_satisfaction === null) ||
+          (user?.id === conflict.user2_id && conflict.user2_satisfaction !== null && conflict.user1_satisfaction === null)) {
+        return { label: 'Waiting for their vote', color: 'bg-yellow-100 text-yellow-800' };
+      }
+      
+      // Both voted but not satisfied - ready for final ruling
+      if (conflict.user1_satisfaction === false || conflict.user2_satisfaction === false) {
+        return { label: 'Ready for AI final ruling', color: 'bg-red-100 text-red-800' };
+      }
+    }
+    
+    // Check for rehash phase (AI has provided rehashed content)
+    if (conflict.ai_rehash_summary && conflict.ai_rehash_suggestion) {
+      // Check if current user needs to vote on rehash
+      if ((user?.id === conflict.user1_id && conflict.user1_satisfaction === null) ||
+          (user?.id === conflict.user2_id && conflict.user2_satisfaction === null)) {
+        return { label: 'Vote on new approach', color: 'bg-blue-100 text-blue-800' };
+      }
+      
+      // Check if waiting for other user's vote on rehash
+      if ((user?.id === conflict.user1_id && conflict.user1_satisfaction !== null && conflict.user2_satisfaction === null) ||
+          (user?.id === conflict.user2_id && conflict.user2_satisfaction !== null && conflict.user1_satisfaction === null)) {
+        return { label: 'Waiting for their vote', color: 'bg-yellow-100 text-yellow-800' };
+      }
+    }
+    
+    // Check for initial AI mediation phase
+    if (conflict.ai_summary && conflict.ai_suggestion) {
+      // Check if current user needs to vote on initial mediation
+      if ((user?.id === conflict.user1_id && conflict.user1_satisfaction === null) ||
+          (user?.id === conflict.user2_id && conflict.user2_satisfaction === null)) {
+        return { label: 'Vote on AI mediation', color: 'bg-green-100 text-green-800' };
+      }
+      
+      // Check if waiting for other user's vote on initial mediation
+      if ((user?.id === conflict.user1_id && conflict.user1_satisfaction !== null && conflict.user2_satisfaction === null) ||
+          (user?.id === conflict.user2_id && conflict.user2_satisfaction !== null && conflict.user1_satisfaction === null)) {
+        return { label: 'Waiting for their vote', color: 'bg-yellow-100 text-yellow-800' };
+      }
+    }
+    
+    // Original status logic for basic states
     if (conflict.status === 'pending') {
       if (user?.id === conflict.user1_id) {
         return { label: 'Waiting for them', color: 'bg-yellow-100 text-yellow-800' };
@@ -100,9 +174,11 @@ const DashboardPage: React.FC = () => {
         return { label: 'Your turn to respond', color: 'bg-blue-100 text-blue-800' };
       }
     }
+    
     if (conflict.status === 'active') {
-      return { label: 'AI mediation ready', color: 'bg-green-100 text-green-800' };
+      return { label: 'AI processing...', color: 'bg-purple-100 text-purple-800' };
     }
+    
     return { label: 'Resolved', color: 'bg-gray-100 text-gray-800' };
   };
 
