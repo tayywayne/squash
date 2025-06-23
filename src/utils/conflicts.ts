@@ -324,11 +324,14 @@ export const conflictService = {
         conflict.user2_translated_message
       );
 
+      // Generate a short summary for the public feed
+      const finalSummary = await openAI.generateFinalSummary(finalRuling);
       // Update the conflict with the final ruling
       const { error } = await supabase
         .from('conflicts')
         .update({
           final_ai_ruling: finalRuling,
+          ai_final_summary: finalSummary,
           final_ruling_issued_at: new Date().toISOString(),
           status: 'final_judgment' // Mark as final judgment, not resolved
         })
