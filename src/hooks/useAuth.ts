@@ -138,7 +138,7 @@ export const useAuth = () => {
          // console.log('✅ useAuth: User signed in, setting user with profile');
           await setUserWithProfile(session.user);
         } else if (event === 'SIGNED_OUT') {
-          console.log('👋 useAuth: User signed out, clearing user state');
+          //console.log('👋 useAuth: User signed out, clearing user state');
           setUser(null);
         }
       } catch (error) {
