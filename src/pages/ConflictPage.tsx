@@ -627,76 +627,7 @@ const ConflictPage: React.FC = () => {
               </div>
             </div>
           </div>
-          {hasFinalRuling && conflict.ai_final_summary && (
-            <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-lg">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                🗳️ This is what the public thinks of you guys
-              </h3>
-              
-              {publicVotesLoading ? (
-                <div className="text-center py-4">
-                  <div className="animate-pulse-slow mb-2">
-                    <div className="text-2xl">📊</div>
-                  </div>
-                  <p className="text-gray-600 text-sm">Loading public votes...</p>
-                </div>
-              ) : publicVotes.length === 0 ? (
-                <div className="text-center py-4">
-                  <div className="text-4xl mb-2">🤷</div>
-                  <p className="text-gray-600 text-sm">No public votes yet</p>
-                  <p className="text-gray-500 text-xs mt-1">
-                    Your conflict is on the public shame wall - people can vote on who was wrong
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {VOTE_OPTIONS.map((option) => {
-                    const voteData = publicVotes.find(v => v.vote_type === option.type);
-                    const voteCount = voteData ? Number(voteData.vote_count) : 0;
-                    const totalVotes = publicVotes.reduce((sum, v) => sum + Number(v.vote_count), 0);
-                    const percentage = totalVotes > 0 ? Math.round((voteCount / totalVotes) * 100) : 0;
-                    
-                    return (
-                      <div key={option.type} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                        <div className="flex items-center space-x-3">
-                          <span className="text-lg">{option.emoji}</span>
-                          <span className="font-medium text-sm text-gray-700">{option.label}</span>
-                        </div>
-                        <div className="flex items-center space-x-3">
-                          <div className="w-24 bg-gray-200 rounded-full h-2">
-                            <div 
-                              className="bg-coral-500 h-2 rounded-full transition-all duration-500"
-                              style={{ width: `${percentage}%` }}
-                            />
-                          </div>
-                          <span className="text-sm font-semibold text-gray-700 w-12 text-right">
-                            {voteCount} ({percentage}%)
-                          </span>
-                        </div>
-                      </div>
-                    );
-                  })}
-                  
-                  <div className="mt-4 pt-4 border-t border-gray-200">
-                    <div className="flex items-center justify-between text-sm text-gray-600">
-                      <span>Total public votes: {publicVotes.reduce((sum, v) => sum + Number(v.vote_count), 0)}</span>
-                      <a 
-                        href="/public-shame" 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="text-coral-500 hover:text-coral-600 font-medium flex items-center space-x-1"
-                      >
-                       {/*  <span>View on Public Shame Wall</span>
-                        <span>↗</span>*/}
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      )}
+          k
           
           {/* Final Status */}
           <div className="bg-gray-900 p-6 rounded-lg border border-gray-700 text-center">
