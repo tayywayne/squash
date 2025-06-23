@@ -486,66 +486,9 @@ const ConflictPage: React.FC = () => {
       {/* Core Issues Phase */}
       {phase === 'core-issues' && (
         <div className="space-y-6">
-          <div className="bg-white p-6 rounded-lg border border-gray-200">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
-              🎯 Clarify Your Core Issue
-            </h2>
-            
-            <div className="bg-orange-50 p-4 rounded-lg mb-6 border border-orange-200">
-              <p className="text-orange-800 text-sm">
-                <strong>We're trying a different approach.</strong> Previous solutions haven't fully resolved this conflict. 
-                Let's get to the heart of what you most want the other person to understand.
-              </p>
-            </div>
-            
-            <p className="text-gray-600 mb-4">
-              Answer this question as clearly and specifically as possible:
-            </p>
-            
-            <div className="bg-blue-50 p-4 rounded-lg mb-6 border border-blue-200">
-              <h3 className="font-semibold text-blue-900 mb-2">
-                "What is the one thing you most want the other person to understand about your perspective?"
-              </h3>
-              <p className="text-sm text-blue-700">
-                Focus on what you want them to truly "get" about how you see this situation or how it affects you.
-              </p>
-            </div>
-            
-            <textarea
-              value={coreIssueMessage}
-              onChange={(e) => setCoreIssueMessage(e.target.value)}
-              placeholder="The one thing I most want them to understand is..."
-              className="w-full h-32 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-coral-500 focus:border-coral-500 resize-none"
-              maxLength={500}
-            />
-            
-            <div className="flex justify-between items-center mt-4">
-              <span className="text-sm text-gray-500">
-                {coreIssueMessage.length}/500 characters
-              </span>
-              <button
-                onClick={handleSubmitCoreIssue}
-                disabled={!coreIssueMessage.trim() || loading}
-                className="flex items-center space-x-2 bg-coral-500 hover:bg-coral-600 text-white px-6 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {loading ? (
-                  <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                    <span>Submitting...</span>
-                  </>
-                ) : (
-                  <>
-                    <Send size={18} />
-                    <span>Submit Core Issue</span>
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
-          
-          {/* Show waiting state if user has submitted but other hasn't */}
-          {((isUser1 && conflict?.user1_core_issue && !conflict?.user2_core_issue) ||
-            (isUser2 && conflict?.user2_core_issue && !conflict?.user1_core_issue)) && (
+          {/* Check if current user has already submitted their core issue */}
+          {((isUser1 && conflict?.user1_core_issue) || (isUser2 && conflict?.user2_core_issue)) ? (
+            /* Show waiting state if user has submitted but other hasn't */
             <div className="bg-yellow-50 p-6 rounded-lg border border-yellow-200">
               <div className="text-center">
                 <div className="text-4xl mb-2">⏳</div>
@@ -553,6 +496,64 @@ const ConflictPage: React.FC = () => {
                 <p className="text-sm text-yellow-700">
                   You've shared what you most want them to understand. Waiting for them to do the same...
                 </p>
+              </div>
+            </div>
+          ) : (
+            /* Show core issue input form if user hasn't submitted yet */
+            <div className="bg-white p-6 rounded-lg border border-gray-200">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                🎯 Clarify Your Core Issue
+              </h2>
+              
+              <div className="bg-orange-50 p-4 rounded-lg mb-6 border border-orange-200">
+                <p className="text-orange-800 text-sm">
+                  <strong>We're trying a different approach.</strong> Previous solutions haven't fully resolved this conflict. 
+                  Let's get to the heart of what you most want the other person to understand.
+                </p>
+              </div>
+              
+              <p className="text-gray-600 mb-4">
+                Answer this question as clearly and specifically as possible:
+              </p>
+              
+              <div className="bg-blue-50 p-4 rounded-lg mb-6 border border-blue-200">
+                <h3 className="font-semibold text-blue-900 mb-2">
+                  "What is the one thing you most want the other person to understand about your perspective?"
+                </h3>
+                <p className="text-sm text-blue-700">
+                  Focus on what you want them to truly "get" about how you see this situation or how it affects you.
+                </p>
+              </div>
+              
+              <textarea
+                value={coreIssueMessage}
+                onChange={(e) => setCoreIssueMessage(e.target.value)}
+                placeholder="The one thing I most want them to understand is..."
+                className="w-full h-32 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-coral-500 focus:border-coral-500 resize-none"
+                maxLength={500}
+              />
+              
+              <div className="flex justify-between items-center mt-4">
+                <span className="text-sm text-gray-500">
+                  {coreIssueMessage.length}/500 characters
+                </span>
+                <button
+                  onClick={handleSubmitCoreIssue}
+                  disabled={!coreIssueMessage.trim() || loading}
+                  className="flex items-center space-x-2 bg-coral-500 hover:bg-coral-600 text-white px-6 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {loading ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                      <span>Submitting...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send size={18} />
+                      <span>Submit Core Issue</span>
+                    </>
+                  )}
+                </button>
               </div>
             </div>
           )}
