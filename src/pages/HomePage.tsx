@@ -196,7 +196,7 @@ const HomePage: React.FC = () => {
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">Why Squashie Actually Works</h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              We've cracked the code on digital conflict resolution. Here's what makes us different.
+              Because conflict is inevitable — but emotional maturity is hard.
             </p>
           </div>
 
