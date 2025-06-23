@@ -101,7 +101,7 @@ const LeaderboardPage: React.FC = () => {
           Conflict Resolution Leaderboard
         </h1>
         <p className="text-gray-600">
-          See who's mastering the art of squashing beef and who might need some practice.
+          Yay for public shame! See who ranks the least and most problematic!
         </p>
       </div>
 
