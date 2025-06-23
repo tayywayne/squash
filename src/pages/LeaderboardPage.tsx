@@ -178,7 +178,7 @@ const LeaderboardPage: React.FC = () => {
           <p className="text-sm text-gray-600">
             {category === 'least-problematic' 
               ? '🏆 Ranked by highest resolution rate, then by most conflicts resolved. These users are conflict resolution champions!'
-              : '🔥 Ranked by lowest resolution rate, then by most conflicts. These users might need some mediation tips!'
+              : '🔥 Ranked by lowest resolution rate, then by most conflicts. These users might be problematic....'
             }
           </p>
         </div>
