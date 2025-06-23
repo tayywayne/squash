@@ -24,8 +24,8 @@ export const useAuth = () => {
       // Create a timeout promise that rejects after 10 seconds
       const timeoutPromise = new Promise((_, reject) => {
         setTimeout(() => {
-          reject(new Error('Profile fetch timeout - query took longer than 10 seconds'));
-        }, 10000);
+          reject(new Error('Profile fetch timeout - query took longer than 20 seconds'));
+        }, 20000);
       });
       
       // Race the Supabase query against the timeout
