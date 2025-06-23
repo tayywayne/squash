@@ -58,7 +58,7 @@ const HomePage: React.FC = () => {
     {
       step: 1,
       title: 'Share Your Side',
-      description: 'Tell us what happened and how you feel. Be honest - our AI will help make it constructive.',
+      description: 'Tell us what happened and how you feel. Be honest - our AI will help make it constructive so say what you need to.',
       emoji: '💬'
     },
     {
@@ -76,7 +76,7 @@ const HomePage: React.FC = () => {
     {
       step: 4,
       title: 'Resolution',
-      description: 'Both parties review the mediation and work together toward mutual understanding.',
+      description: 'Both parties review the mediation and work together toward mutual understanding. ',
       emoji: '✨'
     }
   ];
@@ -224,7 +224,7 @@ const HomePage: React.FC = () => {
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">How It Works</h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Four simple steps to go from conflict to resolution. No drama, no BS, just results.
+              Four simple steps to go from conflict to resolution. 
             </p>
           </div>
 
@@ -246,7 +246,7 @@ const HomePage: React.FC = () => {
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white/40">
+       {/*      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white/40">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">What People Are Saying</h2>
@@ -274,7 +274,7 @@ const HomePage: React.FC = () => {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* CTA Section */}
       <section className="py-20 px-4 sm:px-6 lg:px-8">
