@@ -14,8 +14,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   const navigation = [
     { name: 'Dashboard', href: '/dashboard', icon: Home, emoji: '🏠' },
-    { name: 'Conflicts', href: '/conflicts', icon: MessageSquare, emoji: '💬' },
-    { name: 'History', href: '/history', icon: History, emoji: '📚' },
+    //{ name: 'Conflicts', href: '/conflicts', icon: MessageSquare, emoji: '💬' },
+    //{ name: 'History', href: '/history', icon: History, emoji: '📚' },
     { name: 'Leaderboard', href: '/leaderboard', icon: Trophy, emoji: '🏆' },
     { name: 'Profile', href: '/profile', icon: User, emoji: '👤' },
   ];
