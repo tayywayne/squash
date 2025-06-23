@@ -153,7 +153,7 @@ export const useAuth = () => {
     });
 
     return () => {
-      console.log('🧹 useAuth: Cleaning up auth state change subscription');
+    //  console.log('🧹 useAuth: Cleaning up auth state change subscription');
       subscription.unsubscribe();
     };
   }, []);
