@@ -120,7 +120,7 @@ export const useAuth = () => {
         console.error('❌ checkUser: Unexpected error during auth check:', error);
         console.error('Auth check failed:', error);
       } finally {
-        console.log('🏁 checkUser: Setting loading to false');
+     //   console.log('🏁 checkUser: Setting loading to false');
         setLoading(false);
       }
     };
@@ -129,13 +129,13 @@ export const useAuth = () => {
     checkUser();
 
     // Listen for auth state changes
-    console.log('👂 useAuth: Setting up auth state change listener');
+   // console.log('👂 useAuth: Setting up auth state change listener');
     const { data: { subscription } } = auth.onAuthStateChange(async (event, session) => {
-      console.log('🔄 useAuth: Auth state change detected - event:', event, 'session:', session);
+   //   console.log('🔄 useAuth: Auth state change detected - event:', event, 'session:', session);
       
       try {
         if (event === 'SIGNED_IN' && session?.user) {
-          console.log('✅ useAuth: User signed in, setting user with profile');
+         // console.log('✅ useAuth: User signed in, setting user with profile');
           await setUserWithProfile(session.user);
         } else if (event === 'SIGNED_OUT') {
           console.log('👋 useAuth: User signed out, clearing user state');
