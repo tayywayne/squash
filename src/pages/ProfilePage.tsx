@@ -60,7 +60,7 @@ const ProfilePage: React.FC = () => {
 
   // Calculate statistics
   const totalConflictsCount = conflicts.length;
-  const resolvedConflictsCount = conflicts.filter(c => c.status === 'resolved').length;
+  const resolvedConflictsCount = conflicts.filter(c => c.status === 'resolved' || c.status === 'final_judgment').length;
   const resolutionRate = totalConflictsCount > 0 ? Math.round((resolvedConflictsCount / totalConflictsCount) * 100) : 0;
 
   const handleEditToggle = () => {

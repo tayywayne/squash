@@ -50,7 +50,7 @@ const DashboardPage: React.FC = () => {
   }, [user?.id, user?.email]);
 
   const activeConflicts = conflicts.filter(c => c.status === 'pending' || c.status === 'active');
-  const resolvedConflicts = conflicts.filter(c => c.status === 'resolved');
+  const resolvedConflicts = conflicts.filter(c => c.status === 'resolved' || c.status === 'final_judgment');
 
   // Calculate unique connected accounts
   const uniqueConnectedAccounts = React.useMemo(() => {
@@ -95,7 +95,7 @@ const DashboardPage: React.FC = () => {
   const getConflictStatus = (conflict: Conflict) => {
     // Check for final ruling phase
     if (conflict.final_ai_ruling) {
-      return { label: 'Case closed by AI Judge', color: 'bg-purple-100 text-purple-800' };
+      return { label: 'Final AI judgment issued', color: 'bg-purple-100 text-purple-800' };
     }
     
     // Check for core issues phase
@@ -366,7 +366,7 @@ const DashboardPage: React.FC = () => {
                         {conflict.resolved_at ? formatTimeAgo(conflict.resolved_at) : formatTimeAgo(conflict.created_at)}
                       </span>
                       <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                        ✅ Resolved
+                        {conflict.status === 'final_judgment' ? '⚖️ Final Judgment' : '✅ Resolved'}
                       </span>
                     </div>
                   </div>

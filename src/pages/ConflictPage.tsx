@@ -63,7 +63,7 @@ const ConflictPage: React.FC = () => {
   const isUser1 = user?.id === conflict?.user1_id;
   const isUser2 = user?.id === conflict?.user2_id;
   const canRespond = conflict?.status === 'pending' && (user?.email === conflict?.user2_email || isUser2);
-  const isResolved = conflict?.status === 'resolved';
+  const isResolved = conflict?.status === 'resolved' || conflict?.status === 'final_judgment';
   
   // Check if core issues step should be available
   const canSubmitCoreIssue = conflict?.rehash_attempted_at && 
@@ -607,9 +607,9 @@ const ConflictPage: React.FC = () => {
           {/* Final Status */}
           <div className="bg-gray-900 p-6 rounded-lg border border-gray-700 text-center">
             <div className="text-4xl mb-3">🎬</div>
-            <h3 className="text-xl font-bold text-white mb-2">Conflict Resolution Complete</h3>
+            <h3 className="text-xl font-bold text-white mb-2">Final Judgment Issued</h3>
             <p className="text-gray-300 text-sm">
-              The AI has issued its final, dramatic ruling. This conflict has been resolved through the power of artificial sass and digital wisdom.
+              The AI has issued its final, dramatic ruling. This conflict has been closed through the power of artificial sass and digital wisdom.
             </p>
           </div>
         </div>

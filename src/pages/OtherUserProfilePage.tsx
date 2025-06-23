@@ -92,6 +92,8 @@ const OtherUserProfilePage: React.FC = () => {
   };
 
   const resolvedConflicts = sharedConflicts.filter(c => c.status === 'resolved');
+  const finalJudgmentConflicts = sharedConflicts.filter(c => c.status === 'final_judgment');
+  const totalClosedConflicts = resolvedConflicts.length + finalJudgmentConflicts.length;
   const activeConflicts = sharedConflicts.filter(c => c.status === 'pending' || c.status === 'active');
 
   if (loading) {
@@ -223,12 +225,12 @@ const OtherUserProfilePage: React.FC = () => {
                 <div className="text-sm text-gray-600">Total Conflicts</div>
               </div>
               <div className="text-center p-4 bg-gray-50 rounded-lg">
-                <div className="text-2xl font-bold text-teal-500">{resolvedConflicts.length}</div>
-                <div className="text-sm text-gray-600">Resolved Together</div>
+                <div className="text-2xl font-bold text-teal-500">{totalClosedConflicts}</div>
+                <div className="text-sm text-gray-600">Closed Together</div>
               </div>
               <div className="text-center p-4 bg-gray-50 rounded-lg">
                 <div className="text-2xl font-bold text-lavender-500">
-                  {sharedConflicts.length > 0 ? Math.round((resolvedConflicts.length / sharedConflicts.length) * 100) : 0}%
+                  {sharedConflicts.length > 0 ? Math.round((totalClosedConflicts / sharedConflicts.length) * 100) : 0}%
                 </div>
                 <div className="text-sm text-gray-600">Resolution Rate</div>
               </div>
@@ -262,18 +264,18 @@ const OtherUserProfilePage: React.FC = () => {
             )}
 
             {/* Resolved Conflicts */}
-            {resolvedConflicts.length > 0 && (
+            {totalClosedConflicts > 0 && (
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Resolved Conflicts</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">Closed Conflicts</h3>
                 <div className="space-y-3">
-                  {resolvedConflicts.slice(0, 5).map((conflict) => (
+                  {[...resolvedConflicts, ...finalJudgmentConflicts].slice(0, 5).map((conflict) => (
                     <div key={conflict.id} className="p-4 bg-green-50 border border-green-200 rounded-lg">
                       <div className="flex items-center justify-between">
                         <div>
                           <h4 className="font-medium text-gray-900">{conflict.title}</h4>
                           <p className="text-sm text-gray-600">
-                            <CheckCircle className="inline h-4 w-4 mr-1" />
-                            Resolved {conflict.resolved_at ? formatTimeAgo(conflict.resolved_at) : formatTimeAgo(conflict.created_at)}
+                            {conflict.status === 'final_judgment' ? '⚖️' : <CheckCircle className="inline h-4 w-4 mr-1" />}
+                            {conflict.status === 'final_judgment' ? 'Final judgment' : 'Resolved'} {conflict.resolved_at ? formatTimeAgo(conflict.resolved_at) : formatTimeAgo(conflict.created_at)}
                           </p>
                         </div>
                         <button
@@ -285,9 +287,9 @@ const OtherUserProfilePage: React.FC = () => {
                       </div>
                     </div>
                   ))}
-                  {resolvedConflicts.length > 5 && (
+                  {totalClosedConflicts > 5 && (
                     <p className="text-sm text-gray-500 text-center">
-                      And {resolvedConflicts.length - 5} more resolved conflicts...
+                      And {totalClosedConflicts - 5} more closed conflicts...
                     </p>
                   )}
                 </div>
@@ -316,8 +318,8 @@ const OtherUserProfilePage: React.FC = () => {
                 fallback="this user"
                 showEmoji={false}
               /> have worked through {sharedConflicts.length} conflict{sharedConflicts.length !== 1 ? 's' : ''} together, 
-              with a {sharedConflicts.length > 0 ? Math.round((resolvedConflicts.length / sharedConflicts.length) * 100) : 0}% resolution rate. 
-              {resolvedConflicts.length > 0 && ' That shows real commitment to understanding each other!'}
+              with a {sharedConflicts.length > 0 ? Math.round((totalClosedConflicts / sharedConflicts.length) * 100) : 0}% resolution rate. 
+              {totalClosedConflicts > 0 && ' That shows real commitment to understanding each other!'}
             </p>
           ) : (
             <p>

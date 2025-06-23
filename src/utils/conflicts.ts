@@ -14,7 +14,7 @@ export interface Conflict {
   user1_id: string;
   user2_email: string;
   user2_id?: string;
-  status: 'pending' | 'active' | 'resolved' | 'abandoned';
+  status: 'pending' | 'active' | 'resolved' | 'abandoned' | 'final_judgment';
   user1_mood: string;
   user1_raw_message: string;
   user1_translated_message?: string;
@@ -330,7 +330,7 @@ export const conflictService = {
         .update({
           final_ai_ruling: finalRuling,
           final_ruling_issued_at: new Date().toISOString(),
-          status: 'resolved' // Lock the conflict as resolved
+          status: 'final_judgment' // Mark as final judgment, not resolved
         })
         .eq('id', conflictId);
 

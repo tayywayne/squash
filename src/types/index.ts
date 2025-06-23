@@ -22,7 +22,7 @@ export interface Conflict {
   id: string;
   user1_id: string;
   user2_id: string;
-  status: 'pending' | 'active' | 'resolved' | 'abandoned';
+  status: 'pending' | 'active' | 'resolved' | 'abandoned' | 'final_judgment';
   created_at: string;
   resolved_at?: string;
   title: string;
