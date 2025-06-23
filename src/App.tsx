@@ -30,6 +30,10 @@ function App() {
   return (
     <Router>
       <Routes>
+        {/* Public routes - accessible to everyone */}
+        <Route path="/" element={user ? <Navigate to="/dashboard" replace /> : <HomePage />} />
+        <Route path="/support-success" element={<SupportSuccessPage />} />
+        
         {user ? (
           // Authenticated routes
           <>
@@ -52,8 +56,6 @@ function App() {
                     <Route path="/user-profile/:userId" element={<OtherUserProfilePage />} />
                     <Route path="/leaderboard" element={<LeaderboardPage />} />
                     <Route path="/support-us" element={<SupportUsPage />} />
-                    <Route path="/support-success" element={<SupportSuccessPage />} />
-                    <Route path="/" element={<Navigate to="/dashboard" replace />} />
                   </Routes>
                 </Layout>
               }
@@ -62,7 +64,6 @@ function App() {
         ) : (
           // Unauthenticated routes
           <>
-            <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<AuthPage />} />
             <Route path="/*" element={<Navigate to="/" replace />} />
           </>
