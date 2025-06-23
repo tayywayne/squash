@@ -86,13 +86,13 @@ const NewConflictPage: React.FC = () => {
   };
 
   const conflictTitleSuggestions = [
-    "The Great Dishes Debate",
-    "Project Deadline Drama", 
-    "Netflix Password Controversy",
-    "Group Chat Ghosting",
-    "Borrowed Item Bermuda Triangle",
-    "Plans That Got Cancelled",
-    "The Miscommunication Mess"
+    "Group Chat Ghosting 👻",
+    "The Great Dishes Debate 🍽️", 
+    "The Venmo Vanishing Act 💸",
+    "Canceled Plans Catastrophe ❌",
+    "Micromanager Mayhem 📋",
+    "Passive-Aggressive Olympics 🥇",
+    "Drama in the Group Project 📊"
   ];
 
   return (
