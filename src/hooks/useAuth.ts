@@ -55,10 +55,15 @@ export const useAuth = () => {
       console.log('✅ fetchUserProfile: Profile data received:', data);
       return data;
     } catch (error) {
-      console.error('❌ fetchUserProfile: Unexpected error (including potential timeout):', error);
-      console.error('❌ fetchUserProfile: Error type:', typeof error);
-      console.error('❌ fetchUserProfile: Error stack:', error instanceof Error ? error.stack : 'No stack trace');
-      console.error('Error fetching profile:', error);
+      // Check if this is a timeout error
+      if (error instanceof Error && error.message.includes('Profile fetch timeout')) {
+        console.warn('⚠️ fetchUserProfile: Profile fetch timed out, continuing without profile data');
+      } else {
+        console.error('❌ fetchUserProfile: Unexpected error:', error);
+        console.error('❌ fetchUserProfile: Error type:', typeof error);
+        console.error('❌ fetchUserProfile: Error stack:', error instanceof Error ? error.stack : 'No stack trace');
+        console.error('Error fetching profile:', error);
+      }
       return null;
     }
   };
