@@ -12,6 +12,7 @@ import OtherUserProfilePage from './pages/OtherUserProfilePage';
 import LeaderboardPage from './pages/LeaderboardPage';
 import SupportUsPage from './pages/SupportUsPage';
 import SupportSuccessPage from './pages/SupportSuccessPage';
+import AIJudgmentFeedPage from './pages/AIJudgmentFeedPage';
 
 function App() {
   const { user, loading } = useAuth();
@@ -32,6 +33,7 @@ function App() {
       <Routes>
         {/* Public routes - accessible to everyone */}
         <Route path="/" element={user ? <Navigate to="/dashboard" replace /> : <HomePage />} />
+        <Route path="/public-shame" element={<AIJudgmentFeedPage />} />
         <Route path="/support-success" element={<SupportSuccessPage />} />
         
         {user ? (

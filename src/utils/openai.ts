@@ -370,6 +370,50 @@ Generate a dramatic and humorous final ruling.`
       
       return fallbackRulings[Math.floor(Math.random() * fallbackRulings.length)];
     }
+  },
+
+  generateFinalSummary: async (finalRuling: string): Promise<string> => {
+    try {
+      console.log('Attempting to generate final summary with OpenAI...');
+      const messages = [
+        {
+          role: 'system',
+          content: `You are tasked with creating a very short, punchy summary of an AI's final ruling on a conflict. This summary will be displayed in a public feed.
+
+Guidelines:
+- Keep it under 100 characters
+- Make it sassy and attention-grabbing
+- Capture the essence of the ruling
+- Use humor but don't be mean-spirited
+- Think social media caption style
+
+Return only the summary, nothing else.`
+        },
+        {
+          role: 'user',
+          content: `Create a short summary for this AI ruling: ${finalRuling}`
+        }
+      ];
+
+      const response = await makeOpenAIRequest(messages);
+      console.log('OpenAI final summary successful');
+      
+      // Ensure it's under 100 characters
+      return response.length > 100 ? response.substring(0, 97) + '...' : response;
+    } catch (error) {
+      console.warn('OpenAI API failed for final summary, using fallback');
+      
+      // Fallback summaries
+      const fallbackSummaries = [
+        "AI had to step in because y'all couldn't figure it out 🤦",
+        "Judge AI delivered the final verdict on this mess",
+        "When adults can't adult, AI takes over ⚖️",
+        "Another conflict that needed divine AI intervention",
+        "The AI has spoken. Case closed forever. 🎭"
+      ];
+      
+      return fallbackSummaries[Math.floor(Math.random() * fallbackSummaries.length)];
+    }
   }
 };
 
