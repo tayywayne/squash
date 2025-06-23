@@ -56,12 +56,7 @@ serve(async (req: Request) => {
     const emailData = {
       personalizations: [
         {
-          to: [{ email: to_email }],
-          dynamic_template_data: {
-            inviter_name: inviter_name,
-            conflict_id: conflict_id,
-            conflict_url: `https://squashie.online/conflict/${conflict_id}`
-          }
+          to: [{ email: to_email }]
         }
       ],
       from: {
