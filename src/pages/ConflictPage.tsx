@@ -4,6 +4,7 @@ import { Send, ThumbsUp, ThumbsDown, Heart, Laugh, Angry } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { conflictService, Conflict } from '../utils/conflicts';
 import { profileService } from '../utils/profiles';
+import { archetypeService } from '../utils/archetypes';
 import MoodIndicator from '../components/MoodIndicator';
 import UserDisplayName from '../components/UserDisplayName';
 import Toast from '../components/Toast';
@@ -173,6 +174,14 @@ const ConflictPage: React.FC = () => {
       await conflictService.respondToConflict(conflictId, userMessage, user.id);
       setToast({ message: 'Response submitted! Generating AI mediation...', type: 'success' });
       
+      // Update user's archetype after responding to a conflict
+      try {
+        await archetypeService.assignArchetype(user.id);
+      } catch (error) {
+        console.error('Error updating archetype after conflict response:', error);
+        // Don't fail the response if archetype update fails
+      }
+      
       // Reload conflict data
       const updatedConflict = await conflictService.getConflictById(conflictId);
       setConflict(updatedConflict);
@@ -194,6 +203,14 @@ const ConflictPage: React.FC = () => {
     try {
       await conflictService.submitCoreIssue(conflictId, coreIssueMessage, user.id);
       setToast({ message: 'Core issue submitted! Waiting for the other person...', type: 'success' });
+      
+      // Update user's archetype after submitting core issue
+      try {
+        await archetypeService.assignArchetype(user.id);
+      } catch (error) {
+        console.error('Error updating archetype after core issue submission:', error);
+        // Don't fail the submission if archetype update fails
+      }
       
       // Reload conflict data
       const updatedConflict = await conflictService.getConflictById(conflictId);
@@ -217,6 +234,14 @@ const ConflictPage: React.FC = () => {
         message: satisfied ? 'Marked as resolved!' : 'Feedback recorded. Maybe try talking it out more?', 
         type: 'success' 
       });
+      
+      // Update user's archetype after voting on satisfaction
+      try {
+        await archetypeService.assignArchetype(user.id);
+      } catch (error) {
+        console.error('Error updating archetype after satisfaction vote:', error);
+        // Don't fail the vote if archetype update fails
+      }
       
       // Reload conflict data
       const updatedConflict = await conflictService.getConflictById(conflictId);

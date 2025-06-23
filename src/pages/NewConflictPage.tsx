@@ -5,6 +5,7 @@ import { useAuth } from '../hooks/useAuth';
 import MoodIndicator from '../components/MoodIndicator';
 import Toast from '../components/Toast';
 import { conflictService } from '../utils/conflicts';
+import { archetypeService } from '../utils/archetypes';
 import { MoodLevel } from '../types';
 
 const NewConflictPage: React.FC = () => {
@@ -53,6 +54,14 @@ const NewConflictPage: React.FC = () => {
         description: formData.description,
         mood: currentMood
       }, user.id);
+      
+      // Update user's archetype after creating a conflict
+      try {
+        await archetypeService.assignArchetype(user.id);
+      } catch (error) {
+        console.error('Error updating archetype after conflict creation:', error);
+        // Don't fail the conflict creation if archetype update fails
+      }
       
       setToast({ 
         message: 'Conflict created! The other party will be notified. Time to get this sorted.', 
