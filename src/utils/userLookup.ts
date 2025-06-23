@@ -20,7 +20,7 @@ export const userLookupService = {
       }
 
       return {
-        exists: data?.exists || false,
+        exists: data?.user_exists || false,
         userId: data?.user_id || undefined
       };
     } catch (error) {
