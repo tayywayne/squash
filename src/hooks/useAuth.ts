@@ -17,9 +17,9 @@ export const useAuth = () => {
   const [loading, setLoading] = useState(true);
 
   const fetchUserProfile = async (userId: string): Promise<Profile | null> => {
-    console.log('🔍 fetchUserProfile: Starting profile fetch for userId:', userId);
+    //console.log('🔍 fetchUserProfile: Starting profile fetch for userId:', userId);
     try {
-      console.log('🔍 fetchUserProfile: Executing Supabase query for profile...');
+      //console.log('🔍 fetchUserProfile: Executing Supabase query for profile...');
       
       // Create a timeout promise that rejects after 10 seconds
       const timeoutPromise = new Promise((_, reject) => {
@@ -38,12 +38,12 @@ export const useAuth = () => {
       const { data, error } = await Promise.race([supabaseQuery, timeoutPromise]) as any;
       
       // Log the raw Supabase response
-      console.log('🔍 fetchUserProfile: Raw Supabase response:');
-      console.log('  - data:', data);
-      console.log('  - error:', error);
-      console.log('  - data type:', typeof data);
-      console.log('  - error type:', typeof error);
-      console.log('🔍 fetchUserProfile: Supabase query completed.');
+      //console.log('🔍 fetchUserProfile: Raw Supabase response:');
+      //console.log('  - data:', data);
+      //console.log('  - error:', error);
+     // console.log('  - data type:', typeof data);
+     // console.log('  - error type:', typeof error);
+     // console.log('🔍 fetchUserProfile: Supabase query completed.');
 
       if (error) {
         console.error('❌ fetchUserProfile: Supabase error:', error);
@@ -52,7 +52,7 @@ export const useAuth = () => {
         return null;
       }
 
-      console.log('✅ fetchUserProfile: Profile data received:', data);
+      //console.log('✅ fetchUserProfile: Profile data received:', data);
       return data;
     } catch (error) {
       // Check if this is a timeout error
@@ -69,18 +69,18 @@ export const useAuth = () => {
   };
 
   const setUserWithProfile = async (authUser: any) => {
-    console.log('👤 setUserWithProfile: Starting with authUser:', authUser);
+    //console.log('👤 setUserWithProfile: Starting with authUser:', authUser);
     
     try {
       if (!authUser) {
-        console.log('👤 setUserWithProfile: No authUser provided, setting user to null');
+     //   console.log('👤 setUserWithProfile: No authUser provided, setting user to null');
         setUser(null);
         return;
       }
 
-      console.log('👤 setUserWithProfile: Fetching profile for user ID:', authUser.id);
+     // console.log('👤 setUserWithProfile: Fetching profile for user ID:', authUser.id);
       const profile = await fetchUserProfile(authUser.id);
-      console.log('👤 setUserWithProfile: Profile fetched:', profile);
+    //  console.log('👤 setUserWithProfile: Profile fetched:', profile);
       
       setUser({
         id: authUser.id,
