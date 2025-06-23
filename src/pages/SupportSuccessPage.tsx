@@ -6,7 +6,7 @@ import Toast from '../components/Toast';
 
 const SupportSuccessPage: React.FC = () => {
   const navigate = useNavigate();
-  const { user, updateProfile } = useAuth();
+  const { user, loading: authLoading, updateProfile } = useAuth();
   const [loading, setLoading] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
@@ -41,13 +41,13 @@ const SupportSuccessPage: React.FC = () => {
     }
   ];
 
-  // Redirect if not logged in
+  // Redirect if not logged in (only after auth loading is complete)
   React.useEffect(() => {
-    if (!user) {
+    if (!authLoading && !user) {
       setToast({ message: 'Please log in to confirm your tip', type: 'error' });
       setTimeout(() => navigate('/login'), 2000);
     }
-  }, [user, navigate]);
+  }, [user, authLoading, navigate]);
 
   const handleConfirmTip = async (tier: typeof supportTiers[0]) => {
     if (!user) {
@@ -80,9 +80,30 @@ const SupportSuccessPage: React.FC = () => {
     }
   };
 
+  // Show loading state while authentication is being checked
+  if (authLoading) {
+    return (
+      <div className="max-w-2xl mx-auto p-6 text-center">
+        <div className="animate-pulse-slow mb-4">
+          <div className="text-6xl">💳</div>
+        </div>
+        <h1 className="text-2xl font-bold text-gray-900 mb-2">Loading...</h1>
+        <p className="text-gray-600">Checking your authentication status...</p>
+      </div>
+    );
+  }
+
+  // Show login required if user is not authenticated
   if (!user) {
     return (
       <div className="max-w-2xl mx-auto p-6 text-center">
+        {toast && (
+          <Toast
+            message={toast.message}
+            type={toast.type}
+            onClose={() => setToast(null)}
+          />
+        )}
         <div className="text-6xl mb-4">🔒</div>
         <h1 className="text-2xl font-bold text-gray-900 mb-2">Login Required</h1>
         <p className="text-gray-600">Please log in to confirm your tip and get your supporter badge.</p>
