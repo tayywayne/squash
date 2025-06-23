@@ -49,7 +49,7 @@ const SupportUsPage: React.FC = () => {
 
   const handleTipClick = async (tierId: string) => {
     if (!user) {
-      setToast({ message: 'Please log in to support us', type: 'error' });
+      //setToast({ message: 'Please log in to support us', type: 'error' });
       return;
     }
 
@@ -184,7 +184,7 @@ const SupportUsPage: React.FC = () => {
           </div>
           <div className="flex items-start space-x-3">
             <div className="w-6 h-6 bg-coral-100 rounded-full flex items-center justify-center text-coral-600 font-bold text-xs mt-0.5">4</div>
-            <p>Get a shiny supporter badge next to your name across the app!</p>
+            <p>Get a shiny supporter badge next to your name and a new profile background color!</p>
           </div>
         </div>
       </div>
@@ -198,7 +198,7 @@ const SupportUsPage: React.FC = () => {
           <div className="space-y-2">
             <p className="flex items-start">
               <span className="w-2 h-2 bg-coral-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-              <span>Keep our AI mediator caffeinated and sassy</span>
+              <span>Keep our AI mediator plugged in to power.</span>
             </p>
             <p className="flex items-start">
               <span className="w-2 h-2 bg-coral-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
