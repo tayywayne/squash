@@ -216,7 +216,7 @@ const NewConflictPage: React.FC = () => {
             />
             <div className="flex justify-between items-center mt-2">
               <p className="text-xs text-gray-500">
-                They wont see anything you write, so have at it.
+                Vent freely. Just know we’re about to turn it into a TED Talk whether you like it or not.
               </p>
               <span className="text-xs text-gray-500">
                 {formData.description.length}/1000
