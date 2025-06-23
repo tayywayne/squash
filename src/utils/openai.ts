@@ -318,6 +318,58 @@ Please provide a reflection that addresses what each person most wants to be und
         suggestion: "Try this final approach: each person should repeat back what the other most wants to be understood, in your own words, and ask 'Did I get that right?' Don't move forward until you both feel your core concern has been truly heard and acknowledged."
       };
     }
+  },
+
+  generateFinalRuling: async (
+    user1Message: string,
+    user2Message: string
+  ): Promise<string> => {
+    try {
+      console.log('Attempting to generate final AI ruling with OpenAI...');
+      const messages = [
+        {
+          role: 'system',
+          content: `You are Judge AI, the final arbiter of unresolved conflicts. This conflict has been through multiple resolution attempts and both parties still can't agree. Your job is to deliver a dramatic, witty, and theatrical final ruling.
+
+Style Guidelines:
+- Channel Judge Judy meets internet meme culture
+- Be theatrical and over-the-top but not mean-spirited
+- Pick a side, both sides, or declare everyone wrong - your choice
+- Use humor to deflate the situation
+- Be decisive and final - no more suggestions for resolution
+- Keep it under 250 words
+- End with a dramatic "CASE CLOSED" or similar flourish
+
+Tone: Sassy, dramatic, witty, but ultimately trying to help people laugh at themselves and move on.`
+        },
+        {
+          role: 'user',
+          content: `The following conflict has remained unresolved after multiple attempts at resolution.
+
+Person 1's perspective: ${user1Message}
+Person 2's perspective: ${user2Message}
+
+Generate a dramatic and humorous final ruling.`
+        }
+      ];
+
+      const response = await makeOpenAIRequest(messages);
+      console.log('OpenAI final ruling successful');
+      return response;
+    } catch (error) {
+      console.warn('OpenAI API failed for final ruling, using dramatic fallback');
+      
+      // Dramatic fallback ruling
+      const fallbackRulings = [
+        "🎭 HEAR YE, HEAR YE! After extensive deliberation (and several cups of digital coffee), this court finds that BOTH parties are guilty... of being human. Person 1, you're overthinking it. Person 2, you're underthinking it. The universe has spoken: agree to disagree and go get some ice cream. CASE CLOSED! ⚖️",
+        
+        "🎪 LADIES AND GENTLEMEN, step right up to witness the FINAL VERDICT! In the case of 'Who's Right vs. Who Cares,' this court rules that you're both winners... at making mountains out of molehills! The real conflict was the friends we annoyed along the way. Go forth and bother someone else! COURT ADJOURNED! 🎭",
+        
+        "⚖️ BY THE POWER VESTED IN ME BY THE INTERNET, I hereby declare this conflict officially RIDICULOUS! You've both argued your points with the passion of Shakespeare and the logic of a Magic 8-Ball. My ruling? Touch grass, text less, and remember that in 5 years you'll both laugh about this. JUSTICE HAS BEEN SERVED! 🎯"
+      ];
+      
+      return fallbackRulings[Math.floor(Math.random() * fallbackRulings.length)];
+    }
   }
 };
 

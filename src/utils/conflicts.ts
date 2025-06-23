@@ -34,6 +34,8 @@ export interface Conflict {
   ai_core_reflection?: string;
   ai_core_suggestion?: string;
   core_issues_attempted_at?: string;
+  final_ai_ruling?: string;
+  final_ruling_issued_at?: string;
 }
 
 export const conflictService = {
@@ -301,6 +303,42 @@ export const conflictService = {
       }
     } catch (error) {
       console.error('Error submitting core issue:', error);
+      throw error;
+    }
+  },
+
+  generateFinalRuling: async (conflictId: string): Promise<void> => {
+    try {
+      const conflict = await conflictService.getConflictById(conflictId);
+      if (!conflict) {
+        throw new Error('Conflict not found');
+      }
+
+      if (!conflict.user1_translated_message || !conflict.user2_translated_message) {
+        throw new Error('Cannot generate final ruling without both user messages');
+      }
+
+      // Generate the dramatic final ruling using OpenAI
+      const finalRuling = await openAI.generateFinalRuling(
+        conflict.user1_translated_message,
+        conflict.user2_translated_message
+      );
+
+      // Update the conflict with the final ruling
+      const { error } = await supabase
+        .from('conflicts')
+        .update({
+          final_ai_ruling: finalRuling,
+          final_ruling_issued_at: new Date().toISOString(),
+          status: 'resolved' // Lock the conflict as resolved
+        })
+        .eq('id', conflictId);
+
+      if (error) {
+        throw error;
+      }
+    } catch (error) {
+      console.error('Error generating final ruling:', error);
       throw error;
     }
   },

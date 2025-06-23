@@ -75,8 +75,22 @@ const ConflictPage: React.FC = () => {
   
   const hasCoreReflection = conflict?.ai_core_reflection && conflict?.ai_core_suggestion;
   
-  const getPhase = (): 'input' | 'waiting' | 'mediation' | 'reactions' | 'core-issues' | 'core-reflection' => {
+  // Check if final ruling should be available
+  const canIssueFinalRuling = conflict?.core_issues_attempted_at && 
+    conflict?.ai_core_reflection && 
+    conflict?.ai_core_suggestion &&
+    (conflict?.user1_satisfaction === false || conflict?.user2_satisfaction === false) &&
+    !conflict?.final_ai_ruling;
+  
+  const hasFinalRuling = conflict?.final_ai_ruling && conflict?.final_ruling_issued_at;
+  
+  const getPhase = (): 'input' | 'waiting' | 'mediation' | 'reactions' | 'core-issues' | 'core-reflection' | 'final-ruling' => {
     if (!conflict) return 'input';
+    
+    // Final ruling phase - when AI has issued the final dramatic ruling
+    if (hasFinalRuling) {
+      return 'final-ruling';
+    }
     
     if (conflict.status === 'pending' && !conflict.user2_raw_message) {
       return canRespond ? 'input' : 'waiting';
@@ -254,6 +268,28 @@ const ConflictPage: React.FC = () => {
     }
   };
 
+  const handleIssueFinalRuling = async () => {
+    if (!conflictId) return;
+
+    setLoading(true);
+    try {
+      await conflictService.generateFinalRuling(conflictId);
+      setToast({ 
+        message: '⚖️ The AI has issued its final ruling! This conflict is now closed.', 
+        type: 'success' 
+      });
+      
+      // Reload conflict data
+      const updatedConflict = await conflictService.getConflictById(conflictId);
+      setConflict(updatedConflict);
+    } catch (error) {
+      console.error('Error issuing final ruling:', error);
+      setToast({ message: 'Failed to issue final ruling. Try again?', type: 'error' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (initialLoading) {
     return (
       <div className="max-w-4xl mx-auto p-6 text-center">
@@ -318,6 +354,7 @@ const ConflictPage: React.FC = () => {
             {phase === 'reactions' && '3/3 - Reactions & Next Steps'}
             {phase === 'core-issues' && '4/4 - Clarify Core Issues'}
             {phase === 'core-reflection' && '4/4 - Final Reflection'}
+            {phase === 'final-ruling' && '5/5 - Final AI Ruling'}
           </span>
         </div>
         <div className="w-full bg-gray-200 rounded-full h-2">
@@ -326,7 +363,8 @@ const ConflictPage: React.FC = () => {
             style={{ 
               width: phase === 'input' ? '25%' : 
                      phase === 'waiting' || phase === 'mediation' ? '50%' : 
-                     phase === 'reactions' ? '75%' : '100%' 
+                     phase === 'reactions' ? '75%' : 
+                     phase === 'core-issues' || phase === 'core-reflection' ? '90%' : '100%'
             }}
           />
         </div>
