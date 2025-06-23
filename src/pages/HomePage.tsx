@@ -139,7 +139,7 @@ const HomePage: React.FC = () => {
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
             Squash your drama with friends, coworkers, roommates, or whoever’s driving you nuts, without risking a full-blown fallout. 
-            With a little AI-powered mediation (and a dash of public shaming if all else fails), Squash’n’Go helps you patch things up before they explode.
+            With a little AI-powered mediation (and a dash of public shaming if all else fails), Squashie helps you patch things up before they explode.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
