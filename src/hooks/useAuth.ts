@@ -20,11 +20,22 @@ export const useAuth = () => {
     console.log('🔍 fetchUserProfile: Starting profile fetch for userId:', userId);
     try {
       console.log('🔍 fetchUserProfile: Executing Supabase query for profile...');
-      const { data, error } = await supabase
+      
+      // Create a timeout promise that rejects after 10 seconds
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => {
+          reject(new Error('Profile fetch timeout - query took longer than 10 seconds'));
+        }, 10000);
+      });
+      
+      // Race the Supabase query against the timeout
+      const supabaseQuery = supabase
         .from('profiles')
         .select('*')
         .eq('id', userId)
         .maybeSingle();
+      
+      const { data, error } = await Promise.race([supabaseQuery, timeoutPromise]) as any;
       
       // Log the raw Supabase response
       console.log('🔍 fetchUserProfile: Raw Supabase response:');
@@ -44,7 +55,7 @@ export const useAuth = () => {
       console.log('✅ fetchUserProfile: Profile data received:', data);
       return data;
     } catch (error) {
-      console.error('❌ fetchUserProfile: Unexpected error:', error);
+      console.error('❌ fetchUserProfile: Unexpected error (including potential timeout):', error);
       console.error('❌ fetchUserProfile: Error type:', typeof error);
       console.error('❌ fetchUserProfile: Error stack:', error instanceof Error ? error.stack : 'No stack trace');
       console.error('Error fetching profile:', error);
