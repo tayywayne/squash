@@ -58,9 +58,6 @@ const LeaderboardPage: React.FC = () => {
   }, [leaderboardData, category]);
 
   const getUserDisplayName = (user: LeaderboardUser) => {
-    if (user.first_name && user.last_name) {
-      return `${user.first_name} ${user.last_name}`;
-    }
     return user.username || 'Anonymous User';
   };
 

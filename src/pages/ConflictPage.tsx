@@ -105,9 +105,7 @@ const ConflictPage: React.FC = () => {
     if (user?.id === conflict.user1_id) {
       // Current user is user1, so show user2's info
       if (conflict.user2_id && otherUserProfile) {
-        const displayName = otherUserProfile.first_name && otherUserProfile.last_name 
-          ? `${otherUserProfile.first_name} ${otherUserProfile.last_name}`
-          : otherUserProfile.username || conflict.user2_email;
+        const displayName = otherUserProfile.username || conflict.user2_email;
         
         return (
           <button
@@ -124,9 +122,7 @@ const ConflictPage: React.FC = () => {
     } else {
       // Current user is user2, so show user1's info
       if (otherUserProfile) {
-        const displayName = otherUserProfile.first_name && otherUserProfile.last_name 
-          ? `${otherUserProfile.first_name} ${otherUserProfile.last_name}`
-          : otherUserProfile.username || 'User 1';
+        const displayName = otherUserProfile.username || 'User 1';
         
         return (
           <button

@@ -150,10 +150,7 @@ const OtherUserProfilePage: React.FC = () => {
           
           <div className="flex-1">
             <h1 className="text-2xl font-bold text-gray-900 mb-2">
-              {profile.first_name && profile.last_name 
-                ? `${profile.first_name} ${profile.last_name}` 
-                : profile.username || 'Anonymous User'
-              }
+              {profile.username || 'Anonymous User'}
             </h1>
             {profile.username && (
               <p className="text-gray-600 mb-2">@{profile.username}</p>
@@ -272,18 +269,18 @@ const OtherUserProfilePage: React.FC = () => {
       {/* Conflict Resolution Philosophy */}
       <div className="mt-6 bg-gradient-to-r from-coral-50 to-teal-50 p-6 rounded-lg border border-gray-200">
         <h3 className="text-lg font-semibold text-gray-900 mb-3">
-          {profile.first_name || profile.username || 'This user'}'s Conflict Resolution Journey
+          {profile.username || 'This user'}'s Conflict Resolution Journey
         </h3>
         <div className="text-sm text-gray-700">
           {sharedConflicts.length > 0 ? (
             <p>
-              You and {profile.first_name || profile.username || 'this user'} have worked through {sharedConflicts.length} conflict{sharedConflicts.length !== 1 ? 's' : ''} together, 
+              You and {profile.username || 'this user'} have worked through {sharedConflicts.length} conflict{sharedConflicts.length !== 1 ? 's' : ''} together, 
               with a {sharedConflicts.length > 0 ? Math.round((resolvedConflicts.length / sharedConflicts.length) * 100) : 0}% resolution rate. 
               {resolvedConflicts.length > 0 && ' That shows real commitment to understanding each other!'}
             </p>
           ) : (
             <p>
-              This is your first time working through a conflict with {profile.first_name || profile.username || 'this user'}. 
+              This is your first time working through a conflict with {profile.username || 'this user'}. 
               Remember: the goal is understanding, not winning.
             </p>
           )}
