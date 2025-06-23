@@ -16,6 +16,9 @@ export interface Profile {
   conflict_archetype?: string;
   archetype_emoji?: string;
   archetype_assigned_at?: string;
+  supporter_level?: string;
+  supporter_emoji?: string;
+  supporter_since?: string;
 }
 
 export interface Conflict {

@@ -48,6 +48,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     //{ name: 'Conflicts', href: '/conflicts', icon: MessageSquare, emoji: '💬' },
     //{ name: 'History', href: '/history', icon: History, emoji: '📚' },
     { name: 'Leaderboard', href: '/leaderboard', icon: Trophy, emoji: '🏆' },
+    { name: 'Support Us', href: '/support-us', icon: User, emoji: '💝' },
     { name: 'Profile', href: '/profile', icon: User, emoji: '👤' },
   ];
 
@@ -86,6 +87,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 Hey, <UserDisplayName 
                   username={user?.username}
                   archetypeEmoji={user?.archetype_emoji}
+                  supporterEmoji={user?.supporter_emoji}
                   fallback={user?.first_name || user?.email || 'User'}
                 />
               </span>

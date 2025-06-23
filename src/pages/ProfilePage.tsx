@@ -241,7 +241,14 @@ const ProfilePage: React.FC = () => {
                   >
                     <X size={16} />
                     <span>Cancel</span>
-                  </button>
+                  <div className="flex items-center space-x-2 text-sm text-gray-500">
+                    <span>Conflict Resolution Specialist</span>
+                    {user?.supporter_level && user?.supporter_emoji && (
+                      <span className="text-coral-500 font-medium">
+                        • Supporter {user.supporter_emoji}
+                      </span>
+                    )}
+                  </div>
                 </>
               ) : (
                 <button
@@ -305,6 +312,35 @@ const ProfilePage: React.FC = () => {
                 })}
               </p>
             )}
+          </div>
+        )}
+
+        {/* Supporter Status Display */}
+        {user?.supporter_level && user?.supporter_emoji && user?.supporter_since && (
+          <div className="bg-gradient-to-r from-yellow-50 to-orange-50 p-6 rounded-lg border-2 border-yellow-200">
+            <div className="flex items-center space-x-3 mb-2">
+              <div className="text-3xl">{user.supporter_emoji}</div>
+              <div>
+                <h3 className="text-lg font-semibold text-orange-900">
+                  Supporter Status: {
+                    user.supporter_level === 'tip_1' ? 'Buy Us a Band-Aid' :
+                    user.supporter_level === 'tip_2' ? "I'm the Problem" :
+                    user.supporter_level === 'tip_3' ? 'Chaos Patron' :
+                    'Supporter'
+                  }
+                </h3>
+                <p className="text-sm text-orange-700">
+                  Since: {new Date(user.supporter_since).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })}
+                </p>
+              </div>
+            </div>
+            <p className="text-sm text-orange-800">
+              Thanks for supporting Squashie! Your supporter badge appears next to your username across the app.
+            </p>
           </div>
         )}
 

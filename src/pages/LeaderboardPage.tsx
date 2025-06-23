@@ -232,6 +232,7 @@ const LeaderboardPage: React.FC = () => {
                             <img
                               src={user.avatar_url}
                               alt={`${user.username || user.first_name || 'Anonymous User'}'s avatar`}
+                              supporterEmoji={user.supporter_emoji}
                               className="w-10 h-10 rounded-full object-cover border-2 border-gray-200"
                             />
                           ) : (

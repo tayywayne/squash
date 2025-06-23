@@ -131,6 +131,7 @@ const ConflictPage: React.FC = () => {
             <UserDisplayName 
               username={otherUserProfile.username}
               archetypeEmoji={otherUserProfile.archetype_emoji}
+              supporterEmoji={otherUserProfile.supporter_emoji}
               fallback={conflict.user2_email}
             />
           </button>
@@ -159,6 +160,7 @@ const ConflictPage: React.FC = () => {
             <UserDisplayName 
               username={otherUserProfile.username}
               archetypeEmoji={otherUserProfile.archetype_emoji}
+              supporterEmoji={otherUserProfile.supporter_emoji}
               fallback="User 1"
             />
           </button>

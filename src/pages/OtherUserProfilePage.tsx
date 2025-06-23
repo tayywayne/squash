@@ -160,6 +160,9 @@ const OtherUserProfilePage: React.FC = () => {
               <UserDisplayName 
                 username={profile.username}
                 archetypeEmoji={profile.archetype_emoji}
+                supporterEmoji={profile.supporter_emoji}
+                supporterEmoji={profile.supporter_emoji}
+                supporterEmoji={profile.supporter_emoji}
                 fallback="Anonymous User"
               />
             </h1>

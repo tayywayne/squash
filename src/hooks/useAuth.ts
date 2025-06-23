@@ -13,6 +13,9 @@ interface AuthUser {
   conflict_archetype?: string;
   archetype_emoji?: string;
   archetype_assigned_at?: string;
+  supporter_level?: string;
+  supporter_emoji?: string;
+  supporter_since?: string;
 }
 
 export const useAuth = () => {
@@ -95,6 +98,9 @@ export const useAuth = () => {
         conflict_archetype: profile?.conflict_archetype,
         archetype_emoji: profile?.archetype_emoji,
         archetype_assigned_at: profile?.archetype_assigned_at,
+        supporter_level: profile?.supporter_level,
+        supporter_emoji: profile?.supporter_emoji,
+        supporter_since: profile?.supporter_since,
       });
     //  console.log('👤 setUserWithProfile: User state updated successfully');
     } catch (error) {

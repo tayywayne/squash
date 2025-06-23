@@ -7,6 +7,7 @@ export interface LeaderboardUser {
   last_name?: string;
   avatar_url?: string;
   archetype_emoji?: string;
+  supporter_emoji?: string;
   total_conflicts: number;
   resolved_conflicts: number;
   resolution_rate: number;

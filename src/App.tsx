@@ -10,6 +10,8 @@ import ConflictPage from './pages/ConflictPage';
 import ProfilePage from './pages/ProfilePage';
 import OtherUserProfilePage from './pages/OtherUserProfilePage';
 import LeaderboardPage from './pages/LeaderboardPage';
+import SupportUsPage from './pages/SupportUsPage';
+import SupportSuccessPage from './pages/SupportSuccessPage';
 
 function App() {
   const { user, loading } = useAuth();
@@ -49,6 +51,8 @@ function App() {
                     <Route path="/profile" element={<ProfilePage />} />
                     <Route path="/user-profile/:userId" element={<OtherUserProfilePage />} />
                     <Route path="/leaderboard" element={<LeaderboardPage />} />
+                    <Route path="/support-us" element={<SupportUsPage />} />
+                    <Route path="/support-success" element={<SupportSuccessPage />} />
                     <Route path="/" element={<Navigate to="/dashboard" replace />} />
                   </Routes>
                 </Layout>
