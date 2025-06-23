@@ -4,6 +4,7 @@ import { useAuth } from '../hooks/useAuth';
 import { conflictService, Conflict } from '../utils/conflicts';
 import { storageService } from '../utils/storage';
 import { archetypeService, ARCHETYPES } from '../utils/archetypes';
+import SupporterCard from '../components/SupporterCard';
 import Toast from '../components/Toast';
 
 const ProfilePage: React.FC = () => {
@@ -63,6 +64,19 @@ const ProfilePage: React.FC = () => {
   const resolvedConflictsCount = conflicts.filter(c => c.status === 'resolved').length;
   const resolutionRate = totalConflictsCount > 0 ? Math.round((resolvedConflictsCount / totalConflictsCount) * 100) : 0;
 
+  // Get supporter background gradient
+  const getSupporterBackgroundGradient = () => {
+    if (!user?.supporter_level) return '';
+    
+    const gradients = {
+      tip_1: 'bg-gradient-to-r from-emerald-100 to-emerald-300',
+      tip_2: 'bg-gradient-to-r from-pink-100 to-pink-400', 
+      tip_3: 'bg-gradient-to-r from-yellow-100 to-red-400'
+    };
+    
+    return gradients[user.supporter_level as keyof typeof gradients] || '';
+  };
+
   const handleEditToggle = () => {
     if (isEditing) {
       // Reset form to current user data
@@ -117,7 +131,8 @@ const ProfilePage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <div className={`min-h-screen ${getSupporterBackgroundGradient()}`}>
+      <div className="max-w-4xl mx-auto p-6">
       {toast && (
         <Toast
           message={toast.message}
@@ -136,7 +151,7 @@ const ProfilePage: React.FC = () => {
 
       <div className="space-y-6">
         {/* User Info */}
-        <div className="bg-white p-6 rounded-lg border border-gray-200">
+        <div className="bg-white/90 backdrop-blur-sm p-6 rounded-lg border border-gray-200 shadow-lg">
           <div className="flex items-start justify-between mb-6">
             <div className="flex items-center space-x-4">
               <div className="relative">
@@ -310,36 +325,16 @@ const ProfilePage: React.FC = () => {
 
         {/* Supporter Status Display */}
         {user?.supporter_level && user?.supporter_emoji && user?.supporter_since && (
-          <div className="bg-gradient-to-r from-yellow-50 to-orange-50 p-6 rounded-lg border-2 border-yellow-200">
-            <div className="flex items-center space-x-3 mb-2">
-              <div className="text-3xl">{user.supporter_emoji}</div>
-              <div>
-                <h3 className="text-lg font-semibold text-orange-900">
-                  Supporter Status: {
-                    user.supporter_level === 'tip_1' ? 'Buy Us a Band-Aid' :
-                    user.supporter_level === 'tip_2' ? "I'm the Problem" :
-                    user.supporter_level === 'tip_3' ? 'Chaos Patron' :
-                    'Supporter'
-                  }
-                </h3>
-                <p className="text-sm text-orange-700">
-                  Since: {new Date(user.supporter_since).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                  })}
-                </p>
-              </div>
-            </div>
-            <p className="text-sm text-orange-800">
-              Thanks for supporting Squashie! Your supporter badge appears next to your username across the app.
-            </p>
-          </div>
+          <SupporterCard
+            supporterLevel={user.supporter_level as 'tip_1' | 'tip_2' | 'tip_3'}
+            supporterEmoji={user.supporter_emoji}
+            supporterSince={user.supporter_since}
+          />
         )}
 
         {/* Tips & Philosophy */}
-        <div className="bg-gradient-to-r from-coral-50 to-teal-50 p-6 rounded-lg border border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">💡 Conflict Resolution Philosophy</h2>
+        <div className="bg-white/80 backdrop-blur-sm p-6 rounded-lg border border-gray-200 shadow-lg">
+          <div className="bg-white/80 backdrop-blur-sm p-6 rounded-lg border border-purple-200 shadow-lg">
           <div className="space-y-3 text-sm text-gray-700">
             <p>
               <strong>Remember:</strong> The goal isn't to "win" – it's to understand and be understood.
@@ -357,7 +352,7 @@ const ProfilePage: React.FC = () => {
         </div>
 
         {/* Profile Tips */}
-        <div className="bg-lavender-50 p-6 rounded-lg border border-lavender-200">
+        <div className="bg-white/80 backdrop-blur-sm p-6 rounded-lg border border-gray-200 shadow-lg">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">👤 Profile Tips</h2>
           <div className="space-y-3 text-sm text-gray-700">
             <p>
@@ -372,6 +367,7 @@ const ProfilePage: React.FC = () => {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 };

@@ -5,6 +5,7 @@ import { profileService } from '../utils/profiles';
 import { conflictService, Conflict } from '../utils/conflicts';
 import { useAuth } from '../hooks/useAuth';
 import UserDisplayName from '../components/UserDisplayName';
+import SupporterCard from '../components/SupporterCard';
 import { archetypeService } from '../utils/archetypes';
 import { Profile } from '../types';
 import Toast from '../components/Toast';
@@ -96,6 +97,19 @@ const OtherUserProfilePage: React.FC = () => {
   const totalClosedConflicts = resolvedConflicts.length + finalJudgmentConflicts.length;
   const activeConflicts = sharedConflicts.filter(c => c.status === 'pending' || c.status === 'active');
 
+  // Get supporter background gradient
+  const getSupporterBackgroundGradient = () => {
+    if (!profile?.supporter_level) return '';
+    
+    const gradients = {
+      tip_1: 'bg-gradient-to-r from-emerald-100 to-emerald-300',
+      tip_2: 'bg-gradient-to-r from-pink-100 to-pink-400', 
+      tip_3: 'bg-gradient-to-r from-yellow-100 to-red-400'
+    };
+    
+    return gradients[profile.supporter_level as keyof typeof gradients] || '';
+  };
+
   if (loading) {
     return (
       <div className="max-w-4xl mx-auto p-6 text-center">
@@ -118,7 +132,8 @@ const OtherUserProfilePage: React.FC = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <div className={`min-h-screen ${getSupporterBackgroundGradient()}`}>
+      <div className="max-w-4xl mx-auto p-6">
       {toast && (
         <Toast
           message={toast.message}
@@ -139,7 +154,7 @@ const OtherUserProfilePage: React.FC = () => {
       </div>
 
       {/* Profile Info */}
-      <div className="bg-white p-6 rounded-lg border border-gray-200 mb-6">
+      <div className="bg-white/90 backdrop-blur-sm p-6 rounded-lg border border-gray-200 shadow-lg mb-6">
         <div className="flex items-start space-x-6">
           <div className="flex-shrink-0">
             {profile.avatar_url ? (
@@ -179,9 +194,19 @@ const OtherUserProfilePage: React.FC = () => {
         </div>
       </div>
 
+      {/* Supporter Status Display */}
+      {profile.supporter_level && profile.supporter_emoji && profile.supporter_since && (
+        <SupporterCard
+          supporterLevel={profile.supporter_level as 'tip_1' | 'tip_2' | 'tip_3'}
+          supporterEmoji={profile.supporter_emoji}
+          supporterSince={profile.supporter_since}
+          className="mb-6"
+        />
+      )}
+
       {/* Conflict Archetype Display */}
       {archetypeInfo && (
-        <div className="bg-white p-6 rounded-lg border border-gray-200 mb-6">
+        <div className="bg-white/80 backdrop-blur-sm p-6 rounded-lg border border-gray-200 shadow-lg mb-6">
           <div className="flex items-center space-x-3 mb-2">
             <span className="text-3xl">{archetypeInfo.emoji}</span>
             <div>
@@ -202,7 +227,7 @@ const OtherUserProfilePage: React.FC = () => {
       )}
 
       {/* Shared Conflict History */}
-      <div className="bg-white p-6 rounded-lg border border-gray-200">
+      <div className="bg-white/80 backdrop-blur-sm p-6 rounded-lg border border-gray-200 shadow-lg">
         <h2 className="text-xl font-semibold text-gray-900 mb-4">
           Your Conflict History Together
         </h2>
@@ -303,7 +328,7 @@ const OtherUserProfilePage: React.FC = () => {
       </div>
 
       {/* Conflict Resolution Philosophy */}
-      <div className="mt-6 bg-gradient-to-r from-coral-50 to-teal-50 p-6 rounded-lg border border-gray-200">
+      <div className="mt-6 bg-white/70 backdrop-blur-sm p-6 rounded-lg border border-gray-200 shadow-lg">
         <h3 className="text-lg font-semibold text-gray-900 mb-3">
           <UserDisplayName 
             username={profile.username}
@@ -337,6 +362,7 @@ const OtherUserProfilePage: React.FC = () => {
           )}
         </div>
       </div>
+    </div>
     </div>
   );
 };

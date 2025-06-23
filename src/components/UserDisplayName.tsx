@@ -22,15 +22,15 @@ const UserDisplayName: React.FC<UserDisplayNameProps> = ({
   const displayName = username || fallback;
   
   return (
-    <span className={className}>
+    <span className={`inline-flex items-center ${className}`}>
       {displayName}
       {showEmoji && archetypeEmoji && (
-        <span className="ml-1" title="Conflict Archetype">
+        <span className="ml-1 inline-block" title="Conflict Archetype">
           {archetypeEmoji}
         </span>
       )}
       {showSupporterEmoji && supporterEmoji && (
-        <span className="ml-1" title="Supporter">
+        <span className="ml-1 inline-block animate-pulse" title="Supporter" style={{ filter: 'drop-shadow(0 0 4px rgba(255, 215, 0, 0.6))' }}>
           {supporterEmoji}
         </span>
       )}
