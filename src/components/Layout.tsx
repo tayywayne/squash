@@ -2,6 +2,7 @@ import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Home, MessageSquare, History, User, LogOut, Trophy } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
+import UserDisplayName from './UserDisplayName';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -42,7 +43,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             
             <div className="flex items-center space-x-4">
               <span className="text-sm text-gray-600">
-                Hey, {user?.first_name || user?.username || user?.email}
+                Hey, <UserDisplayName 
+                  username={user?.username}
+                  archetypeEmoji={user?.archetype_emoji}
+                  fallback={user?.first_name || user?.email || 'User'}
+                />
               </span>
               <button
                 onClick={handleSignOut}

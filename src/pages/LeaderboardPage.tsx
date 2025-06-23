@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Trophy, Medal, Award, User, TrendingUp, TrendingDown, Calendar, Clock } from 'lucide-react';
 import { leaderboardService, LeaderboardUser } from '../utils/leaderboard';
 import { useNavigate } from 'react-router-dom';
+import UserDisplayName from '../components/UserDisplayName';
 import Toast from '../components/Toast';
 
 type TimeFrame = 'all-time' | 'weekly';
@@ -56,10 +57,6 @@ const LeaderboardPage: React.FC = () => {
     
     return sorted;
   }, [leaderboardData, category]);
-
-  const getUserDisplayName = (user: LeaderboardUser) => {
-    return user.username || 'Anonymous User';
-  };
 
   const getRankIcon = (rank: number) => {
     switch (rank) {
@@ -247,7 +244,11 @@ const LeaderboardPage: React.FC = () => {
                               onClick={() => navigate(`/user-profile/${user.user_id}`)}
                               className="font-medium text-gray-900 hover:text-coral-600 transition-colors"
                             >
-                              {getUserDisplayName(user)}
+                              <UserDisplayName 
+                                username={user.username}
+                                archetypeEmoji={user.archetype_emoji}
+                                fallback="Anonymous User"
+                              />
                             </button>
                             {user.username && (
                               <p className="text-sm text-gray-500">@{user.username}</p>

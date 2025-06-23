@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { User, Bell, Trash2, Download, Shield, Edit3, Save, X, Camera, Upload, AlertCircle } from 'lucide-react';
+import { User, Bell, Trash2, Download, Shield, Edit3, Save, X, Camera, Upload, AlertCircle, Award } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { conflictService, Conflict } from '../utils/conflicts';
 import { storageService } from '../utils/storage';
+import { archetypeService, ARCHETYPES } from '../utils/archetypes';
 import Toast from '../components/Toast';
 
 const ProfilePage: React.FC = () => {
@@ -23,6 +24,9 @@ const ProfilePage: React.FC = () => {
     weeklyDigest: false,
   });
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
+
+  // Get archetype info
+  const archetypeInfo = user?.conflict_archetype ? archetypeService.getArchetypeInfo(user.conflict_archetype) : null;
 
   // Initialize edit form when entering edit mode
   React.useEffect(() => {
@@ -277,6 +281,32 @@ const ProfilePage: React.FC = () => {
             </div>
           )}
         </div>
+
+        {/* Conflict Archetype Display */}
+        {archetypeInfo && (
+          <div className="mt-6 p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200">
+            <div className="flex items-center space-x-3 mb-2">
+              <Award className="h-5 w-5 text-purple-600" />
+              <h3 className="text-lg font-semibold text-purple-900">Conflict Archetype</h3>
+            </div>
+            <div className="flex items-center space-x-3 mb-2">
+              <span className="text-3xl">{archetypeInfo.emoji}</span>
+              <div>
+                <h4 className="text-xl font-bold text-purple-800">{archetypeInfo.title}</h4>
+                <p className="text-sm text-purple-700">{archetypeInfo.description}</p>
+              </div>
+            </div>
+            {user?.archetype_assigned_at && (
+              <p className="text-xs text-purple-600 mt-2">
+                Assigned: {new Date(user.archetype_assigned_at).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })}
+              </p>
+            )}
+          </div>
+        )}
 
         {/* Notification Settings - Hidden until functionality is implemented */}
         {/* 

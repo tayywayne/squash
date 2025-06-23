@@ -10,6 +10,9 @@ interface AuthUser {
   first_name?: string;
   last_name?: string;
   avatar_url?: string;
+  conflict_archetype?: string;
+  archetype_emoji?: string;
+  archetype_assigned_at?: string;
 }
 
 export const useAuth = () => {
@@ -89,6 +92,9 @@ export const useAuth = () => {
         first_name: profile?.first_name,
         last_name: profile?.last_name,
         avatar_url: profile?.avatar_url,
+        conflict_archetype: profile?.conflict_archetype,
+        archetype_emoji: profile?.archetype_emoji,
+        archetype_assigned_at: profile?.archetype_assigned_at,
       });
     //  console.log('👤 setUserWithProfile: User state updated successfully');
     } catch (error) {

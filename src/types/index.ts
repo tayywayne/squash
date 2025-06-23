@@ -13,6 +13,9 @@ export interface Profile {
   avatar_url?: string;
   created_at: string;
   updated_at: string;
+  conflict_archetype?: string;
+  archetype_emoji?: string;
+  archetype_assigned_at?: string;
 }
 
 export interface Conflict {

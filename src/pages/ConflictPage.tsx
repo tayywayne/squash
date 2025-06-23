@@ -5,6 +5,7 @@ import { useAuth } from '../hooks/useAuth';
 import { conflictService, Conflict } from '../utils/conflicts';
 import { profileService } from '../utils/profiles';
 import MoodIndicator from '../components/MoodIndicator';
+import UserDisplayName from '../components/UserDisplayName';
 import Toast from '../components/Toast';
 import { Profile } from '../types';
 
@@ -112,28 +113,52 @@ const ConflictPage: React.FC = () => {
             onClick={() => navigate(`/user-profile/${conflict.user2_id}`)}
             className="text-coral-500 hover:text-coral-600 font-medium underline"
           >
-            {displayName}
+            <UserDisplayName 
+              username={otherUserProfile.username}
+              archetypeEmoji={otherUserProfile.archetype_emoji}
+              fallback={conflict.user2_email}
+            />
           </button>
         );
       } else {
         // User2 hasn't registered yet, just show email
-        return <span className="text-gray-600">{conflict.user2_email}</span>;
+        return (
+          <span className="text-gray-600">
+            <UserDisplayName 
+              username={undefined}
+              archetypeEmoji={undefined}
+              fallback={conflict.user2_email}
+              showEmoji={false}
+            />
+          </span>
+        );
       }
     } else {
       // Current user is user2, so show user1's info
       if (otherUserProfile) {
-        const displayName = otherUserProfile.username || 'User 1';
-        
         return (
           <button
             onClick={() => navigate(`/user-profile/${conflict.user1_id}`)}
             className="text-coral-500 hover:text-coral-600 font-medium underline"
           >
-            {displayName}
+            <UserDisplayName 
+              username={otherUserProfile.username}
+              archetypeEmoji={otherUserProfile.archetype_emoji}
+              fallback="User 1"
+            />
           </button>
         );
       } else {
-        return <span className="text-gray-600">You were invited</span>;
+        return (
+          <span className="text-gray-600">
+            <UserDisplayName 
+              username={undefined}
+              archetypeEmoji={undefined}
+              fallback="You were invited"
+              showEmoji={false}
+            />
+          </span>
+        );
       }
     }
   };

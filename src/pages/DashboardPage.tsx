@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { Plus, MessageSquare, Clock, CheckCircle, Users } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import MoodIndicator from '../components/MoodIndicator';
+import UserDisplayName from '../components/UserDisplayName';
+import { archetypeService } from '../utils/archetypes';
 import { conflictService, Conflict } from '../utils/conflicts';
 import { MoodLevel } from '../types';
 
@@ -13,6 +15,21 @@ const DashboardPage: React.FC = () => {
   const [currentMood, setCurrentMood] = useState<MoodLevel>('meh');
   const [conflicts, setConflicts] = useState<Conflict[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Trigger archetype assignment when user loads dashboard
+  React.useEffect(() => {
+    const assignUserArchetype = async () => {
+      if (user?.id) {
+        try {
+          await archetypeService.assignArchetype(user.id);
+        } catch (error) {
+          console.error('Error assigning user archetype:', error);
+        }
+      }
+    };
+
+    assignUserArchetype();
+  }, [user?.id]);
 
   // Load user conflicts
   React.useEffect(() => {

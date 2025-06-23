@@ -4,6 +4,8 @@ import { ArrowLeft, User, Calendar, MessageSquare, CheckCircle } from 'lucide-re
 import { profileService } from '../utils/profiles';
 import { conflictService, Conflict } from '../utils/conflicts';
 import { useAuth } from '../hooks/useAuth';
+import UserDisplayName from '../components/UserDisplayName';
+import { archetypeService } from '../utils/archetypes';
 import { Profile } from '../types';
 import Toast from '../components/Toast';
 
@@ -16,6 +18,9 @@ const OtherUserProfilePage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [conflictsLoading, setConflictsLoading] = useState(true);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
+
+  // Get archetype info
+  const archetypeInfo = profile?.conflict_archetype ? archetypeService.getArchetypeInfo(profile.conflict_archetype) : null;
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -150,7 +155,11 @@ const OtherUserProfilePage: React.FC = () => {
           
           <div className="flex-1">
             <h1 className="text-2xl font-bold text-gray-900 mb-2">
-              {profile.username || 'Anonymous User'}
+              <UserDisplayName 
+                username={profile.username}
+                archetypeEmoji={profile.archetype_emoji}
+                fallback="Anonymous User"
+              />
             </h1>
             {profile.username && (
               <p className="text-gray-600 mb-2">@{profile.username}</p>
@@ -164,6 +173,28 @@ const OtherUserProfilePage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Conflict Archetype Display */}
+      {archetypeInfo && (
+        <div className="bg-white p-6 rounded-lg border border-gray-200 mb-6">
+          <div className="flex items-center space-x-3 mb-2">
+            <span className="text-3xl">{archetypeInfo.emoji}</span>
+            <div>
+              <h3 className="text-xl font-semibold text-gray-900">{archetypeInfo.title}</h3>
+              <p className="text-sm text-gray-600">{archetypeInfo.description}</p>
+            </div>
+          </div>
+          {profile.archetype_assigned_at && (
+            <p className="text-xs text-gray-500 mt-2">
+              Assigned: {new Date(profile.archetype_assigned_at).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              })}
+            </p>
+          )}
+        </div>
+      )}
 
       {/* Shared Conflict History */}
       <div className="bg-white p-6 rounded-lg border border-gray-200">
@@ -269,18 +300,33 @@ const OtherUserProfilePage: React.FC = () => {
       {/* Conflict Resolution Philosophy */}
       <div className="mt-6 bg-gradient-to-r from-coral-50 to-teal-50 p-6 rounded-lg border border-gray-200">
         <h3 className="text-lg font-semibold text-gray-900 mb-3">
-          {profile.username || 'This user'}'s Conflict Resolution Journey
+          <UserDisplayName 
+            username={profile.username}
+            archetypeEmoji={profile.archetype_emoji}
+            fallback="This user"
+            showEmoji={false}
+          />'s Conflict Resolution Journey
         </h3>
         <div className="text-sm text-gray-700">
           {sharedConflicts.length > 0 ? (
             <p>
-              You and {profile.username || 'this user'} have worked through {sharedConflicts.length} conflict{sharedConflicts.length !== 1 ? 's' : ''} together, 
+              You and <UserDisplayName 
+                username={profile.username}
+                archetypeEmoji={profile.archetype_emoji}
+                fallback="this user"
+                showEmoji={false}
+              /> have worked through {sharedConflicts.length} conflict{sharedConflicts.length !== 1 ? 's' : ''} together, 
               with a {sharedConflicts.length > 0 ? Math.round((resolvedConflicts.length / sharedConflicts.length) * 100) : 0}% resolution rate. 
               {resolvedConflicts.length > 0 && ' That shows real commitment to understanding each other!'}
             </p>
           ) : (
             <p>
-              This is your first time working through a conflict with {profile.username || 'this user'}. 
+              This is your first time working through a conflict with <UserDisplayName 
+                username={profile.username}
+                archetypeEmoji={profile.archetype_emoji}
+                fallback="this user"
+                showEmoji={false}
+              />. 
               Remember: the goal is understanding, not winning.
             </p>
           )}
