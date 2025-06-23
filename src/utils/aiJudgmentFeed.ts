@@ -4,7 +4,7 @@ export interface PublicAIRuling {
   conflict_id: string;
   title: string;
   ai_final_summary: string;
-  ai_final_ruling: string;
+  final_ai_ruling: string;
   final_ruling_issued_at: string;
   user1_username?: string;
   user2_username?: string;
