@@ -131,7 +131,7 @@ const HomePage: React.FC = () => {
       {/* Hero Section */}
       <section className="relative py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="text-6xl mb-6 animate-bounce-gentle">🥊</div>
+          <div className="text-6xl mb-6 animate-bounce-gentle">💣</div>
           <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
             Squash Your Beef,
             <br />
