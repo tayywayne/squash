@@ -37,7 +37,7 @@ const SupportUsPage: React.FC = () => {
     {
       id: 'tip_3',
       name: 'Chaos Patron',
-      emoji: '🔥👑',
+      emoji: '👑',
       price: '$10',
       description: 'You create drama, we solve it. Fair trade.',
       icon: Crown,
