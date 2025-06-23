@@ -138,8 +138,8 @@ const HomePage: React.FC = () => {
             <span className="text-coral-500">isn’t a resolution strategy.</span>
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
-            AI-powered conflict resolution for when you need to hash it out but don't want to burn bridges. 
-            Because not everyone can afford a therapist, but everyone deserves to be heard.
+            Squash your drama with friends, coworkers, roommates, or whoever’s driving you nuts, without risking a full-blown fallout. 
+            With a little AI-powered mediation (and a dash of public shaming if all else fails), Squash’n’Go helps you patch things up before they explode.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
