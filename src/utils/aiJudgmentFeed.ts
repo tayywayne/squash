@@ -6,13 +6,15 @@ export interface PublicAIRuling {
   ai_final_summary: string;
   final_ai_ruling: string;
   final_ruling_issued_at: string;
+  user1_id: string;
+  user2_id: string;
   user1_username?: string;
   user2_username?: string;
   user1_archetype_emoji?: string;
   user2_archetype_emoji?: string;
   user1_supporter_emoji?: string;
   user2_supporter_emoji?: string;
-  total_votes: number;
+  vote_counts: Record<string, number>;
 }
 
 export interface VoteCount {
