@@ -33,7 +33,6 @@ function App() {
       <Routes>
         {/* Public routes - accessible to everyone */}
         <Route path="/" element={user ? <Navigate to="/dashboard" replace /> : <HomePage />} />
-        <Route path="/public-shame" element={<AIJudgmentFeedPage />} />
         <Route path="/support-success" element={<SupportSuccessPage />} />
         
         {user ? (
@@ -58,6 +57,7 @@ function App() {
                     <Route path="/user-profile/:userId" element={<OtherUserProfilePage />} />
                     <Route path="/leaderboard" element={<LeaderboardPage />} />
                     <Route path="/support-us" element={<SupportUsPage />} />
+                    <Route path="/public-shame" element={<AIJudgmentFeedPage />} />
                   </Routes>
                 </Layout>
               }
@@ -67,6 +67,7 @@ function App() {
           // Unauthenticated routes
           <>
             <Route path="/login" element={<AuthPage />} />
+            <Route path="/public-shame" element={<AIJudgmentFeedPage />} />
             <Route path="/*" element={<Navigate to="/" replace />} />
           </>
         )}
