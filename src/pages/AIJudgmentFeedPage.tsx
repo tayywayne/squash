@@ -9,7 +9,7 @@ import Toast from '../components/Toast';
 const AIJudgmentFeedPage: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [rulings, setRulings] = useState<PublicAIRuling[]>([]);
+  const [rulings, setRulings] = useState<PublicAIRulFaiing[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedRuling, setExpandedRuling] = useState<string | null>(null);
   const [voteCounts, setVoteCounts] = useState<Record<string, VoteCount[]>>({});
