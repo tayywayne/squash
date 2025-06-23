@@ -127,9 +127,13 @@ export const aiJudgmentFeedService = {
         .from('conflicts')
         .select('user1_id, user2_id')
         .eq('id', conflictId)
-        .single();
+        .maybeSingle();
 
       if (error) {
+        return { canVote: false, reason: 'Conflict not found' };
+      }
+
+      if (!conflict) {
         return { canVote: false, reason: 'Conflict not found' };
       }
 
