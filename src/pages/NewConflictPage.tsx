@@ -216,7 +216,7 @@ const NewConflictPage: React.FC = () => {
             />
             <div className="flex justify-between items-center mt-2">
               <p className="text-xs text-gray-500">
-                Vent freely. Just know we’re about to turn it into a TED Talk whether you like it or not.
+                They wont see anything you write, so have at it.
               </p>
               <span className="text-xs text-gray-500">
                 {formData.description.length}/1000
@@ -245,7 +245,7 @@ const NewConflictPage: React.FC = () => {
             </li>
             <li className="flex items-start">
               <span className="w-2 h-2 bg-teal-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-              <span>This isn’t your diary. If your message is over 500 words and includes the phrase ‘like that time in 2019’ — edit.</span>
+              <span>This isn’t your diary. If your message is over 1000 characters and includes the phrase ‘like that time in 2019’ — edit.</span>
             </li>
           </ul>
         </div>
