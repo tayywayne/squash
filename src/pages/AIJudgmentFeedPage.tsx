@@ -160,7 +160,10 @@ const AIJudgmentFeedPage: React.FC = () => {
             </div>
             <div>
               <div className="text-2xl font-bold text-purple-600">
-                {rulings.reduce((sum, r) => sum + r.total_votes, 0)}
+                {rulings.reduce((sum, r) => {
+                  const totalVotes = Object.values(r.vote_counts || {}).reduce((voteSum, count) => voteSum + count, 0);
+                  return sum + totalVotes;
+                }, 0)}
               </div>
               <div className="text-sm text-gray-600">Public Votes Cast</div>
             </div>
@@ -200,19 +203,47 @@ const AIJudgmentFeedPage: React.FC = () => {
                       <div className="flex items-center space-x-2">
                         <Users size={16} />
                         <span>
-                          <UserDisplayName 
-                            username={ruling.user1_username}
-                            archetypeEmoji={ruling.user1_archetype_emoji}
-                            supporterEmoji={ruling.user1_supporter_emoji}
-                            fallback="User 1"
-                          />
+                          {ruling.user1_id ? (
+                            <button
+                              onClick={() => navigate(`/user-profile/${ruling.user1_id}`)}
+                              className="text-coral-500 hover:text-coral-600 font-medium underline"
+                            >
+                              <UserDisplayName 
+                                username={ruling.user1_username}
+                                archetypeEmoji={ruling.user1_archetype_emoji}
+                                supporterEmoji={ruling.user1_supporter_emoji}
+                                fallback="User 1"
+                              />
+                            </button>
+                          ) : (
+                            <UserDisplayName 
+                              username={ruling.user1_username}
+                              archetypeEmoji={ruling.user1_archetype_emoji}
+                              supporterEmoji={ruling.user1_supporter_emoji}
+                              fallback="User 1"
+                            />
+                          )}
                           {' vs '}
-                          <UserDisplayName 
-                            username={ruling.user2_username}
-                            archetypeEmoji={ruling.user2_archetype_emoji}
-                            supporterEmoji={ruling.user2_supporter_emoji}
-                            fallback="User 2"
-                          />
+                          {ruling.user2_id ? (
+                            <button
+                              onClick={() => navigate(`/user-profile/${ruling.user2_id}`)}
+                              className="text-coral-500 hover:text-coral-600 font-medium underline"
+                            >
+                              <UserDisplayName 
+                                username={ruling.user2_username}
+                                archetypeEmoji={ruling.user2_archetype_emoji}
+                                supporterEmoji={ruling.user2_supporter_emoji}
+                                fallback="User 2"
+                              />
+                            </button>
+                          ) : (
+                            <UserDisplayName 
+                              username={ruling.user2_username}
+                              archetypeEmoji={ruling.user2_archetype_emoji}
+                              supporterEmoji={ruling.user2_supporter_emoji}
+                              fallback="User 2"
+                            />
+                          )}
                         </span>
                       </div>
                       <div className="flex items-center space-x-1">
@@ -221,7 +252,9 @@ const AIJudgmentFeedPage: React.FC = () => {
                       </div>
                       <div className="flex items-center space-x-1">
                         <MessageSquare size={16} />
-                        <span>{ruling.total_votes} votes</span>
+                        <span>
+                          {Object.values(ruling.vote_counts || {}).reduce((sum, count) => sum + count, 0)} votes
+                        </span>
                       </div>
                     </div>
                   </div>
