@@ -193,7 +193,7 @@ const DashboardPage: React.FC = () => {
           Time to face the music. How's your conflict resolution game today?
         </p>
         
-        {/* Mood Selector */}
+        {/* Mood Selector
         <div className="mt-4 p-4 bg-white rounded-lg border border-gray-200">
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Current Mood Check-in:
@@ -203,7 +203,7 @@ const DashboardPage: React.FC = () => {
             interactive 
             onMoodChange={setCurrentMood}
           />
-        </div>
+        </div> */}
       </div>
       
       {/* Quick Stats */}
