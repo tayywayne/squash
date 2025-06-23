@@ -96,8 +96,8 @@ const ConflictPage: React.FC = () => {
       return canRespond ? 'input' : 'waiting';
     }
     
-    // Core issues phase - after rehash when users need to clarify core issues
-    if (needsCoreIssueFromUser) {
+    // Core issues phase - after rehash when users need to clarify core issues OR when waiting for other user
+    if (canSubmitCoreIssue) {
       return 'core-issues';
     }
     
