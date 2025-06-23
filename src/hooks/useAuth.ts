@@ -90,9 +90,9 @@ export const useAuth = () => {
         last_name: profile?.last_name,
         avatar_url: profile?.avatar_url,
       });
-      console.log('👤 setUserWithProfile: User state updated successfully');
+    //  console.log('👤 setUserWithProfile: User state updated successfully');
     } catch (error) {
-      console.error('❌ setUserWithProfile: Error setting user with profile:', error);
+   //   console.error('❌ setUserWithProfile: Error setting user with profile:', error);
       // Set user to null as fallback to prevent stuck states
       setUser(null);
     }
@@ -101,20 +101,20 @@ export const useAuth = () => {
   useEffect(() => {
     // Check for existing session
     const checkUser = async () => {
-      console.log('🚀 checkUser: Starting authentication check');
+    //  console.log('🚀 checkUser: Starting authentication check');
       try {
-        console.log('🚀 checkUser: Calling auth.getSession()');
+     //   console.log('🚀 checkUser: Calling auth.getSession()');
         const { data, error } = await auth.getSession();
-        console.log('🚀 checkUser: getSession result - data:', data, 'error:', error);
+      //  console.log('🚀 checkUser: getSession result - data:', data, 'error:', error);
         if (error) {
-          console.error('❌ checkUser: Session check failed:', error);
-          console.error('Session check failed:', error);
+         // console.error('❌ checkUser: Session check failed:', error);
+         // console.error('Session check failed:', error);
         } else if (data.session?.user) {
-          console.log('✅ checkUser: Valid session found, setting user with profile');
+         // console.log('✅ checkUser: Valid session found, setting user with profile');
           await setUserWithProfile(data.session.user);
-          console.log('✅ checkUser: User profile set successfully');
+         // console.log('✅ checkUser: User profile set successfully');
         } else {
-          console.log('ℹ️ checkUser: No valid session found');
+         // console.log('ℹ️ checkUser: No valid session found');
         }
       } catch (error) {
         console.error('❌ checkUser: Unexpected error during auth check:', error);
