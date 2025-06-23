@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Mail, MessageSquare, ArrowLeft, Send } from 'lucide-react';
+import { Mail, MessageSquare, ArrowLeft, Send, CheckCircle, AlertCircle } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import MoodIndicator from '../components/MoodIndicator';
 import Toast from '../components/Toast';
 import { conflictService } from '../utils/conflicts';
 import { archetypeService } from '../utils/archetypes';
+import { userLookupService } from '../utils/userLookup';
+import { inviteService } from '../utils/invites';
 import { MoodLevel } from '../types';
 
 const NewConflictPage: React.FC = () => {
@@ -18,6 +20,9 @@ const NewConflictPage: React.FC = () => {
   });
   const [currentMood, setCurrentMood] = useState<MoodLevel>('annoyed');
   const [loading, setLoading] = useState(false);
+  const [emailCheckLoading, setEmailCheckLoading] = useState(false);
+  const [userExists, setUserExists] = useState<boolean | null>(null);
+  const [emailCheckError, setEmailCheckError] = useState<string | null>(null);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -28,6 +33,44 @@ const NewConflictPage: React.FC = () => {
     }));
   };
 
+  const checkEmailExists = async (email: string) => {
+    if (!email.trim() || !email.includes('@')) {
+      setUserExists(null);
+      setEmailCheckError(null);
+      return;
+    }
+
+    setEmailCheckLoading(true);
+    setEmailCheckError(null);
+    
+    try {
+      const result = await userLookupService.checkUserExists(email);
+      
+      if (result.error) {
+        setEmailCheckError(result.error);
+        setUserExists(null);
+      } else {
+        setUserExists(result.exists);
+      }
+    } catch (error) {
+      console.error('Error checking email:', error);
+      setEmailCheckError('Failed to check email');
+      setUserExists(null);
+    } finally {
+      setEmailCheckLoading(false);
+    }
+  };
+
+  // Debounced email checking
+  React.useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (formData.otherUserEmail) {
+        checkEmailExists(formData.otherUserEmail);
+      }
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [formData.otherUserEmail]);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -55,6 +98,34 @@ const NewConflictPage: React.FC = () => {
         mood: currentMood
       }, user.id);
       
+      // If the user doesn't exist, send an invite email
+      if (userExists === false) {
+        try {
+          const inviterName = user.first_name || user.username || 'Someone';
+          await inviteService.sendConflictInvite({
+            to_email: formData.otherUserEmail,
+            conflict_id: conflictId,
+            inviter_name: inviterName
+          });
+          
+          setToast({ 
+            message: 'Conflict created and invite sent! They\'ll get an email to join Squashie.', 
+            type: 'success' 
+          });
+        } catch (inviteError) {
+          console.error('Error sending invite:', inviteError);
+          setToast({ 
+            message: 'Conflict created, but failed to send invite email. They can still join manually.', 
+            type: 'info' 
+          });
+        }
+      } else {
+        setToast({ 
+          message: 'Conflict created! The other party will be notified. Time to get this sorted.', 
+          type: 'success' 
+        });
+      }
+      
       // Update user's archetype after creating a conflict
       try {
         await archetypeService.assignArchetype(user.id);
@@ -62,11 +133,6 @@ const NewConflictPage: React.FC = () => {
         console.error('Error updating archetype after conflict creation:', error);
         // Don't fail the conflict creation if archetype update fails
       }
-      
-      setToast({ 
-        message: 'Conflict created! The other party will be notified. Time to get this sorted.', 
-        type: 'success' 
-      });
       
       // Navigate to dashboard after a brief delay
       setTimeout(() => {
@@ -196,6 +262,41 @@ const NewConflictPage: React.FC = () => {
                 placeholder="their.email@example.com"
               />
             </div>
+            
+            {/* Email Status Indicator */}
+            {formData.otherUserEmail && (
+              <div className="mt-2">
+                {emailCheckLoading ? (
+                  <div className="flex items-center space-x-2 text-sm text-gray-500">
+                    <div className="animate-spin rounded-full h-3 w-3 border-2 border-gray-300 border-t-gray-600"></div>
+                    <span>Checking email...</span>
+                  </div>
+                ) : emailCheckError ? (
+                  <div className="flex items-center space-x-2 text-sm text-red-600">
+                    <AlertCircle size={14} />
+                    <span>Unable to verify email</span>
+                  </div>
+                ) : userExists === true ? (
+                  <div className="flex items-center space-x-2 text-sm text-green-600">
+                    <CheckCircle size={14} />
+                    <span>This person has a Squashie account</span>
+                  </div>
+                ) : userExists === false ? (
+                  <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                    <div className="flex items-start space-x-2 text-sm text-blue-800">
+                      <Mail size={14} className="mt-0.5 flex-shrink-0" />
+                      <div>
+                        <p className="font-medium">This person doesn't have an account yet</p>
+                        <p className="text-blue-700 mt-1">
+                          Sending this conflict will invite them to join Squashie!
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+            )}
+            
             <p className="text-xs text-gray-500 mt-1">
               They'll get an invitation to join this conflict resolution session.
             </p>
