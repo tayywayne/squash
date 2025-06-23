@@ -24,7 +24,7 @@ export const useAuth = () => {
       // Create a timeout promise that rejects after 10 seconds
       const timeoutPromise = new Promise((_, reject) => {
         setTimeout(() => {
-          reject(new Error('Profile fetch timeout - query took longer than 20 seconds'));
+          reject(new Error('Profile fetch timeout - query took longer than 2 seconds'));
         }, 2000);
       });
       
