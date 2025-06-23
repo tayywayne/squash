@@ -17,7 +17,7 @@ const SupporterCard: React.FC<SupporterCardProps> = ({
   const supporterConfig = {
     tip_1: {
       title: 'Band-Aid Buyer',
-      gradient: 'bg-gradient-to-r from-emerald-100 to-emerald-300',
+      gradient: 'bg-gradient-to-r from-blue-400 to-blue-600',
       borderColor: 'border-emerald-300',
       textColor: 'text-emerald-800',
       blurb: 'Thanks for patching up our server costs! 🩹'
@@ -34,7 +34,7 @@ const SupporterCard: React.FC<SupporterCardProps> = ({
       gradient: 'bg-gradient-to-r from-yellow-100 to-red-400',
       borderColor: 'border-orange-300',
       textColor: 'text-orange-900',
-      blurb: 'You create drama, we solve it. Fair trade! 🔥👑'
+      blurb: 'You create drama, we solve it. Fair trade! 👑'
     }
   };
 
