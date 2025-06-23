@@ -598,7 +598,7 @@ const ConflictPage: React.FC = () => {
                   })}
                 </div>
                 <div className="text-red-300 text-sm">
-                  🔒 This conflict is now permanently closed. No further changes can be made.
+                  🔒 This conflict is now permanently closed. No further changes can be made. This conflict will reflect poorly on your conflict resolution stats becuase you guys clearly can't figure shit out.
                 </div>
               </div>
             </div>
