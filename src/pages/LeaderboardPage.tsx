@@ -231,7 +231,7 @@ const LeaderboardPage: React.FC = () => {
                           {user.avatar_url ? (
                             <img
                               src={user.avatar_url}
-                              alt={`${getUserDisplayName(user)}'s avatar`}
+                              alt={`${user.username || user.first_name || 'Anonymous User'}'s avatar`}
                               className="w-10 h-10 rounded-full object-cover border-2 border-gray-200"
                             />
                           ) : (
