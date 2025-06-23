@@ -84,7 +84,7 @@ Deno.serve(async (req: Request) => {
           quantity: 1,
         },
       ],
-      success_url: `${Deno.env.get('SITE_URL') || 'http://localhost:5173'}/support-success`,
+      success_url: `${Deno.env.get('SITE_URL') || 'http://localhost:5173'}/support-success?tipId=${tip_level}`,
       cancel_url: `${Deno.env.get('SITE_URL') || 'http://localhost:5173'}/support-us`,
       metadata: {
         user_id: user_id,

@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, CheckCircle, Sparkles, ExternalLink } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import Toast from '../components/Toast';
 
 const SupportSuccessPage: React.FC = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { user, loading: authLoading, updateProfile } = useAuth();
   const [loading, setLoading] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
+  
+  // Get the tip ID from URL parameters
+  const tipIdFromUrl = searchParams.get('tipId') as 'tip_1' | 'tip_2' | 'tip_3' | null;
 
   const supportTiers = [
     {
@@ -41,12 +45,24 @@ const SupportSuccessPage: React.FC = () => {
     }
   ];
 
+  // Filter to show only the selected tip tier
+  const selectedTier = tipIdFromUrl ? supportTiers.find(tier => tier.id === tipIdFromUrl) : null;
+  const displayTiers = selectedTier ? [selectedTier] : supportTiers;
+
   // Redirect if not logged in (only after auth loading is complete)
   React.useEffect(() => {
     if (!authLoading && !user) {
       setToast({ message: 'Please log in to confirm your tip', type: 'error' });
     }
   }, [user, authLoading, navigate]);
+
+  // Auto-confirm tip if tipId is in URL and user is authenticated
+  React.useEffect(() => {
+    if (!authLoading && user && tipIdFromUrl && selectedTier && !confirmed && !loading) {
+      console.log('Auto-confirming tip:', tipIdFromUrl);
+      handleConfirmTip(selectedTier);
+    }
+  }, [user, authLoading, tipIdFromUrl, selectedTier, confirmed, loading]);
 
   const handleConfirmTip = async (tier: typeof supportTiers[0]) => {
     if (!user) {
@@ -197,10 +213,10 @@ const SupportSuccessPage: React.FC = () => {
       {/* Confirmation Buttons */}
       <div className="space-y-4 mb-8">
         <h2 className="text-lg font-semibold text-gray-900 text-center mb-6">
-          Select the tip you just completed:
+          {tipIdFromUrl ? 'Confirming your tip...' : 'Select the tip you just completed:'}
         </h2>
         
-        {supportTiers.map((tier) => (
+        {displayTiers.map((tier) => (
           <button
             key={tier.id}
             onClick={() => handleConfirmTip(tier)}
@@ -229,23 +245,37 @@ const SupportSuccessPage: React.FC = () => {
         ))}
       </div>
 
-      {/* Help Text */}
-      <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
-        <h3 className="font-medium text-yellow-900 mb-2">
-          💡 Payment completed automatically?
-        </h3>
-        <p className="text-sm text-yellow-800">
-          If you used our new integrated checkout, your supporter status should update automatically! 
-          If it doesn't appear within a few minutes, you can manually confirm it above.
-        </p>
-        <button
-          onClick={() => navigate('/support-us')}
-          className="mt-2 text-yellow-900 underline hover:text-yellow-700 text-sm flex items-center space-x-1"
-        >
-          <ExternalLink size={14} />
-          <span>Go back to make a tip</span>
-        </button>
-      </div>
+      {/* Help Text - only show if no tipId in URL */}
+      {!tipIdFromUrl && (
+        <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+          <h3 className="font-medium text-yellow-900 mb-2">
+            💡 Payment completed automatically?
+          </h3>
+          <p className="text-sm text-yellow-800">
+            If you used our new integrated checkout, your supporter status should update automatically! 
+            If it doesn't appear within a few minutes, you can manually confirm it above.
+          </p>
+          <button
+            onClick={() => navigate('/support-us')}
+            className="mt-2 text-yellow-900 underline hover:text-yellow-700 text-sm flex items-center space-x-1"
+          >
+            <ExternalLink size={14} />
+            <span>Go back to make a tip</span>
+          </button>
+        </div>
+      )}
+      
+      {/* Show message if tipId is invalid */}
+      {tipIdFromUrl && !selectedTier && (
+        <div className="bg-red-50 p-4 rounded-lg border border-red-200">
+          <h3 className="font-medium text-red-900 mb-2">
+            ⚠️ Invalid Tip Reference
+          </h3>
+          <p className="text-sm text-red-800">
+            The tip reference in the URL is not valid. Please select your tip manually above.
+          </p>
+        </div>
+      )}
 
       {/* Footer */}
       <div className="mt-8 text-center">
