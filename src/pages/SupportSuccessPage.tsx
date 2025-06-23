@@ -45,7 +45,6 @@ const SupportSuccessPage: React.FC = () => {
   React.useEffect(() => {
     if (!authLoading && !user) {
       setToast({ message: 'Please log in to confirm your tip', type: 'error' });
-      setTimeout(() => navigate('/login'), 2000);
     }
   }, [user, authLoading, navigate]);
 
