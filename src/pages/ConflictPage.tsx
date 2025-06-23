@@ -689,7 +689,6 @@ const ConflictPage: React.FC = () => {
                     </button>
                   </div>
                 ) : null /* Both users have voted, show neither waiting nor voting buttons */}
-                )}
               </>
             )}
             
