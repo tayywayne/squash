@@ -1,8 +1,11 @@
 import React from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Home, MessageSquare, History, User, LogOut, Trophy } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import UserDisplayName from './UserDisplayName';
+import Toast from './Toast';
+import { archetypeService } from '../utils/archetypes';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -12,6 +15,33 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
+  const previousArchetypeRef = useRef<string | undefined>(undefined);
+
+  // Watch for archetype changes and show toast notification
+  useEffect(() => {
+    const currentArchetype = user?.conflict_archetype;
+    const previousArchetype = previousArchetypeRef.current;
+
+    // Check if archetype has changed and is not the initial load
+    if (currentArchetype && 
+        previousArchetype !== undefined && 
+        currentArchetype !== previousArchetype) {
+      
+      // Get archetype info to show in toast
+      const archetypeInfo = archetypeService.getArchetypeInfo(currentArchetype);
+      
+      if (archetypeInfo) {
+        setToast({
+          message: `🎭 Your conflict archetype has been updated to: ${archetypeInfo.emoji} ${archetypeInfo.title}!`,
+          type: 'info'
+        });
+      }
+    }
+
+    // Always update the ref with current archetype for next comparison
+    previousArchetypeRef.current = currentArchetype;
+  }, [user?.conflict_archetype]);
 
   const navigation = [
     { name: 'Dashboard', href: '/dashboard', icon: Home, emoji: '🏠' },
@@ -32,6 +62,16 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-lavender-50 to-teal-50">
+      {/* Toast Notification */}
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+          duration={6000}
+        />
+      )}
+
       {/* Top Navigation */}
       <nav className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
