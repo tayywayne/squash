@@ -318,8 +318,8 @@ const OtherUserProfilePage: React.FC = () => {
                 fallback="this user"
                 showEmoji={false}
               /> have worked through {sharedConflicts.length} conflict{sharedConflicts.length !== 1 ? 's' : ''} together, 
-              with a {sharedConflicts.length > 0 ? Math.round((totalClosedConflicts / sharedConflicts.length) * 100) : 0}% resolution rate. 
-              {totalClosedConflicts > 0 && ' That shows real commitment to understanding each other!'}
+              with a {sharedConflicts.length > 0 ? Math.round((resolvedConflicts.length / sharedConflicts.length) * 100) : 0}% resolution rate. 
+              {resolvedConflicts.length > 0 && ' That shows real commitment to understanding each other!'}
             </p>
           ) : (
             <p>
