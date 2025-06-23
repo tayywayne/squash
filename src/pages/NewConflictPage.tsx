@@ -92,7 +92,8 @@ const NewConflictPage: React.FC = () => {
     "Canceled Plans Catastrophe ❌",
     "Micromanager Mayhem 📋",
     "Passive-Aggressive Olympics 🥇",
-    "Drama in the Group Project 📊"
+    "Drama in the Group Project 📊",
+    "Used My Stuff Without Asking 👜"
   ];
 
   return (
