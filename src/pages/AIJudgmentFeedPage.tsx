@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ChevronDown, ChevronUp, MessageSquare, Users, Clock, ExternalLink } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { aiJudgmentFeedService, PublicAIRuling, VoteCount, VOTE_OPTIONS, VoteType } from '../utils/aiJudgmentFeed';
@@ -7,6 +8,7 @@ import Toast from '../components/Toast';
 
 const AIJudgmentFeedPage: React.FC = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [rulings, setRulings] = useState<PublicAIRuling[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedRuling, setExpandedRuling] = useState<string | null>(null);
