@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Mail, Lock, Eye, EyeOff, User } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, User, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import Toast from '../components/Toast';
 
@@ -112,6 +112,14 @@ const LoginPage: React.FC = () => {
       <div className="max-w-md w-full">
         {/* Logo & Welcome */}
         <div className="text-center mb-8">
+          <button
+            onClick={() => navigate('/')}
+            className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 mb-6 transition-colors mx-auto"
+          >
+            <ArrowLeft size={20} />
+            <span>Back to Home</span>
+          </button>
+          
           <div className="text-6xl mb-4">🥊</div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Squashie</h1>
           <p className="text-gray-600 text-lg leading-relaxed">
