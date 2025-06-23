@@ -69,8 +69,15 @@ const AIJudgmentFeedPage: React.FC = () => {
       return;
     }
 
+    // Find the ruling to get user IDs
+    const ruling = rulings.find(r => r.conflict_id === conflictId);
+    if (!ruling) {
+      setToast({ message: 'Conflict not found', type: 'error' });
+      return;
+    }
+
     // Check if user can vote
-    const { canVote, reason } = await aiJudgmentFeedService.checkCanVote(conflictId, user.id);
+    const { canVote, reason } = await aiJudgmentFeedService.checkCanVote(conflictId, user.id, ruling.user1_id, ruling.user2_id);
     if (!canVote) {
       setToast({ message: reason || 'Cannot vote on this conflict', type: 'error' });
       return;

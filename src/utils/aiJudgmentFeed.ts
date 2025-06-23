@@ -120,24 +120,10 @@ export const aiJudgmentFeedService = {
     }
   },
 
-  checkCanVote: async (conflictId: string, userId: string): Promise<{ canVote: boolean; reason?: string }> => {
+  checkCanVote: async (conflictId: string, userId: string, user1Id: string, user2Id: string): Promise<{ canVote: boolean; reason?: string }> => {
     try {
-      // Check if user is involved in the conflict
-      const { data: conflict, error } = await supabase
-        .from('conflicts')
-        .select('user1_id, user2_id')
-        .eq('id', conflictId)
-        .maybeSingle();
-
-      if (error) {
-        return { canVote: false, reason: 'Conflict not found' };
-      }
-
-      if (!conflict) {
-        return { canVote: false, reason: 'Conflict not found' };
-      }
-
-      if (conflict.user1_id === userId || conflict.user2_id === userId) {
+      // Check if user is involved in the conflict using the provided user IDs
+      if (user1Id === userId || user2Id === userId) {
         return { canVote: false, reason: 'Cannot vote on your own conflict' };
       }
 
