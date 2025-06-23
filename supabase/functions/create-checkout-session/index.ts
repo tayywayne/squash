@@ -16,7 +16,7 @@ const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY') || '', {
 const PRICE_IDS = {
   'tip_1': 'price_1Rd2w8RAbTz5SOSfQKkSD12o', // $1 - Buy Us a Band-Aid
   'tip_2': 'price_1Rd2vkRAbTz5SOSfBSxQbd7n', // $5 - I'm the Problem  
-  'tip_3': 'price_1Rd2w8RAbTz5SOSfQKkSD12o', // $10 - Chaos Patron
+  'tip_3': 'price_1Rd2xJRAbTz5SOSfMNpQr8Yz', // $10 - Chaos Patron
 }
 
 serve(async (req) => {
