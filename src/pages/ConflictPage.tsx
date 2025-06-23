@@ -627,7 +627,7 @@ const ConflictPage: React.FC = () => {
               </div>
             </div>
           </div>
-          k
+          
           
           {/* Final Status */}
           <div className="bg-gray-900 p-6 rounded-lg border border-gray-700 text-center">
