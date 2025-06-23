@@ -10,102 +10,102 @@ export interface Archetype {
 export const ARCHETYPES: Record<string, Archetype> = {
   'the-fixer': {
     title: 'The Fixer',
-    emoji: '🛠️❤️',
+    emoji: '🛠️',
     description: 'Resolves conflicts as the responder with care and dedication'
   },
   'the-rehasher': {
     title: 'The Rehasher',
-    emoji: '♻️🤔',
+    emoji: '♻️',
     description: 'Thoughtfully seeks better solutions when first attempts don\'t work'
   },
   'the-drama-generator': {
     title: 'The Drama Generator',
-    emoji: '🎭🔥',
+    emoji: '🎭',
     description: 'Frequently initiates conflicts - maybe needs some chill time'
   },
   'the-swift-fixer': {
     title: 'The Swift Fixer',
-    emoji: '⚡🤝',
+    emoji: '⚡',
     description: 'Lightning-fast conflict resolution skills'
   },
   'the-passive-ghost': {
     title: 'The Passive Ghost',
-    emoji: '👻📵',
+    emoji: '👻',
     description: 'Starts conflicts but vanishes when it\'s time to engage'
   },
   'the-emotional-diplomat': {
     title: 'The Emotional Diplomat',
-    emoji: '🕊️💬',
+    emoji: '🕊️',
     description: 'Masters the art of balanced, thoughtful communication'
   },
   'the-petty-picasso': {
     title: 'The Petty Picasso',
-    emoji: '🎨🧃',
+    emoji: '🎨',
     description: 'Creates dramatic masterpieces out of everyday conflicts'
   },
   'the-chaos-goblin': {
     title: 'The Chaos Goblin',
-    emoji: '💣😈',
+    emoji: '💣',
     description: 'Leaves a trail of unresolved conflicts in their wake'
   },
   'the-cooldown-king': {
     title: 'The Cooldown King/Queen',
-    emoji: '🧊⏳',
+    emoji: '🧊',
     description: 'Takes their sweet time to respond - patience is a virtue'
   },
   'the-unread-receipt': {
     title: 'The Unread Receipt',
-    emoji: '📪🙈',
+    emoji: '📪',
     description: 'Receives conflicts but never responds - the ultimate ghost'
   },
   'the-firestarter': {
     title: 'The Firestarter',
-    emoji: '🔥🧨',
+    emoji: '🔥',
     description: 'Messages tend to escalate situations rather than resolve them'
   },
   'the-harmony-seeker': {
     title: 'The Harmony Seeker',
-    emoji: '🌈☮️',
+    emoji: '🌈',
     description: 'Consistently achieves mutual satisfaction in conflict resolution'
   },
   'the-accountability-champ': {
     title: 'The Accountability Champ',
-    emoji: '📓✅',
+    emoji: '📓',
     description: 'Always follows through with the core issues clarification step'
   },
   'the-polite-avenger': {
     title: 'The Polite Avenger',
-    emoji: '🧐🎯',
+    emoji: '🧐',
     description: 'Formal language with emotionally sharp undertones'
   },
   'the-empath': {
     title: 'The Empath',
-    emoji: '🌊🫶',
+    emoji: '🌊',
     description: 'Frequently validates and acknowledges others\' feelings'
   },
   'the-disappearing-diplomat': {
     title: 'The Disappearing Diplomat',
-    emoji: '🕵️‍♂️🌀',
+    emoji: '🕵️‍♂️',
     description: 'Has a habit of abandoning conflicts mid-resolution'
   },
   'the-spreadsheet-warrior': {
     title: 'The Spreadsheet Warrior',
-    emoji: '📊⚔️',
+    emoji: '📊',
     description: 'Conflicts often involve planning, schedules, and organizational tasks'
   },
   'the-side-eye-sender': {
     title: 'The Side-Eye Sender',
-    emoji: '👀😒',
+    emoji: '👀',
     description: 'Master of short, snarky one-line responses'
   },
   'the-chronic-clarifier': {
     title: 'The Chronic Clarifier',
-    emoji: '❓🔍',
+    emoji: '❓',
     description: 'Uses the core issues step multiple times - loves to dig deep'
   },
   'the-peaceful-observer': {
     title: 'The Peaceful Observer',
-    emoji: '🧘‍♀️👀',
+    emoji: '🧘‍♀️',
     description: 'Never starts or responds to conflicts - the zen master'
   }
 };
