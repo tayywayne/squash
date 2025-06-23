@@ -307,7 +307,7 @@ const HomePage: React.FC = () => {
               <span className="text-xl font-bold">Squashie</span>
             </div>
             <div className="text-gray-400 text-center md:text-right">
-              <p>&copy; 2025 Squashie. Because not everyone can afford a therapist.</p>
+              <p>&copy; 2025 Squashie. Because conflict is inevitable.</p>
               <p className="text-sm mt-1">Making conflict resolution accessible, one squash at a time.</p>
             </div>
           </div>
