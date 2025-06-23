@@ -559,6 +559,61 @@ const ConflictPage: React.FC = () => {
         </div>
       )}
 
+      {/* Final AI Ruling Phase */}
+      {phase === 'final-ruling' && conflict.final_ai_ruling && (
+        <div className="space-y-6">
+          <div className="bg-gradient-to-r from-purple-900 via-red-900 to-purple-900 p-8 rounded-lg border-4 border-gold text-white relative overflow-hidden">
+            {/* Dramatic background pattern */}
+            <div className="absolute inset-0 opacity-10">
+              <div className="text-9xl font-bold transform rotate-12 absolute -top-4 -right-4">⚖️</div>
+              <div className="text-6xl font-bold transform -rotate-12 absolute -bottom-2 -left-2">🎭</div>
+            </div>
+            
+            <div className="relative z-10">
+              <div className="text-center mb-6">
+                <h2 className="text-3xl font-bold mb-2 text-yellow-300">
+                  ⚖️ FINAL AI RULING ⚖️
+                </h2>
+                <div className="text-lg text-yellow-200 mb-4">
+                  Judge AI Has Spoken • Case Closed Forever
+                </div>
+                <div className="w-24 h-1 bg-yellow-400 mx-auto rounded-full"></div>
+              </div>
+              
+              <div className="bg-black/30 p-6 rounded-lg border border-yellow-400/50 mb-6">
+                <div className="text-lg leading-relaxed text-gray-100 whitespace-pre-wrap">
+                  {conflict.final_ai_ruling}
+                </div>
+              </div>
+              
+              <div className="text-center">
+                <div className="text-yellow-300 font-semibold mb-2">
+                  Ruling Issued: {new Date(conflict.final_ruling_issued_at!).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  })}
+                </div>
+                <div className="text-red-300 text-sm">
+                  🔒 This conflict is now permanently closed. No further changes can be made.
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Final Status */}
+          <div className="bg-gray-900 p-6 rounded-lg border border-gray-700 text-center">
+            <div className="text-4xl mb-3">🎬</div>
+            <h3 className="text-xl font-bold text-white mb-2">Conflict Resolution Complete</h3>
+            <p className="text-gray-300 text-sm">
+              The AI has issued its final, dramatic ruling. This conflict has been resolved through the power of artificial sass and digital wisdom.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Core Reflection Phase */}
       {phase === 'core-reflection' && conflict.ai_core_reflection && conflict.ai_core_suggestion && (
         <div className="space-y-6">
@@ -697,6 +752,45 @@ const ConflictPage: React.FC = () => {
               </div>
             )}
           </div>
+          
+          {/* Final Ruling Button - Show if both users have voted and at least one is not satisfied */}
+          {canIssueFinalRuling && (
+            <div className="bg-gradient-to-r from-red-50 to-purple-50 p-6 rounded-lg border-2 border-red-200">
+              <div className="text-center mb-4">
+                <div className="text-4xl mb-2">⚖️</div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                  Last Resort: Let the AI Decide Anyway
+                </h3>
+                <p className="text-sm text-gray-700 mb-4">
+                  This conflict has been through multiple resolution attempts. Time for Judge AI to issue a final, dramatic ruling that will close this case forever.
+                </p>
+                <div className="bg-yellow-100 p-3 rounded-lg border border-yellow-300 mb-4">
+                  <p className="text-xs text-yellow-800">
+                    ⚠️ <strong>Warning:</strong> Once the AI issues its final ruling, this conflict will be permanently closed and no further changes can be made.
+                  </p>
+                </div>
+              </div>
+              
+              <button
+                onClick={handleIssueFinalRuling}
+                disabled={loading}
+                className="w-full bg-gradient-to-r from-red-600 to-purple-600 hover:from-red-700 hover:to-purple-700 text-white font-bold py-4 px-6 rounded-lg transition-all transform hover:scale-105 disabled:opacity-50 disabled:transform-none"
+              >
+                {loading ? (
+                  <div className="flex items-center justify-center space-x-2">
+                    <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+                    <span>Judge AI is deliberating...</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center space-x-2">
+                    <span className="text-xl">⚖️</span>
+                    <span>Issue Final AI Ruling</span>
+                    <span className="text-xl">🎭</span>
+                  </div>
+                )}
+              </button>
+            </div>
+          )}
         </div>
       )}
 
