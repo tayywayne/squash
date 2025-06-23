@@ -211,7 +211,7 @@ const NewConflictPage: React.FC = () => {
               onChange={handleInputChange}
               rows={6}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-coral-500 focus:border-coral-500 transition-colors resize-none"
-              placeholder="Spill the tea. What happened? How did it make you feel? What's the core issue here? The more context you give us, the better our AI can help mediate..."
+              placeholder="Let it out. The pettiness, the disappointment, the rage-text you didn’t send. The more we know, the better our AI can turn it into something… slightly less petty."
               maxLength={1000}
             />
             <div className="flex justify-between items-center mt-2">
