@@ -120,7 +120,7 @@ const LoginPage: React.FC = () => {
             <span>Back to Home</span>
           </button>
           
-          <div className="text-6xl mb-4">🥊</div>
+          <div className="text-6xl mb-4">💣</div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Squashie</h1>
           <p className="text-gray-600 text-lg leading-relaxed">
             Welcome to Squashie – because not everyone can afford a therapist.
