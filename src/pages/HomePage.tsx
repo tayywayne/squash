@@ -303,7 +303,7 @@ const HomePage: React.FC = () => {
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center space-x-2 mb-4 md:mb-0">
-              <div className="text-2xl">🥊</div>
+              <div className="text-2xl">💣</div>
               <span className="text-xl font-bold">Squashie</span>
             </div>
             <div className="text-gray-400 text-center md:text-right">
