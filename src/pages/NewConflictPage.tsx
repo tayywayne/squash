@@ -233,7 +233,7 @@ const NewConflictPage: React.FC = () => {
           <ul className="space-y-2 text-sm text-teal-800">
             <li className="flex items-start">
               <span className="w-2 h-2 bg-teal-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-              <span>Focus on the specific incident or pattern, not their entire personality</span>
+              <span>They wont see what you write, but avoid any threats or serious attacks.</span>
             </li>
             <li className="flex items-start">
               <span className="w-2 h-2 bg-teal-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
@@ -245,7 +245,7 @@ const NewConflictPage: React.FC = () => {
             </li>
             <li className="flex items-start">
               <span className="w-2 h-2 bg-teal-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-              <span>Remember: the goal is understanding, not winning</span>
+              <span>This isn’t your diary. If your message is over 500 words and includes the phrase ‘like that time in 2019’ — edit.</span>
             </li>
           </ul>
         </div>
