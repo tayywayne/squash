@@ -125,7 +125,7 @@ export const useAuth = () => {
       }
     };
 
-    console.log('🎬 useAuth: useEffect triggered, calling checkUser');
+   // console.log('🎬 useAuth: useEffect triggered, calling checkUser');
     checkUser();
 
     // Listen for auth state changes
@@ -147,7 +147,7 @@ export const useAuth = () => {
         setUser(null);
       } finally {
         // CRITICAL: Always set loading to false, regardless of success or failure
-        console.log('🏁 useAuth: Auth state change processed, setting loading to false');
+       // console.log('🏁 useAuth: Auth state change processed, setting loading to false');
         setLoading(false);
       }
     });
