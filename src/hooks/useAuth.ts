@@ -24,7 +24,7 @@ export const useAuth = () => {
       // Create a timeout promise that rejects after 10 seconds
       const timeoutPromise = new Promise((_, reject) => {
         setTimeout(() => {
-          reject(new Error('Profile fetch timeout - query took longer than 20 seconds'));
+          reject(new Error('Profile fetch timeout - query took longer than 500ms'));
         }, 500);
       });
       
@@ -88,8 +88,15 @@ export const useAuth = () => {
       console.log('👤 setUserWithProfile: User state updated successfully');
     } catch (error) {
       console.error('❌ setUserWithProfile: Error setting user with profile:', error);
-      // Set user to null as fallback to prevent stuck states
-      setUser(null);
+      // Keep basic user info even if profile fetch fails
+      setUser({
+        id: authUser.id,
+        email: authUser.email || '',
+        username: undefined,
+        first_name: undefined,
+        last_name: undefined,
+        avatar_url: undefined,
+      });
     }
   };
 
