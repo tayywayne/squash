@@ -241,7 +241,7 @@ const NewConflictPage: React.FC = () => {
             </li>
             <li className="flex items-start">
               <span className="w-2 h-2 bg-teal-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-              <span>Avoid absolute words like "always" or "never" - they make people defensive</span>
+              <span>Yes, sarcasm is fun. No, the AI doesn’t pick up on it well. Be mad, not confusing.</span>
             </li>
             <li className="flex items-start">
               <span className="w-2 h-2 bg-teal-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
