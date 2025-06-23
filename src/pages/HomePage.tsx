@@ -313,7 +313,7 @@ const HomePage: React.FC = () => {
             </div>
           </div>
 
-          {/* Call to Action */}
+          {/* Call to Action
           <div className="mt-12 text-center">
             <div className="bg-gradient-to-r from-coral-100 to-teal-100 p-6 rounded-xl border border-gray-200">
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
@@ -329,7 +329,7 @@ const HomePage: React.FC = () => {
                 Get Started Now
               </button>
             </div>
-          </div>
+          </div>  */}
         </div>
       </section>
 
