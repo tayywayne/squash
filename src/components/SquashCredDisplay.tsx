@@ -108,29 +108,25 @@ const SquashCredDisplay: React.FC<SquashCredDisplayProps> = ({
 
       {/* Tooltip */}
 {showTooltip && (
-  <div className="relative">
-    <button
-      onClick={() => setShowTooltipModal(!showTooltipModal)}
-      className="text-gray-400 hover:text-gray-600 transition-colors"
-    >
-      <Info className="h-3 w-3" />
-    </button>
-    
-    {showTooltipModal && (
-      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 z-[9999]">
-        <div className="bg-gray-900 text-white text-xs rounded-lg p-4 shadow-xl w-80 max-w-sm">
-          <div className="font-semibold mb-1">
-            {tier_emoji} {tier_title}
           </div>
-          <div className="text-gray-300 mb-3">
-            {pointsData.tier_range}
+          <div className="text-gray-400 hover:text-gray-600 transition-colors cursor-help">
+          {/* Hover tooltip */}
+          <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 z-[9999] opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+            <div className="bg-gray-900 text-white text-xs rounded-lg p-4 shadow-xl w-80 max-w-sm">
+              <div className="font-semibold mb-1">
+                {tier_emoji} {tier_title}
+              </div>
+              <div className="text-gray-300 mb-3">
+                {pointsData.tier_range}
+              </div>
+              <div className="text-gray-400 text-xs leading-relaxed">
+                Earn SquashCred by resolving conflicts, being helpful, and maintaining good behavior. 
+                Lose points for ghosting, spam, or excessive drama. Stay spicy — but not toxic.
           </div>
-          <div className="text-gray-400 text-xs leading-relaxed">
-            Earn SquashCred by resolving conflicts, being helpful, and maintaining good behavior. 
-            Lose points for ghosting, spam, or excessive drama. Stay spicy — but not toxic.
+              {/* Tooltip arrow pointing up */}
+              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-b-4 border-transparent border-b-gray-900"></div>
+            </div>
           </div>
-          {/* Tooltip arrow */}
-          <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
         </div>
       </div>
     )}
