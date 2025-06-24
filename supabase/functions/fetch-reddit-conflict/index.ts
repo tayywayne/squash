@@ -1,4 +1,3 @@
-import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'npm:@supabase/supabase-js@2'
 
 const corsHeaders = {
@@ -13,9 +12,9 @@ const supabaseClient = createClient(
   Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
 )
 
-// Reddit API credentials
-const REDDIT_CLIENT_ID = Deno.env.get('REDDIT_CLIENT_ID') ?? 'HEXXIIN'
-const REDDIT_CLIENT_SECRET = Deno.env.get('REDDIT_CLIENT_SECRET') ?? 'Zs-LllanhtWY60yPz5AGruUpruWfGg'
+// Reddit API credentials from environment variables
+const REDDIT_CLIENT_ID = Deno.env.get('REDDIT_CLIENT_ID')
+const REDDIT_CLIENT_SECRET = Deno.env.get('REDDIT_CLIENT_SECRET')
 const REDDIT_USER_AGENT = Deno.env.get('REDDIT_USER_AGENT') ?? 'SquashieBot/1.0 (by u/HEXXIIN)'
 
 interface RedditPost {
@@ -37,6 +36,10 @@ interface RedditAccessTokenResponse {
 async function getRedditAccessToken(): Promise<string> {
   console.log('🔑 Getting Reddit access token...')
   
+  if (!REDDIT_CLIENT_ID || !REDDIT_CLIENT_SECRET) {
+    throw new Error('Reddit API credentials not configured. Please set REDDIT_CLIENT_ID and REDDIT_CLIENT_SECRET environment variables.')
+  }
+  
   const credentials = btoa(`${REDDIT_CLIENT_ID}:${REDDIT_CLIENT_SECRET}`)
   
   const response = await fetch('https://www.reddit.com/api/v1/access_token', {
@@ -52,7 +55,7 @@ async function getRedditAccessToken(): Promise<string> {
   if (!response.ok) {
     const errorText = await response.text()
     console.error('Reddit auth error:', response.status, errorText)
-    throw new Error(`Reddit authentication failed: ${response.status}`)
+    throw new Error(`Reddit authentication failed: ${response.status}. Please verify your Reddit API credentials.`)
   }
 
   const data: RedditAccessTokenResponse = await response.json()
@@ -60,7 +63,7 @@ async function getRedditAccessToken(): Promise<string> {
   return data.access_token
 }
 
-serve(async (req) => {
+Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
@@ -77,6 +80,106 @@ serve(async (req) => {
 
   try {
     console.log('🔍 Fetching daily Reddit conflict from r/AmItheAsshole...')
+
+    // Check if Reddit credentials are configured
+    if (!REDDIT_CLIENT_ID || !REDDIT_CLIENT_SECRET) {
+      console.warn('Reddit API credentials not configured, using fallback approach')
+      
+      // Try to fetch without authentication (limited access)
+      const redditResponse = await fetch(
+        'https://www.reddit.com/r/AmItheAsshole/top.json?t=day&limit=25',
+        {
+          headers: {
+            'User-Agent': REDDIT_USER_AGENT
+          }
+        }
+      )
+
+      if (!redditResponse.ok) {
+        throw new Error('Reddit API access failed and no valid credentials configured. Please configure REDDIT_CLIENT_ID and REDDIT_CLIENT_SECRET environment variables.')
+      }
+
+      const redditData = await redditResponse.json()
+      const posts = redditData.data.children
+
+      console.log(`📊 Found ${posts.length} posts from Reddit (unauthenticated)`)
+
+      // Filter for valid posts
+      const validPosts = posts
+        .map((child: any) => child.data as RedditPost)
+        .filter((post: RedditPost) => 
+          post.selftext && 
+          post.selftext.length > 100 &&
+          post.selftext.length < 10000 &&
+          !post.selftext.includes('[removed]') &&
+          !post.selftext.includes('[deleted]') &&
+          post.title &&
+          post.author !== '[deleted]' &&
+          !post.title.toLowerCase().includes('update') &&
+          post.title.toLowerCase().includes('aita')
+        )
+
+      console.log(`✅ Found ${validPosts.length} valid posts after filtering`)
+
+      if (validPosts.length === 0) {
+        throw new Error('No valid posts found')
+      }
+
+      const selectedPost = validPosts[0]
+      console.log(`📝 Selected post: ${selectedPost.title}`)
+
+      // Check if we already have this post
+      const { data: existingPost } = await supabaseClient
+        .from('reddit_conflicts')
+        .select('id')
+        .eq('reddit_post_id', selectedPost.id)
+        .single()
+
+      if (existingPost) {
+        console.log('📋 Post already exists, skipping...')
+        return new Response(
+          JSON.stringify({ message: 'Post already exists', post_id: selectedPost.id }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        )
+      }
+
+      // Deactivate previous conflicts
+      await supabaseClient
+        .from('reddit_conflicts')
+        .update({ is_active: false })
+        .eq('is_active', true)
+
+      // Insert new conflict with fallback AI content
+      const { data: newConflict, error } = await supabaseClient
+        .from('reddit_conflicts')
+        .insert({
+          reddit_post_id: selectedPost.id,
+          subreddit: 'AmItheAsshole',
+          title: selectedPost.title,
+          author: selectedPost.author,
+          original_text: selectedPost.selftext,
+          ai_summary: 'AI summary temporarily unavailable - vote based on the original post!',
+          ai_suggestion: 'AI suggestion temporarily unavailable - use your best judgment!',
+          is_active: true
+        })
+        .select()
+        .single()
+
+      if (error) {
+        throw error
+      }
+
+      console.log('✅ New Reddit conflict created successfully (fallback mode)')
+
+      return new Response(
+        JSON.stringify({ 
+          success: true, 
+          conflict_id: newConflict.id,
+          title: selectedPost.title 
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
 
     // Get Reddit access token
     const accessToken = await getRedditAccessToken()
