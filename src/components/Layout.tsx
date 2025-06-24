@@ -6,7 +6,9 @@ import { useAuth } from '../hooks/useAuth';
 import UserDisplayName from './UserDisplayName';
 import Toast from './Toast';
 import AchievementToast from './AchievementToast';
+import GeneralAchievementToast from './GeneralAchievementToast';
 import { useArchetypeAchievements } from '../hooks/useArchetypeAchievements';
+import { useGeneralAchievements } from '../hooks/useGeneralAchievements';
 import { archetypeService } from '../utils/archetypes';
 
 interface LayoutProps {
@@ -20,6 +22,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
   const previousArchetypeRef = useRef<string | undefined>(undefined);
   const { pendingNotification, clearNotification } = useArchetypeAchievements();
+  const { pendingNotification: pendingGeneralNotification, clearNotification: clearGeneralNotification } = useGeneralAchievements();
 
   // Watch for archetype changes and show toast notification
   useEffect(() => {
@@ -82,6 +85,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <AchievementToast
           archetype={pendingNotification}
           onClose={clearNotification}
+        />
+      )}
+
+      {/* General Achievement Notification */}
+      {pendingGeneralNotification && !pendingNotification && (
+        <GeneralAchievementToast
+          achievement={pendingGeneralNotification}
+          onClose={clearGeneralNotification}
         />
       )}
 

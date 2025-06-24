@@ -159,6 +159,14 @@ export const generalAchievementsService = {
       
       if (isNewAchievement) {
         console.log(`✅ New achievement unlocked: ${achievement.name} ${achievement.emoji}`);
+        
+        // Trigger notification for new achievement
+        if (typeof window !== 'undefined') {
+          // Dynamically import to avoid SSR issues
+          import('../hooks/useGeneralAchievements').then(({ triggerAchievementNotification }) => {
+            triggerAchievementNotification(achievementCode);
+          });
+        }
       } else {
         console.log(`ℹ️ Achievement already existed: ${achievement.name}`);
       }
