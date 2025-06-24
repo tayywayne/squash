@@ -110,6 +110,18 @@ export const aiJudgmentFeedService = {
         return { success: false, error: error.message };
       }
 
+      // Check for voting achievements
+      try {
+        const { generalAchievementsService } = await import('./generalAchievements');
+        await generalAchievementsService.checkAndUnlockAchievements(userId, {
+          hasVotedOnConflict: true,
+          hasVotedAiRight: voteType === 'ai_right',
+          hasVotedTherapy: voteType === 'get_therapy'
+        });
+      } catch (achievementError) {
+        console.error('Error checking voting achievements:', achievementError);
+      }
+
       return { success: true };
     } catch (error) {
       console.error('Error in castVote:', error);
