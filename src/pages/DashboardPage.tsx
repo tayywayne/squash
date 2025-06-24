@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, MessageSquare, Clock, CheckCircle, Users } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
+import { profileService } from '../utils/profiles';
 import MoodIndicator from '../components/MoodIndicator';
 import UserDisplayName from '../components/UserDisplayName';
 import { archetypeService } from '../utils/archetypes';
 import { conflictService, Conflict } from '../utils/conflicts';
 import { MoodLevel } from '../types';
+import { Profile } from '../types';
 
 const DashboardPage: React.FC = () => {
   const navigate = useNavigate();
@@ -14,6 +16,7 @@ const DashboardPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'active' | 'history'>('active');
   const [currentMood, setCurrentMood] = useState<MoodLevel>('meh');
   const [conflicts, setConflicts] = useState<Conflict[]>([]);
+  const [otherUserProfiles, setOtherUserProfiles] = useState<Record<string, Profile>>({});
   const [loading, setLoading] = useState(true);
 
   // Trigger archetype assignment when user loads dashboard
@@ -39,6 +42,37 @@ const DashboardPage: React.FC = () => {
       try {
         const userConflicts = await conflictService.getUserConflicts(user.id, user.email);
         setConflicts(userConflicts);
+        
+        // Load profiles for other users in conflicts
+        const otherUserIds = new Set<string>();
+        userConflicts.forEach(conflict => {
+          if (user.id === conflict.user1_id && conflict.user2_id) {
+            otherUserIds.add(conflict.user2_id);
+          } else if (user.id === conflict.user2_id) {
+            otherUserIds.add(conflict.user1_id);
+          }
+        });
+        
+        // Fetch profiles for all other users
+        const profilePromises = Array.from(otherUserIds).map(async (userId) => {
+          try {
+            const profile = await profileService.getProfileById(userId);
+            return { userId, profile };
+          } catch (error) {
+            console.error(`Error loading profile for user ${userId}:`, error);
+            return { userId, profile: null };
+          }
+        });
+        
+        const profileResults = await Promise.all(profilePromises);
+        const profilesMap: Record<string, Profile> = {};
+        profileResults.forEach(({ userId, profile }) => {
+          if (profile) {
+            profilesMap[userId] = profile;
+          }
+        });
+        
+        setOtherUserProfiles(profilesMap);
       } catch (error) {
         console.error('Error loading conflicts:', error);
       } finally {
@@ -85,11 +119,66 @@ const DashboardPage: React.FC = () => {
     return `${Math.floor(diffInDays / 7)} weeks ago`;
   };
 
-  const getOtherUserDisplay = (conflict: Conflict) => {
+  const getOtherUserDisplay = (conflict: Conflict): React.ReactNode => {
     if (user?.id === conflict.user1_id) {
-      return conflict.user2_email;
+      // Current user is user1, show user2's info
+      if (conflict.user2_id) {
+        const otherProfile = otherUserProfiles[conflict.user2_id];
+        if (otherProfile) {
+          return (
+            <button
+              onClick={() => navigate(`/user-profile/${conflict.user2_id}`)}
+              className="text-coral-500 hover:text-coral-600 font-medium underline transition-colors"
+            >
+              <UserDisplayName 
+                username={otherProfile.username}
+                archetypeEmoji={otherProfile.archetype_emoji}
+                supporterEmoji={otherProfile.supporter_emoji}
+                fallback={conflict.user2_email}
+              />
+            </button>
+          );
+        } else {
+          // Profile not loaded yet or user doesn't have a profile
+          return (
+            <span className="text-gray-600">
+              {conflict.user2_email}
+            </span>
+          );
+        }
+      } else {
+        // User2 hasn't joined yet
+        return (
+          <span className="text-gray-600">
+            {conflict.user2_email} <span className="text-xs text-gray-500">(invited)</span>
+          </span>
+        );
+      }
+    } else {
+      // Current user is user2, show user1's info
+      const otherProfile = otherUserProfiles[conflict.user1_id];
+      if (otherProfile) {
+        return (
+          <button
+            onClick={() => navigate(`/user-profile/${conflict.user1_id}`)}
+            className="text-coral-500 hover:text-coral-600 font-medium underline transition-colors"
+          >
+            <UserDisplayName 
+              username={otherProfile.username}
+              archetypeEmoji={otherProfile.archetype_emoji}
+              supporterEmoji={otherProfile.supporter_emoji}
+              fallback="User 1"
+            />
+          </button>
+        );
+      } else {
+        return (
+          <span className="text-gray-600">
+            You were invited
+          </span>
+        );
+      }
     }
-    return 'You were invited';
   };
 
   const getConflictStatus = (conflict: Conflict) => {
@@ -312,7 +401,10 @@ const DashboardPage: React.FC = () => {
                         <h3 className="text-lg font-semibold text-gray-900">{conflict.title}</h3>
                         <MoodIndicator mood={conflict.user1_mood as MoodLevel} size="sm" />
                       </div>
-                      <p className="text-gray-600 mb-2">vs. {getOtherUserDisplay(conflict)}</p>
+                      <div className="text-gray-600 mb-2 flex items-center space-x-1">
+                        <span>vs.</span>
+                        <div>{getOtherUserDisplay(conflict)}</div>
+                      </div>
                       <div className="flex items-center space-x-4 text-sm text-gray-500">
                         <span className="flex items-center">
                           <Clock className="h-4 w-4 mr-1" />
@@ -356,7 +448,10 @@ const DashboardPage: React.FC = () => {
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <h3 className="text-lg font-semibold text-gray-900 mb-2">{conflict.title}</h3>
-                    <p className="text-gray-600 mb-2">vs. {getOtherUserDisplay(conflict)}</p>
+                    <div className="text-gray-600 mb-2 flex items-center space-x-1">
+                      <span>vs.</span>
+                      <div>{getOtherUserDisplay(conflict)}</div>
+                    </div>
                     {conflict.ai_summary && (
                       <p className="text-sm text-gray-700 mb-3 italic">"{conflict.ai_summary}"</p>
                     )}
