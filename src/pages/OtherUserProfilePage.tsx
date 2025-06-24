@@ -6,6 +6,7 @@ import { conflictService, Conflict } from '../utils/conflicts';
 import { useAuth } from '../hooks/useAuth';
 import UserDisplayName from '../components/UserDisplayName';
 import SupporterCard from '../components/SupporterCard';
+import ArchetypeAchievements from '../components/ArchetypeAchievements';
 import { archetypeService } from '../utils/archetypes';
 import { Profile } from '../types';
 import Toast from '../components/Toast';
@@ -326,6 +327,9 @@ const OtherUserProfilePage: React.FC = () => {
           </>
         )}
       </div>
+
+      {/* Archetype Achievements */}
+      <ArchetypeAchievements userId={userId} className="mb-6" />
 
       {/* Conflict Resolution Philosophy */}
       <div className="mt-6 bg-white/70 backdrop-blur-sm p-6 rounded-lg border border-gray-200 shadow-lg">

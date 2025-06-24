@@ -5,6 +5,8 @@ import { Home, MessageSquare, History, User, LogOut, Trophy } from 'lucide-react
 import { useAuth } from '../hooks/useAuth';
 import UserDisplayName from './UserDisplayName';
 import Toast from './Toast';
+import AchievementToast from './AchievementToast';
+import { useArchetypeAchievements } from '../hooks/useArchetypeAchievements';
 import { archetypeService } from '../utils/archetypes';
 
 interface LayoutProps {
@@ -17,6 +19,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const { user, signOut } = useAuth();
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
   const previousArchetypeRef = useRef<string | undefined>(undefined);
+  const { pendingNotification, clearNotification } = useArchetypeAchievements();
 
   // Watch for archetype changes and show toast notification
   useEffect(() => {
@@ -71,6 +74,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           type={toast.type}
           onClose={() => setToast(null)}
           duration={6000}
+        />
+      )}
+
+      {/* Achievement Notification */}
+      {pendingNotification && (
+        <AchievementToast
+          archetype={pendingNotification}
+          onClose={clearNotification}
         />
       )}
 

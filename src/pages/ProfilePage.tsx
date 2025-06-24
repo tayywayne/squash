@@ -5,6 +5,7 @@ import { conflictService, Conflict } from '../utils/conflicts';
 import { storageService } from '../utils/storage';
 import { archetypeService, ARCHETYPES } from '../utils/archetypes';
 import SupporterCard from '../components/SupporterCard';
+import ArchetypeAchievements from '../components/ArchetypeAchievements';
 import Toast from '../components/Toast';
 
 const ProfilePage: React.FC = () => {
@@ -330,6 +331,11 @@ const ProfilePage: React.FC = () => {
               supporterEmoji={user.supporter_emoji}
               supporterSince={user.supporter_since}
             />
+          )}
+
+          {/* Archetype Achievements */}
+          {user?.id && (
+            <ArchetypeAchievements userId={user.id} className="mt-6" />
           )}
 
           {/* Tips & Philosophy */}

@@ -1,5 +1,6 @@
 import { supabase } from './supabase';
 import { conflictService } from './conflicts';
+import { achievementsService } from './achievements';
 
 export interface Archetype {
   title: string;
@@ -335,6 +336,23 @@ export const archetypeService = {
       
       // Only update if archetype has changed
       if (currentArchetypeKey !== key) {
+        // First, try to unlock the achievement for this archetype
+        try {
+          const { isNewAchievement } = await achievementsService.unlockArchetypeAchievement(
+            userId,
+            key,
+            archetype.emoji
+          );
+          
+          // If this is a new achievement, we'll let the UI handle the notification
+          if (isNewAchievement) {
+            console.log(`🎉 New archetype achievement unlocked: ${archetype.title} ${archetype.emoji}`);
+          }
+        } catch (error) {
+          console.error('❌ Error unlocking archetype achievement:', error);
+          // Don't fail the archetype assignment if achievement unlock fails
+        }
+        
         const { error } = await supabase
           .from('profiles')
           .update({
