@@ -61,7 +61,7 @@ serve(async (req: Request) => {
       ],
       from: {
         email: 'squashiehelp@gmail.com',
-        name: 'Squash\'n\'Go'
+        name: 'Squashie'
       },
       subject: 'You\'ve been invited to squash a conflict 💥',
       content: [
@@ -73,7 +73,7 @@ serve(async (req: Request) => {
               
               <p>Hey there,</p>
               
-              <p><strong>${inviter_name}</strong> wants to squash a little drama with you on <strong>Squash'n'Go</strong>.</p>
+              <p><strong>${inviter_name}</strong> wants to squash a little drama with you on <strong>Squashie</strong>.</p>
               
               <p>To view or respond to the conflict, click here:</p>
               
@@ -93,8 +93,8 @@ serve(async (req: Request) => {
               <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
               
               <p style="color: #999; font-size: 12px; text-align: center;">
-                Squash'n'Go helps people resolve conflicts through AI-powered mediation.<br>
-                Because not everyone can afford a couples therapist.
+                Squashie helps people resolve conflicts through AI-powered mediation.<br>
+                Because conflict is inevitable.
               </p>
             </div>
           `
