@@ -54,6 +54,7 @@ const LoginPage: React.FC = () => {
     }
     return true;
   };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -100,7 +101,7 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-coral-50 via-lavender-50 to-teal-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-background-light flex items-center justify-center p-brutal">
       {toast && (
         <Toast
           message={toast.message}
@@ -111,170 +112,156 @@ const LoginPage: React.FC = () => {
       
       <div className="max-w-md w-full">
         {/* Logo & Welcome */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-brutal">
           <button
             onClick={() => navigate('/')}
-            className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 mb-6 transition-colors mx-auto"
+            className="flex items-center space-x-2 text-text-secondary hover:text-text-primary mb-6 transition-colors mx-auto font-bold uppercase text-sm"
           >
             <ArrowLeft size={20} />
-            <span>Back to Home</span>
+            <span>BACK TO HOME</span>
           </button>
           
-          <div className="text-6xl mb-4">💣</div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Squashie</h1>
-          <p className="text-gray-600 text-lg leading-relaxed">
-            Welcome to Squashie – because not everyone can afford a therapist.
-          </p>
-          <p className="text-sm text-gray-500 mt-2">
+          <div className="text-8xl mb-6">💣</div>
+          <h1 className="text-4xl font-black text-text-primary mb-4 uppercase">SQUASHIE</h1>
+          <div className="bg-primary-orange text-background-white p-4 border-brutal border-border-black mb-4">
+            <p className="font-black uppercase text-lg">
+              BECAUSE NOT EVERYONE CAN AFFORD A THERAPIST.
+            </p>
+          </div>
+          <p className="text-sm text-text-secondary font-medium">
             Settle your beef with AI-powered mediation. It's like couples therapy, but sassier.
           </p>
         </div>
 
         {/* Auth Form */}
-        <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+        <div className="bg-background-white border-brutal border-border-black p-brutal">
           <div className="mb-6">
-            <div className="flex bg-gray-100 rounded-lg p-1">
+            <div className="flex bg-background-light border-brutal border-border-black">
               <button
                 type="button"
                 onClick={() => setIsLogin(true)}
-                className={`flex-1 py-2 text-sm font-medium rounded-md transition-colors ${
+                className={`flex-1 py-3 text-sm font-black uppercase transition-colors border-brutal ${
                   isLogin
-                    ? 'bg-white text-gray-900 shadow-sm'
-                    : 'text-gray-600 hover:text-gray-900'
+                    ? 'bg-primary-teal text-background-white border-border-black'
+                    : 'text-text-secondary hover:text-text-primary border-transparent'
                 }`}
               >
-                Sign In
+                SIGN IN
               </button>
               <button
                 type="button"
                 onClick={() => setIsLogin(false)}
-                className={`flex-1 py-2 text-sm font-medium rounded-md transition-colors ${
+                className={`flex-1 py-3 text-sm font-black uppercase transition-colors border-brutal ${
                   !isLogin
-                    ? 'bg-white text-gray-900 shadow-sm'
-                    : 'text-gray-600 hover:text-gray-900'
+                    ? 'bg-primary-teal text-background-white border-border-black'
+                    : 'text-text-secondary hover:text-text-primary border-transparent'
                 }`}
               >
-                Sign Up
+                SIGN UP
               </button>
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-6">
             {/* Sign Up Fields */}
             {!isLogin && (
               <>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
-                      First Name
+                    <label htmlFor="firstName" className="block text-sm font-black text-text-primary mb-2 uppercase">
+                      FIRST NAME
                     </label>
-                    <div className="relative">
-                      <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                      <input
-                        id="firstName"
-                        type="text"
-                        value={firstName}
-                        onChange={(e) => setFirstName(e.target.value)}
-                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-coral-500 focus:border-coral-500 transition-colors"
-                        placeholder="John"
-                        required={!isLogin}
-                      />
-                    </div>
+                    <input
+                      id="firstName"
+                      type="text"
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
+                      className="w-full px-4 py-3 border-brutal border-border-black bg-background-white text-text-primary font-medium focus:bg-background-light transition-colors"
+                      placeholder="JOHN"
+                      required={!isLogin}
+                    />
                   </div>
                   <div>
-                    <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-2">
-                      Last Name
+                    <label htmlFor="lastName" className="block text-sm font-black text-text-primary mb-2 uppercase">
+                      LAST NAME
                     </label>
-                    <div className="relative">
-                      <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                      <input
-                        id="lastName"
-                        type="text"
-                        value={lastName}
-                        onChange={(e) => setLastName(e.target.value)}
-                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-coral-500 focus:border-coral-500 transition-colors"
-                        placeholder="Doe"
-                        required={!isLogin}
-                      />
-                    </div>
+                    <input
+                      id="lastName"
+                      type="text"
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
+                      className="w-full px-4 py-3 border-brutal border-border-black bg-background-white text-text-primary font-medium focus:bg-background-light transition-colors"
+                      placeholder="DOE"
+                      required={!isLogin}
+                    />
                   </div>
                 </div>
 
                 <div>
-                  <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
-                    Username
+                  <label htmlFor="username" className="block text-sm font-black text-text-primary mb-2 uppercase">
+                    USERNAME
                   </label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <input
-                      id="username"
-                      type="text"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-coral-500 focus:border-coral-500 transition-colors"
-                      placeholder="johndoe"
-                      required={!isLogin}
-                      minLength={3}
-                    />
-                  </div>
-                  <p className="text-xs text-gray-500 mt-1">
-                    Only lowercase letters, numbers, and underscores. Minimum 3 characters.
+                  <input
+                    id="username"
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
+                    className="w-full px-4 py-3 border-brutal border-border-black bg-background-white text-text-primary font-medium focus:bg-background-light transition-colors"
+                    placeholder="JOHNDOE"
+                    required={!isLogin}
+                    minLength={3}
+                  />
+                  <p className="text-xs text-text-secondary mt-2 font-medium uppercase">
+                    ONLY LOWERCASE LETTERS, NUMBERS, AND UNDERSCORES. MINIMUM 3 CHARACTERS.
                   </p>
                 </div>
               </>
             )}
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                Email Address
+              <label htmlFor="email" className="block text-sm font-black text-text-primary mb-2 uppercase">
+                EMAIL ADDRESS
               </label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                <input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-coral-500 focus:border-coral-500 transition-colors"
-                  placeholder="your.email@example.com"
-                  required
-                />
-              </div>
+              <input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-4 py-3 border-brutal border-border-black bg-background-white text-text-primary font-medium focus:bg-background-light transition-colors"
+                placeholder="YOUR.EMAIL@EXAMPLE.COM"
+                required
+              />
             </div>
 
             {/* Confirm Email for Sign Up */}
             {!isLogin && (
               <div>
-                <label htmlFor="confirmEmail" className="block text-sm font-medium text-gray-700 mb-2">
-                  Confirm Email Address
+                <label htmlFor="confirmEmail" className="block text-sm font-black text-text-primary mb-2 uppercase">
+                  CONFIRM EMAIL ADDRESS
                 </label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  <input
-                    id="confirmEmail"
-                    type="email"
-                    value={confirmEmail}
-                    onChange={(e) => setConfirmEmail(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-coral-500 focus:border-coral-500 transition-colors"
-                    placeholder="your.email@example.com"
-                    required={!isLogin}
-                  />
-                </div>
+                <input
+                  id="confirmEmail"
+                  type="email"
+                  value={confirmEmail}
+                  onChange={(e) => setConfirmEmail(e.target.value)}
+                  className="w-full px-4 py-3 border-brutal border-border-black bg-background-white text-text-primary font-medium focus:bg-background-light transition-colors"
+                  placeholder="YOUR.EMAIL@EXAMPLE.COM"
+                  required={!isLogin}
+                />
               </div>
             )}
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                Password
+              <label htmlFor="password" className="block text-sm font-black text-text-primary mb-2 uppercase">
+                PASSWORD
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                 <input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-coral-500 focus:border-coral-500 transition-colors"
+                  className="w-full px-4 py-3 pr-12 border-brutal border-border-black bg-background-white text-text-primary font-medium focus:bg-background-light transition-colors"
                   placeholder="••••••••"
                   required
                   minLength={isLogin ? undefined : 6}
@@ -282,7 +269,7 @@ const LoginPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-secondary hover:text-text-primary"
                 >
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
@@ -292,17 +279,16 @@ const LoginPage: React.FC = () => {
             {/* Confirm Password for Sign Up */}
             {!isLogin && (
               <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
-                  Confirm Password
+                <label htmlFor="confirmPassword" className="block text-sm font-black text-text-primary mb-2 uppercase">
+                  CONFIRM PASSWORD
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                   <input
                     id="confirmPassword"
                     type={showConfirmPassword ? 'text' : 'password'}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-coral-500 focus:border-coral-500 transition-colors"
+                    className="w-full px-4 py-3 pr-12 border-brutal border-border-black bg-background-white text-text-primary font-medium focus:bg-background-light transition-colors"
                     placeholder="••••••••"
                     required={!isLogin}
                     minLength={6}
@@ -310,40 +296,40 @@ const LoginPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-secondary hover:text-text-primary"
                   >
                     {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
                 </div>
               </div>
             )}
+
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-coral-500 hover:bg-coral-600 text-white font-medium py-3 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-primary-teal hover:bg-primary-orange text-background-white font-black py-4 px-4 border-brutal border-border-black transition-colors disabled:opacity-50 disabled:cursor-not-allowed uppercase"
             >
-              {loading ? 'Processing...' : isLogin ? 'Sign In' : 'Create Account'}
+              {loading ? 'PROCESSING...' : isLogin ? 'SIGN IN' : 'CREATE ACCOUNT'}
             </button>
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">
-              {isLogin ? "New to conflict resolution?" : "Already have an account?"}{' '}
+            <p className="text-sm text-text-secondary font-medium">
+              {isLogin ? "NEW TO CONFLICT RESOLUTION?" : "ALREADY HAVE AN ACCOUNT?"}{' '}
               <button
                 type="button"
                 onClick={() => setIsLogin(!isLogin)}
-                className="text-coral-500 hover:text-coral-600 font-medium"
+                className="text-primary-teal hover:text-primary-orange font-black uppercase"
               >
-                {isLogin ? 'Sign up here' : 'Sign in instead'}
+                {isLogin ? 'SIGN UP HERE' : 'SIGN IN INSTEAD'}
               </button>
             </p>
           </div>
         </div>
 
         <div className="text-center mt-6">
-          <p className="text-xs text-gray-500">
-            By signing up, you agree to resolve conflicts like a civilized human being. 
-            Mostly.
+          <p className="text-xs text-text-secondary font-medium uppercase">
+            BY SIGNING UP, YOU AGREE TO RESOLVE CONFLICTS LIKE A CIVILIZED HUMAN BEING. MOSTLY.
           </p>
         </div>
       </div>

@@ -14,7 +14,7 @@ const Toast: React.FC<ToastProps> = ({ message, type, onClose, duration = 4000 }
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsVisible(false);
-      setTimeout(onClose, 300); // Allow fade out animation
+      setTimeout(onClose, 300);
     }, duration);
 
     return () => clearTimeout(timer);
@@ -27,9 +27,9 @@ const Toast: React.FC<ToastProps> = ({ message, type, onClose, duration = 4000 }
   };
 
   const colors = {
-    success: 'bg-teal-50 border-teal-200 text-teal-800',
-    error: 'bg-coral-50 border-coral-200 text-coral-800',
-    info: 'bg-lavender-50 border-lavender-200 text-lavender-800',
+    success: 'bg-primary-teal text-background-white',
+    error: 'bg-primary-orange text-background-white',
+    info: 'bg-text-primary text-background-white',
   };
 
   const Icon = icons[type];
@@ -40,11 +40,11 @@ const Toast: React.FC<ToastProps> = ({ message, type, onClose, duration = 4000 }
         isVisible ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'
       }`}
     >
-      <div className={`rounded-lg border p-4 shadow-lg ${colors[type]}`}>
+      <div className={`border-brutal border-border-black p-4 ${colors[type]}`}>
         <div className="flex items-start">
           <Icon className="h-5 w-5 mr-3 mt-0.5" />
           <div className="flex-1">
-            <p className="text-sm font-medium">{message}</p>
+            <p className="text-sm font-bold uppercase">{message}</p>
           </div>
           <button
             onClick={onClose}

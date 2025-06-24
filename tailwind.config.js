@@ -4,13 +4,30 @@ export default {
   theme: {
     extend: {
       colors: {
+        // Neobrutalist Color Palette
+        primary: {
+          teal: '#008080',
+          orange: '#FF6B00',
+        },
+        background: {
+          light: '#F8F8F8',
+          white: '#FFFFFF',
+        },
+        text: {
+          primary: '#111111',
+          secondary: '#666666',
+        },
+        border: {
+          black: '#000000',
+        },
+        // Legacy colors for compatibility
         coral: {
           50: '#fff5f5',
           100: '#ffeaea',
           200: '#ffd1d1',
           300: '#ffb3b3',
           400: '#ff8a8a',
-          500: '#FF6B6B',
+          500: '#FF6B00', // Updated to orange
           600: '#ff4d4d',
           700: '#e63946',
           800: '#cc2936',
@@ -22,27 +39,23 @@ export default {
           200: '#99f6e4',
           300: '#5eead4',
           400: '#2dd4bf',
-          500: '#4ECDC4',
+          500: '#008080', // Primary teal
           600: '#0d9488',
           700: '#0f766e',
           800: '#115e59',
           900: '#134e4a',
         },
-        lavender: {
-          50: '#f8fafc',
-          100: '#f1f5f9',
-          200: '#e2e8f0',
-          300: '#cbd5e1',
-          400: '#94a3b8',
-          500: '#A8E6CF',
-          600: '#64748b',
-          700: '#475569',
-          800: '#334155',
-          900: '#1e293b',
-        },
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
+        geometric: ['Inter', 'system-ui', 'sans-serif'], // Fallback to Inter for now
+      },
+      spacing: {
+        'brutal': '1.5rem',
+        'brutal-lg': '3rem',
+      },
+      borderWidth: {
+        'brutal': '2px',
       },
       animation: {
         'bounce-gentle': 'bounce 2s infinite',

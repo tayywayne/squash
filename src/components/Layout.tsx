@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Home, MessageSquare, History, User, LogOut, Trophy } from 'lucide-react';
+import { Home, MessageSquare, History, User, LogOut, Trophy, X } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import UserDisplayName from './UserDisplayName';
 import Toast from './Toast';
@@ -20,6 +20,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const previousArchetypeRef = useRef<string | undefined>(undefined);
   const { pendingNotification, clearNotification } = useArchetypeAchievements();
   const { pendingNotification: pendingGeneralNotification, clearNotification: clearGeneralNotification } = useGeneralAchievements();
@@ -29,12 +30,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     const currentArchetype = user?.conflict_archetype;
     const previousArchetype = previousArchetypeRef.current;
 
-    // Check if archetype has changed and is not the initial load
     if (currentArchetype && 
         previousArchetype !== undefined && 
         currentArchetype !== previousArchetype) {
       
-      // Get archetype info to show in toast
       const archetypeInfo = archetypeService.getArchetypeInfo(currentArchetype);
       
       if (archetypeInfo) {
@@ -45,18 +44,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       }
     }
 
-    // Always update the ref with current archetype for next comparison
     previousArchetypeRef.current = currentArchetype;
   }, [user?.conflict_archetype]);
 
   const navigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: Home, emoji: '🏠' },
-    //{ name: 'Conflicts', href: '/conflicts', icon: MessageSquare, emoji: '💬' },
-    //{ name: 'History', href: '/history', icon: History, emoji: '📚' },
-    { name: 'Public Shame', href: '/public-shame', icon: Trophy, emoji: '⚖️' },
-    { name: 'Leaderboard', href: '/leaderboard', icon: Trophy, emoji: '🏆' },
-    { name: 'Support Us', href: '/support-us', icon: User, emoji: '💝' },
-    { name: 'Profile', href: '/profile', icon: User, emoji: '👤' },
+    { name: 'DASHBOARD', href: '/dashboard', icon: Home, emoji: '🏠' },
+    { name: 'PUBLIC SHAME', href: '/public-shame', icon: Trophy, emoji: '⚖️' },
+    { name: 'LEADERBOARD', href: '/leaderboard', icon: Trophy, emoji: '🏆' },
+    { name: 'SUPPORT US', href: '/support-us', icon: User, emoji: '💝' },
+    { name: 'PROFILE', href: '/profile', icon: User, emoji: '👤' },
   ];
 
   const handleSignOut = async () => {
@@ -69,7 +65,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-lavender-50 to-teal-50">
+    <div className="min-h-screen bg-background-light">
       {/* Toast Notification */}
       {toast && (
         <Toast
@@ -96,89 +92,117 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         />
       )}
 
-      {/* Top Navigation */}
-      <nav className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Top Navigation - Neobrutalist Style */}
+      <nav className="bg-background-white border-b-brutal border-border-black sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-brutal">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-2">
-              <div className="text-2xl">💣</div>
-              <h1 className="text-xl font-bold text-gray-900">Squashie</h1>
+            {/* Logo */}
+            <div className="flex items-center space-x-3">
+              <div className="text-3xl">💣</div>
+              <h1 className="text-2xl font-black text-text-primary uppercase tracking-tight">SQUASHIE</h1>
             </div>
             
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-600">
-                Hey, <UserDisplayName 
-                  username={user?.username}
-                  archetypeEmoji={user?.archetype_emoji}
-                  supporterEmoji={user?.supporter_emoji}
-                  fallback={user?.first_name || user?.email || 'User'}
-                />
-              </span>
-              <button
-                onClick={handleSignOut}
-                className="flex items-center space-x-1 text-gray-600 hover:text-coral-500 transition-colors"
-              >
-                <LogOut size={18} />
-                <span className="hidden sm:inline">Logout</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </nav>
-
-      <div className="flex flex-1">
-        {/* Sidebar */}
-        <aside className="w-64 bg-white shadow-sm border-r border-gray-200 hidden md:block">
-          <nav className="mt-6 px-4">
-            <ul className="space-y-2">
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-6">
               {navigation.map((item) => {
                 const isActive = location.pathname === item.href;
                 return (
-                  <li key={item.name}>
-                    <button
-                      onClick={() => navigate(item.href)}
-                      className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors ${
-                        isActive
-                          ? 'bg-coral-50 text-coral-600 border border-coral-200'
-                          : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                      }`}
-                    >
-                      <span className="text-xl">{item.emoji}</span>
-                      <span className="font-medium">{item.name}</span>
-                    </button>
-                  </li>
+                  <button
+                    key={item.name}
+                    onClick={() => navigate(item.href)}
+                    className={`px-4 py-2 font-bold text-sm uppercase tracking-wide transition-all border-brutal ${
+                      isActive
+                        ? 'bg-primary-teal text-background-white border-border-black'
+                        : 'text-text-primary hover:bg-primary-orange hover:text-background-white border-transparent hover:border-border-black'
+                    }`}
+                  >
+                    {item.name}
+                  </button>
                 );
               })}
-            </ul>
-          </nav>
-        </aside>
-
-        {/* Mobile Bottom Navigation */}
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 md:hidden z-10">
-          <nav className="flex justify-around py-2">
-            {navigation.map((item) => {
-              const isActive = location.pathname === item.href;
-              return (
+              
+              {/* User Info */}
+              <div className="flex items-center space-x-4 pl-4 border-l-brutal border-border-black">
+                <div className="text-sm font-bold text-text-primary uppercase">
+                  <UserDisplayName 
+                    username={user?.username}
+                    archetypeEmoji={user?.archetype_emoji}
+                    supporterEmoji={user?.supporter_emoji}
+                    fallback={user?.first_name || user?.email || 'USER'}
+                  />
+                </div>
                 <button
-                  key={item.name}
-                  onClick={() => navigate(item.href)}
-                  className={`flex flex-col items-center p-2 rounded-lg transition-colors ${
-                    isActive ? 'text-coral-500' : 'text-gray-600'
-                  }`}
+                  onClick={handleSignOut}
+                  className="p-2 bg-text-primary text-background-white hover:bg-primary-orange transition-colors border-brutal border-border-black"
                 >
-                  <span className="text-lg">{item.emoji}</span>
-                  <span className="text-xs font-medium">{item.name}</span>
+                  <LogOut size={16} />
                 </button>
-              );
-            })}
-          </nav>
-        </div>
+              </div>
+            </div>
 
-        {/* Main Content */}
-        <main className="flex-1 pb-16 md:pb-0">
-          {children}
-        </main>
-      </div>
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden p-2 bg-text-primary text-background-white border-brutal border-border-black"
+            >
+              {mobileMenuOpen ? <X size={20} /> : <div className="w-5 h-5 flex flex-col justify-center space-y-1">
+                <div className="w-full h-0.5 bg-background-white"></div>
+                <div className="w-full h-0.5 bg-background-white"></div>
+                <div className="w-full h-0.5 bg-background-white"></div>
+              </div>}
+            </button>
+          </div>
+
+          {/* Mobile Menu */}
+          {mobileMenuOpen && (
+            <div className="md:hidden border-t-brutal border-border-black bg-background-white">
+              <div className="py-4 space-y-2">
+                {navigation.map((item) => {
+                  const isActive = location.pathname === item.href;
+                  return (
+                    <button
+                      key={item.name}
+                      onClick={() => {
+                        navigate(item.href);
+                        setMobileMenuOpen(false);
+                      }}
+                      className={`w-full text-left px-4 py-3 font-bold text-sm uppercase tracking-wide transition-all border-brutal ${
+                        isActive
+                          ? 'bg-primary-teal text-background-white border-border-black'
+                          : 'text-text-primary hover:bg-primary-orange hover:text-background-white border-transparent hover:border-border-black'
+                      }`}
+                    >
+                      {item.name}
+                    </button>
+                  );
+                })}
+                
+                <div className="px-4 py-3 border-t-brutal border-border-black">
+                  <div className="text-sm font-bold text-text-primary uppercase mb-2">
+                    <UserDisplayName 
+                      username={user?.username}
+                      archetypeEmoji={user?.archetype_emoji}
+                      supporterEmoji={user?.supporter_emoji}
+                      fallback={user?.first_name || user?.email || 'USER'}
+                    />
+                  </div>
+                  <button
+                    onClick={handleSignOut}
+                    className="w-full bg-text-primary text-background-white hover:bg-primary-orange transition-colors border-brutal border-border-black py-2 px-4 font-bold uppercase text-sm"
+                  >
+                    LOGOUT
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </nav>
+
+      {/* Main Content */}
+      <main className="flex-1">
+        {children}
+      </main>
     </div>
   );
 };
