@@ -433,6 +433,21 @@ const HomePage: React.FC = () => {
             <div className="text-gray-400 text-center md:text-right">
               <p>&copy; 2025 Squashie. Because conflict is inevitable.</p>
               <p className="text-sm mt-1">Making conflict resolution accessible, one squash at a time.</p>
+              
+              {/* Bolt.new Badge */}
+              <div className="mt-4 flex justify-center md:justify-end">
+                <a 
+                  href="https://bolt.new" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center space-x-2 bg-black hover:bg-gray-800 text-white px-3 py-2 rounded-lg text-xs font-medium transition-colors border border-gray-700"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="text-yellow-400">
+                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                  </svg>
+                  <span>Built with Bolt.new</span>
+                </a>
+              </div>
             </div>
           </div>
         </div>
