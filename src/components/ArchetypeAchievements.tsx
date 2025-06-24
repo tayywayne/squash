@@ -142,8 +142,8 @@ const ArchetypeAchievements: React.FC<ArchetypeAchievementsProps> = ({ userId, c
             className="bg-gradient-to-r from-purple-500 to-indigo-500 h-2 rounded-full transition-all duration-500"
             style={{ width: `${Math.min((achievements.length / 20) * 100, 100)}%` }}
           />
-        </div>  */}
-      </div>
+        </div> 
+      </div>  */}
     </div>
   );
 };
