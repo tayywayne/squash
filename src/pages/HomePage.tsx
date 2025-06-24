@@ -134,13 +134,12 @@ const HomePage: React.FC = () => {
         <div className="max-w-4xl mx-auto text-center">
           <div className="text-6xl mb-6 animate-bounce-gentle">💣</div>
           <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-            Because passive-aggression 
+            Drama doesn’t solve itself.  
             <br />
-            <span className="text-coral-500">isn’t a resolution strategy.</span>
+            <span className="text-coral-500">But Squashie might.</span>
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
-            Squash your drama with friends, coworkers, roommates, or whoever’s driving you nuts, without risking a full-blown fallout. 
-            With a little AI-powered mediation (and a dash of public shaming if all else fails), Squashie helps you patch things up before they explode.
+            We help you catch the tension early, before it spirals into total avoidance. Whether it’s a stolen charger or a tone in a text, Squashie helps patch things up with AI mediation and crowd-backed resolution.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
