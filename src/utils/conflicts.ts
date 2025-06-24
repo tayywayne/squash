@@ -77,16 +77,15 @@ export const conflictService = {
         const userConflicts = await conflictService.getUserConflicts(userId, '');
         const resolvedConflicts = userConflicts.filter(c => c.status === 'resolved');
         const archetypeAchievements = await achievementsService.getUserArchetypeAchievements(userId);
-        const resolvedConflicts = userConflicts.filter(c => c.status === 'resolved');
         
         await generalAchievementsService.checkAndUnlockAchievements(userId, {
           totalConflicts: userConflicts.length,
           resolvedConflicts: resolvedConflicts.length,
-          resolvedConflicts: resolvedConflicts.length,
           archetypeCount: archetypeAchievements.length,
-          hasRehash: !satisfaction,
-          hasQuickResolution: satisfaction && conflict?.created_at && 
-            (new Date().getTime() - new Date(conflict.created_at).getTime()) < 10 * 60 * 1000
+          hasLongMessage: conflictData.description.length > 900,
+          hasIFeelMessage: conflictData.description.toLowerCase().includes('i feel')
+        });
+        });
       } catch (error) {
         console.error('Error checking achievements after conflict creation:', error);
       }
