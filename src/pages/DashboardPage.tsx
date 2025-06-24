@@ -20,7 +20,6 @@ const DashboardPage: React.FC = () => {
   const [conflicts, setConflicts] = useState<Conflict[]>([]);
   const [otherUserProfiles, setOtherUserProfiles] = useState<Record<string, Profile>>({});
   const [loading, setLoading] = useState(true);
-  const [fetchingReddit, setFetchingReddit] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
 
   // Trigger archetype assignment when user loads dashboard
@@ -185,33 +184,6 @@ const DashboardPage: React.FC = () => {
     }
   };
 
-  // Temporary function to test Reddit conflict fetching
-  const handleFetchRedditConflict = async () => {
-    setFetchingReddit(true);
-    try {
-      const { success, error } = await redditConflictsService.fetchNewDailyConflict();
-      
-      if (success) {
-        setToast({ 
-          message: 'Reddit conflict fetched successfully! Check the Reddit Drama page.', 
-          type: 'success' 
-        });
-      } else {
-        setToast({ 
-          message: error || 'Failed to fetch Reddit conflict', 
-          type: 'error' 
-        });
-      }
-    } catch (error) {
-      console.error('Error fetching Reddit conflict:', error);
-      setToast({ 
-        message: 'Failed to fetch Reddit conflict', 
-        type: 'error' 
-      });
-    } finally {
-      setFetchingReddit(false);
-    }
-  };
 
   const getConflictStatus = (conflict: Conflict) => {
     // Check for final ruling phase
@@ -417,30 +389,6 @@ const DashboardPage: React.FC = () => {
             </div>
           </button>
 
-          {/* TEMPORARY: Reddit Conflict Fetch Button */}
-          <button 
-            onClick={handleFetchRedditConflict}
-            disabled={fetchingReddit}
-            className="w-full p-6 border-2 border-dashed border-orange-300 rounded-lg hover:border-orange-400 hover:bg-orange-50 transition-colors group mb-4"
-          >
-            <div className="flex items-center justify-center">
-              <div className="text-orange-500 mr-4">
-                {fetchingReddit ? (
-                  <div className="animate-spin rounded-full h-8 w-8 border-2 border-orange-500 border-t-transparent"></div>
-                ) : (
-                  <span className="text-2xl">🤔</span>
-                )}
-              </div>
-              <div>
-                <p className="text-lg font-medium text-gray-900 group-hover:text-orange-600">
-                  {fetchingReddit ? 'Fetching Reddit Conflict...' : 'Fetch Today\'s Reddit Conflict (TEST)'}
-                </p>
-                <p className="text-gray-600">
-                  {fetchingReddit ? 'Getting fresh drama from r/AmItheAsshole...' : 'Temporary button to test Reddit conflict fetching'}
-                </p>
-              </div>
-            </div>
-          </button>
 
           {/* Active Conflicts */}
           {loading ? (
