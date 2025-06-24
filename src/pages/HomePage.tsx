@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Users, CheckCircle, MessageSquare, Zap, Shield, Heart, Star } from 'lucide-react';
+import { ArrowRight, Users, CheckCircle, MessageSquare, Zap, Shield, Heart, Star, HelpCircle } from 'lucide-react';
 import { conflictService } from '../utils/conflicts';
 
 interface GlobalStats {
@@ -13,6 +13,7 @@ const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const [stats, setStats] = useState<GlobalStats>({ totalConflicts: 0, resolvedConflicts: 0, resolutionRate: 0 });
   const [statsLoading, setStatsLoading] = useState(true);
+  const [showTooltip, setShowTooltip] = useState(false);
 
   useEffect(() => {
     const loadGlobalStats = async () => {
@@ -182,7 +183,26 @@ const HomePage: React.FC = () => {
                 </div>
                 <div className="text-center">
                   <div className="text-4xl font-bold text-lavender-500 mb-2">{stats.resolutionRate}%</div>
-                  <div className="text-gray-600">Resolution Rate</div>
+                  <div className="text-gray-600 flex items-center justify-center space-x-1">
+                    <span>Resolution Rate</span>
+                    <div className="relative">
+                      <HelpCircle 
+                        size={16} 
+                        className="text-gray-400 hover:text-gray-600 cursor-help transition-colors"
+                        onMouseEnter={() => setShowTooltip(true)}
+                        onMouseLeave={() => setShowTooltip(false)}
+                      />
+                      {showTooltip && (
+                        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 bg-gray-900 text-white text-xs rounded-lg p-3 shadow-lg z-10">
+                          <div className="text-center">
+                            Look, anything over 0% is better than what you were doing before, aka ignoring your problems or spreading passive aggression around
+                          </div>
+                          {/* Tooltip arrow */}
+                          <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
