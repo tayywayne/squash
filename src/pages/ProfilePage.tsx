@@ -362,13 +362,10 @@ const ProfilePage: React.FC = () => {
               <h2 className="text-xl font-semibold text-gray-900 mb-4">👤 Profile Tips</h2>
               <div className="space-y-3 text-sm text-gray-700">
                 <p>
-                  <strong>Username:</strong> Choose something that represents you well. Other users will see this when you're in conflicts together.
-                </p>
-                <p>
                   <strong>Avatar:</strong> A friendly photo helps humanize conflicts. You can use any image URL - try uploading to a service like Imgur or use a Gravatar URL.
                 </p>
                 <p>
-                  <strong>Privacy:</strong> Your profile is visible to other users you're in conflicts with. Keep it professional but personable.
+                  <strong>Privacy:</strong> Your profile is visible to other users. Keep it professional but personable.
                 </p>
               </div>
             </div>
