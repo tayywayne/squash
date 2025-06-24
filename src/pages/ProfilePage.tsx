@@ -232,7 +232,18 @@ const ProfilePage: React.FC = () => {
                         <p className="text-gray-600">@{user.username}</p>
                       )}
                       <p className="text-gray-500 text-sm">{user?.email}</p>
-                      <p className="text-sm text-gray-500">Conflict Resolution Specialist</p>
+                      <p className="text-sm text-gray-500">
+                                        {user?.id && (
+                    <div className="mt-2">
+                      <SquashCredDisplay 
+                        userId={user.id} 
+                        showTier={true}
+                        showTooltip={true}
+                        size="md"
+                      />
+                    </div>
+                  )}
+                      </p>
                     </>
                   )}
                 </div>
