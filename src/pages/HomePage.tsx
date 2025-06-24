@@ -35,23 +35,23 @@ const HomePage: React.FC = () => {
   const features = [
     {
       icon: MessageSquare,
-      title: 'AI-Powered Mediation',
-      description: 'Our smart AI mediator helps translate heated emotions into constructive dialogue, making resolution possible even when tensions are high.'
+      title: 'Emotion Translator 3000',
+      description: 'Our AI takes your spicy thoughts and turns them into something that won’t start World War III.'
     },
     {
       icon: Shield,
-      title: 'Safe Space for Venting',
-      description: 'Express your frustrations freely in your initial message. Our AI will help reframe it constructively before sharing with the other party.'
+      title: 'Unfiltered First, Polished Later',
+      description: 'Your raw thoughts, reworked into something your therapist would high-five.'
     },
     {
       icon: Zap,
-      title: 'Quick Resolution Process',
-      description: 'Most conflicts move through our 3-step process within 24-48 hours, helping you get back to what matters most.'
+      title: 'Skip the Silent Treatment Phase',
+      description: 'Resolve things while it still matters before ghosting kicks in.'
     },
     {
       icon: Heart,
-      title: 'Relationship Preservation',
-      description: 'Focus on understanding rather than winning. Our approach helps maintain relationships while resolving the underlying issues.'
+      title: 'Less Conflict, More Connection',
+      description: 'Emotions are messy. We make sure they don’t wreck your relationships.'
     }
   ];
 
