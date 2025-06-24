@@ -307,7 +307,7 @@ const HomePage: React.FC = () => {
             <span className="text-green-600">🥇</span>
             <span>Least Problematic: Conflict resolution champions</span>
           </div>
-          <div className="flex items-center space-x-2">
+          <div className="bg-red-100 p-3 rounded-lg border border-red-300">
             <span className="text-red-600">🔥</span>
             <span>Most Problematic: Maybe work on that...</span>
           </div>
