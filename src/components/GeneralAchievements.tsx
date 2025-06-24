@@ -39,7 +39,7 @@ const GeneralAchievements: React.FC<GeneralAchievementsProps> = ({ userId, class
       <div className={`bg-white p-6 rounded-lg border border-gray-200 ${className}`}>
         <div className="flex items-center space-x-2 mb-4">
           <Star className="h-5 w-5 text-yellow-600" />
-          <h3 className="text-lg font-semibold text-gray-900">🏆 Achievements</h3>
+          <h3 className="text-lg font-semibold text-gray-900">Achievements</h3>
         </div>
         <div className="animate-pulse">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
@@ -57,7 +57,7 @@ const GeneralAchievements: React.FC<GeneralAchievementsProps> = ({ userId, class
       <div className={`bg-white p-6 rounded-lg border border-gray-200 ${className}`}>
         <div className="flex items-center space-x-2 mb-4">
           <Star className="h-5 w-5 text-yellow-600" />
-          <h3 className="text-lg font-semibold text-gray-900">🏆 Achievements</h3>
+          <h3 className="text-lg font-semibold text-gray-900">Achievements</h3>
         </div>
         <div className="text-center py-8">
           <div className="text-4xl mb-3">🎯</div>
@@ -74,7 +74,7 @@ const GeneralAchievements: React.FC<GeneralAchievementsProps> = ({ userId, class
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-2">
           <Star className="h-5 w-5 text-yellow-600" />
-          <h3 className="text-lg font-semibold text-gray-900">🏆 Achievements</h3>
+          <h3 className="text-lg font-semibold text-gray-900">Achievements</h3>
         </div>
         <div className="flex items-center space-x-1 text-sm text-gray-500">
           <Trophy size={16} />
