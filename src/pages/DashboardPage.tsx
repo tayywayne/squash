@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { Plus, MessageSquare, Clock, CheckCircle, Users } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { profileService } from '../utils/profiles';
+import { redditConflictsService } from '../utils/redditConflicts';
 import MoodIndicator from '../components/MoodIndicator';
 import UserDisplayName from '../components/UserDisplayName';
 import { archetypeService } from '../utils/archetypes';
 import { conflictService, Conflict } from '../utils/conflicts';
+import Toast from '../components/Toast';
 import { MoodLevel } from '../types';
 import { Profile } from '../types';
 
@@ -18,6 +20,8 @@ const DashboardPage: React.FC = () => {
   const [conflicts, setConflicts] = useState<Conflict[]>([]);
   const [otherUserProfiles, setOtherUserProfiles] = useState<Record<string, Profile>>({});
   const [loading, setLoading] = useState(true);
+  const [fetchingReddit, setFetchingReddit] = useState(false);
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
 
   // Trigger archetype assignment when user loads dashboard
   React.useEffect(() => {
@@ -181,6 +185,34 @@ const DashboardPage: React.FC = () => {
     }
   };
 
+  // Temporary function to test Reddit conflict fetching
+  const handleFetchRedditConflict = async () => {
+    setFetchingReddit(true);
+    try {
+      const { success, error } = await redditConflictsService.fetchNewDailyConflict();
+      
+      if (success) {
+        setToast({ 
+          message: 'Reddit conflict fetched successfully! Check the Reddit Drama page.', 
+          type: 'success' 
+        });
+      } else {
+        setToast({ 
+          message: error || 'Failed to fetch Reddit conflict', 
+          type: 'error' 
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching Reddit conflict:', error);
+      setToast({ 
+        message: 'Failed to fetch Reddit conflict', 
+        type: 'error' 
+      });
+    } finally {
+      setFetchingReddit(false);
+    }
+  };
+
   const getConflictStatus = (conflict: Conflict) => {
     // Check for final ruling phase
     if (conflict.final_ai_ruling) {
@@ -273,6 +305,14 @@ const DashboardPage: React.FC = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-6">
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
+
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">
@@ -372,6 +412,31 @@ const DashboardPage: React.FC = () => {
                 </p>
                 <p className="text-gray-600">
                   Got beef? Let's squash it. Invite someone to hash it out.
+                </p>
+              </div>
+            </div>
+          </button>
+
+          {/* TEMPORARY: Reddit Conflict Fetch Button */}
+          <button 
+            onClick={handleFetchRedditConflict}
+            disabled={fetchingReddit}
+            className="w-full p-6 border-2 border-dashed border-orange-300 rounded-lg hover:border-orange-400 hover:bg-orange-50 transition-colors group mb-4"
+          >
+            <div className="flex items-center justify-center">
+              <div className="text-orange-500 mr-4">
+                {fetchingReddit ? (
+                  <div className="animate-spin rounded-full h-8 w-8 border-2 border-orange-500 border-t-transparent"></div>
+                ) : (
+                  <span className="text-2xl">🤔</span>
+                )}
+              </div>
+              <div>
+                <p className="text-lg font-medium text-gray-900 group-hover:text-orange-600">
+                  {fetchingReddit ? 'Fetching Reddit Conflict...' : 'Fetch Today\'s Reddit Conflict (TEST)'}
+                </p>
+                <p className="text-gray-600">
+                  {fetchingReddit ? 'Getting fresh drama from r/AmItheAsshole...' : 'Temporary button to test Reddit conflict fetching'}
                 </p>
               </div>
             </div>
