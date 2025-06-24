@@ -15,7 +15,7 @@ const supabaseClient = createClient(
 // Reddit API credentials from environment variables
 const REDDIT_CLIENT_ID = Deno.env.get('REDDIT_CLIENT_ID')
 const REDDIT_CLIENT_SECRET = Deno.env.get('REDDIT_CLIENT_SECRET')
-const REDDIT_USER_AGENT = Deno.env.get('REDDIT_USER_AGENT') ?? 'SquashieApp/1.0 (by /u/squashie_dev) - Conflict Resolution Platform'
+const REDDIT_USER_AGENT = Deno.env.get('REDDIT_USER_AGENT') ?? 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
 
 interface RedditPost {
   id: string
