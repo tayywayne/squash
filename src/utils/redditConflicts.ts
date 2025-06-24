@@ -72,7 +72,7 @@ export const redditConflictsService = {
         .select('vote_type')
         .eq('reddit_conflict_id', conflictId)
         .eq('voter_id', userId)
-        .single();
+        .maybeSingle();
 
       if (checkError && checkError.code !== 'PGRST116') {
         console.error('Error checking existing vote:', checkError);
