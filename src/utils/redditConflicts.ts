@@ -66,15 +66,31 @@ export const redditConflictsService = {
 
   castVote: async (conflictId: string, voteType: RedditVoteType, userId: string): Promise<{ success: boolean; error?: string }> => {
     try {
-      // Use upsert to handle both new votes and vote changes
+      // Check if user has already voted
+      const { data: existingVote, error: checkError } = await supabase
+        .from('reddit_conflict_votes')
+        .select('vote_type')
+        .eq('reddit_conflict_id', conflictId)
+        .eq('voter_id', userId)
+        .single();
+
+      if (checkError && checkError.code !== 'PGRST116') {
+        console.error('Error checking existing vote:', checkError);
+        return { success: false, error: checkError.message };
+      }
+
+      // If user has already voted, prevent changing vote
+      if (existingVote) {
+        return { success: false, error: 'You have already voted on this conflict. Votes cannot be changed.' };
+      }
+
+      // Insert new vote (first time voting)
       const { error } = await supabase
         .from('reddit_conflict_votes')
-        .upsert({
+        .insert({
           reddit_conflict_id: conflictId,
           voter_id: userId,
           vote_type: voteType
-        }, {
-          onConflict: 'reddit_conflict_id,voter_id'
         });
 
       if (error) {
@@ -82,9 +98,9 @@ export const redditConflictsService = {
         return { success: false, error: error.message };
       }
 
-      // Award SquashCred for voting on daily Reddit conflict
+      // Award SquashCred for voting on Reddit conflict (different from public conflicts)
       try {
-        await squashCredService.awardForAction(userId, 'VOTE_ON_PUBLIC_CONFLICT');
+        await squashCredService.awardForAction(userId, 'VOTE_ON_REDDIT_CONFLICT');
       } catch (credError) {
         console.error('Error awarding SquashCred for Reddit vote:', credError);
       }

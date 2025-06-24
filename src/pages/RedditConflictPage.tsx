@@ -257,12 +257,14 @@ const RedditConflictPage: React.FC = () => {
                   <button
                     key={option.type}
                     onClick={() => handleVote(option.type)}
-                    disabled={isLoading}
+                    disabled={isLoading || userVote !== null}
                     className={`flex items-center justify-between p-4 rounded-lg border-2 transition-all ${
                       isSelected
                         ? 'border-coral-500 bg-coral-50 text-coral-700'
+                        : userVote !== null
+                        ? 'border-gray-200 bg-gray-100 text-gray-500 cursor-not-allowed'
                         : 'border-gray-200 hover:border-coral-300 hover:bg-coral-50'
-                    } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    } ${isLoading || userVote !== null ? 'opacity-50 cursor-not-allowed' : ''}`}
                   >
                     <div className="flex items-center space-x-3">
                       <span className="text-2xl">{option.emoji}</span>
@@ -280,6 +282,15 @@ const RedditConflictPage: React.FC = () => {
                   </button>
                 );
               })}
+            </div>
+          )}
+          
+          {/* Show message if user has already voted */}
+          {user && userVote && (
+            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <p className="text-sm text-blue-800">
+                ✅ You've already cast your vote! Votes cannot be changed to maintain fairness.
+              </p>
             </div>
           )}
         </div>
