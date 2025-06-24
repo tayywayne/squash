@@ -85,7 +85,6 @@ export const conflictService = {
           hasLongMessage: conflictData.description.length > 900,
           hasIFeelMessage: conflictData.description.toLowerCase().includes('i feel')
         });
-        });
       } catch (error) {
         console.error('Error checking achievements after conflict creation:', error);
       }
