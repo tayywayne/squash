@@ -379,6 +379,34 @@ export const conflictService = {
     }
   },
 
+  deleteConflict: async (conflictId: string, userId: string): Promise<void> => {
+    try {
+      // First, get the conflict to verify ownership
+      const conflict = await conflictService.getConflictById(conflictId);
+      if (!conflict) {
+        throw new Error('Conflict not found');
+      }
+
+      // Only allow the creator (user1) to delete the conflict
+      if (conflict.user1_id !== userId) {
+        throw new Error('Only the conflict creator can delete this conflict');
+      }
+
+      // Delete the conflict
+      const { error } = await supabase
+        .from('conflicts')
+        .delete()
+        .eq('id', conflictId);
+
+      if (error) {
+        throw error;
+      }
+    } catch (error) {
+      console.error('Error deleting conflict:', error);
+      throw error;
+    }
+  },
+
   getGlobalConflictStats: async (): Promise<{ totalConflicts: number; resolvedConflicts: number; resolutionRate: number }> => {
     try {
       // Get stats from dedicated global_stats table
