@@ -264,73 +264,93 @@ const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* Additional Features Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white/40">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">But Wait, There's More</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Because conflict resolution should be fun (and slightly competitive).
-            </p>
+{/* Additional Features Section */}
+<section className="py-20 px-4 sm:px-6 lg:px-8 bg-white/40">
+  <div className="max-w-6xl mx-auto">
+    <div className="text-center mb-16">
+      <h2 className="text-4xl font-bold text-gray-900 mb-4">But Wait, There's More</h2>
+      <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+        Because conflict resolution should be fun (and slightly competitive).
+      </p>
+    </div>
+
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      {/* Public Shame Board */}
+      <div className="bg-gradient-to-br from-red-50 to-pink-50 p-8 rounded-xl border-2 border-red-200 shadow-sm hover:shadow-md transition-shadow">
+        <div className="text-center mb-6">
+          <div className="text-5xl mb-4">⚖️</div>
+          <h3 className="text-xl font-bold text-red-900 mb-3">Public Shame Board</h3>
+        </div>
+        <p className="text-red-800 text-sm leading-relaxed mb-4">
+          When people can't figure their shit out after multiple attempts, Judge AI steps in with a final ruling. 
+          These conflicts get posted publicly for everyone to vote on who was wrong.
+        </p>
+        <div className="bg-red-100 p-3 rounded-lg border border-red-300">
+          <p className="text-xs text-red-700 font-medium">
+            💡 Pro tip: Don't end up here. It's embarrassing.
+          </p>
+        </div>
+      </div>
+
+      {/* Leaderboards */}
+      <div className="bg-gradient-to-br from-yellow-50 to-orange-50 p-8 rounded-xl border-2 border-yellow-200 shadow-sm hover:shadow-md transition-shadow">
+        <div className="text-center mb-6">
+          <div className="text-5xl mb-4">🏆</div>
+          <h3 className="text-xl font-bold text-orange-900 mb-3">Leaderboards</h3>
+        </div>
+        <p className="text-orange-800 text-sm leading-relaxed mb-4">
+          See who ranks as the least problematic (high resolution rates) and most problematic (low resolution rates) users. 
+          Because nothing motivates better conflict resolution than public rankings.
+        </p>
+        <div className="space-y-2 text-xs text-orange-700">
+          <div className="flex items-center space-x-2">
+            <span className="text-green-600">🥇</span>
+            <span>Least Problematic: Conflict resolution champions</span>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Public Shame Board */}
-            <div className="bg-gradient-to-br from-red-50 to-pink-50 p-8 rounded-xl border-2 border-red-200 shadow-sm hover:shadow-md transition-shadow">
-              <div className="text-center mb-6">
-                <div className="text-5xl mb-4">⚖️</div>
-                <h3 className="text-xl font-bold text-red-900 mb-3">Public Shame Board</h3>
-              </div>
-              <p className="text-red-800 text-sm leading-relaxed mb-4">
-                When people can't figure their shit out after multiple attempts, Judge AI steps in with dramatic final rulings. 
-                These conflicts get posted publicly for everyone to vote on who was wrong.
-              </p>
-              <div className="bg-red-100 p-3 rounded-lg border border-red-300">
-                <p className="text-xs text-red-700 font-medium">
-                  💡 Pro tip: Don't end up here. It's embarrassing.
-                </p>
-              </div>
-            </div>
-
-            {/* Leaderboards */}
-            <div className="bg-gradient-to-br from-yellow-50 to-orange-50 p-8 rounded-xl border-2 border-yellow-200 shadow-sm hover:shadow-md transition-shadow">
-              <div className="text-center mb-6">
-                <div className="text-5xl mb-4">🏆</div>
-                <h3 className="text-xl font-bold text-orange-900 mb-3">Leaderboards</h3>
-              </div>
-              <p className="text-orange-800 text-sm leading-relaxed mb-4">
-                See who ranks as the least problematic (high resolution rates) and most problematic (low resolution rates) users. 
-                Because nothing motivates better conflict resolution than public rankings.
-              </p>
-              <div className="space-y-2 text-xs text-orange-700">
-                <div className="flex items-center space-x-2">
-                  <span className="text-green-600">🥇</span>
-                  <span>Least Problematic: Conflict resolution champions</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <span className="text-red-600">🔥</span>
-                  <span>Most Problematic: Maybe work on that...</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Conflict Archetypes */}
-            <div className="bg-gradient-to-br from-purple-50 to-indigo-50 p-8 rounded-xl border-2 border-purple-200 shadow-sm hover:shadow-md transition-shadow">
-              <div className="text-center mb-6">
-                <div className="text-5xl mb-4">🎭</div>
-                <h3 className="text-xl font-bold text-purple-900 mb-3">Conflict Archetypes</h3>
-              </div>
-              <p className="text-purple-800 text-sm leading-relaxed mb-4">
-                Based on your conflict resolution behavior, you'll be assigned a personality archetype. 
-                Are you "The Fixer," "The Drama Generator," or "The Chaos Goblin"?
-              </p>
-              <div className="bg-purple-100 p-3 rounded-lg border border-purple-300">
-                <p className="text-xs text-purple-700">
-                  <strong>Examples:</strong> 🛠️ The Fixer, 🎭 The Drama Generator, 💣 The Chaos Goblin, 🧘‍♀️ The Peaceful Observer
-                </p>
-              </div>
-            </div>
+          <div className="flex items-center space-x-2">
+            <span className="text-red-600">🔥</span>
+            <span>Most Problematic: Maybe work on that...</span>
           </div>
+        </div>
+      </div>
+
+      {/* Conflict Archetypes */}
+      <div className="bg-gradient-to-br from-purple-50 to-indigo-50 p-8 rounded-xl border-2 border-purple-200 shadow-sm hover:shadow-md transition-shadow">
+        <div className="text-center mb-6">
+          <div className="text-5xl mb-4">🎭</div>
+          <h3 className="text-xl font-bold text-purple-900 mb-3">Conflict Archetypes</h3>
+        </div>
+        <p className="text-purple-800 text-sm leading-relaxed mb-4">
+          Based on your conflict resolution behavior, you'll be assigned a personality archetype. 
+          Are you "The Fixer," "The Drama Generator," or "The Chaos Goblin"?
+        </p>
+        <div className="bg-purple-100 p-3 rounded-lg border border-purple-300">
+          <p className="text-xs text-purple-700">
+            <strong>Examples:</strong> 🛠️ The Fixer, 🎭 The Drama Generator, 💣 The Chaos Goblin, 🧘‍♀️ The Peaceful Observer
+          </p>
+        </div>
+      </div>
+
+      {/* Achievements */}
+      <div className="bg-gradient-to-br from-green-50 to-teal-50 p-8 rounded-xl border-2 border-green-200 shadow-sm hover:shadow-md transition-shadow">
+        <div className="text-center mb-6">
+          <div className="text-5xl mb-4">🎉</div>
+          <h3 className="text-xl font-bold text-green-900 mb-3">Achievements</h3>
+        </div>
+        <p className="text-green-800 text-sm leading-relaxed mb-4">
+          Earn digital trophies for your conflict milestones — from starting your first squash to solving drama in record time. 
+          Your profile becomes a badge wall of your emotional journey.
+        </p>
+        <div className="bg-green-100 p-3 rounded-lg border border-green-300">
+          <p className="text-xs text-green-700">
+            💫 Unlock achievements like “First Conflict Sent,” “Rehash Royalty,” or “Drama-Free for 30 Days.”
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 
           {/* Call to Action
           <div className="mt-12 text-center">
