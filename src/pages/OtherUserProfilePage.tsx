@@ -8,6 +8,7 @@ import UserDisplayName from '../components/UserDisplayName';
 import SupporterCard from '../components/SupporterCard';
 import ArchetypeAchievements from '../components/ArchetypeAchievements';
 import GeneralAchievements from '../components/GeneralAchievements';
+import SquashCredDisplay from '../components/SquashCredDisplay';
 import { archetypeService } from '../utils/archetypes';
 import { Profile } from '../types';
 import Toast from '../components/Toast';
@@ -191,6 +192,14 @@ const OtherUserProfilePage: React.FC = () => {
                 <Calendar className="h-4 w-4 mr-1" />
                 Joined {formatTimeAgo(profile.created_at)}
               </span>
+              {userId && (
+                <SquashCredDisplay 
+                  userId={userId} 
+                  showTier={true}
+                  showTooltip={true}
+                  size="sm"
+                />
+              )}
             </div>
           </div>
         </div>

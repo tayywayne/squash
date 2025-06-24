@@ -7,6 +7,8 @@ import { archetypeService, ARCHETYPES } from '../utils/archetypes';
 import SupporterCard from '../components/SupporterCard';
 import ArchetypeAchievements from '../components/ArchetypeAchievements';
 import GeneralAchievements from '../components/GeneralAchievements';
+import SquashCredDisplay from '../components/SquashCredDisplay';
+import SquashCredHistory from '../components/SquashCredHistory';
 import Toast from '../components/Toast';
 
 const ProfilePage: React.FC = () => {
@@ -294,7 +296,16 @@ const ProfilePage: React.FC = () => {
                 <div className="p-4 bg-gray-50 rounded-lg">
                   <p className="text-2xl font-bold text-lavender-500">{resolutionRate}%</p>
                   <p className="text-sm text-gray-600">Resolution Rate</p>
-                </div>
+                {user?.id && (
+                  <div className="mt-2">
+                    <SquashCredDisplay 
+                      userId={user.id} 
+                      showTier={true}
+                      showTooltip={true}
+                      size="md"
+                    />
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -342,6 +353,11 @@ const ProfilePage: React.FC = () => {
           {/* General Achievements */}
           {user?.id && (
             <GeneralAchievements userId={user.id} className="mt-6" />
+          )}
+
+          {/* SquashCred History */}
+          {user?.id && (
+            <SquashCredHistory userId={user.id} className="mt-6" />
           )}
 
           {/* Tips & Philosophy */}

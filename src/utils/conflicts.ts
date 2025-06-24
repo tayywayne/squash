@@ -2,6 +2,7 @@ import { supabase } from './supabase';
 import { openAI } from './openai';
 import { generalAchievementsService } from './generalAchievements';
 import { achievementsService } from './achievements';
+import { squashCredService, SQUASHCRED_ACTIONS } from './squashcred';
 
 export interface CreateConflictData {
   title: string;
@@ -77,6 +78,14 @@ export const conflictService = {
         const userConflicts = await conflictService.getUserConflicts(userId, '');
         const resolvedConflicts = userConflicts.filter(c => c.status === 'resolved');
         const archetypeAchievements = await achievementsService.getUserArchetypeAchievements(userId);
+        
+        // Award SquashCred for starting conflict
+        await squashCredService.awardForAction(userId, 'START_CONFLICT');
+        
+        // Award extra points for first conflict
+        if (userConflicts.length === 1) {
+          await squashCredService.awardForAction(userId, 'FIRST_CONFLICT');
+        }
         
         await generalAchievementsService.checkAndUnlockAchievements(userId, {
           totalConflicts: userConflicts.length,
@@ -176,6 +185,13 @@ export const conflictService = {
           })
           .eq('id', conflictId);
       }
+      
+      // Award SquashCred for responding to conflict
+      try {
+        await squashCredService.awardForAction(userId, 'RESPOND_TO_CONFLICT');
+      } catch (error) {
+        console.error('Error awarding SquashCred for response:', error);
+      }
     } catch (error) {
       console.error('Error responding to conflict:', error);
       throw error;
@@ -207,6 +223,27 @@ export const conflictService = {
       if (satisfaction && otherUserSatisfied) {
         updateData.status = 'resolved';
         updateData.resolved_at = new Date().toISOString();
+        
+        // Award SquashCred for resolving conflict
+        try {
+          await squashCredService.awardForAction(userId, 'RESOLVE_CONFLICT');
+          
+          // Check if it was a quick resolution (under 1 hour)
+          const createdAt = new Date(conflict.created_at);
+          const now = new Date();
+          const hoursDiff = (now.getTime() - createdAt.getTime()) / (1000 * 60 * 60);
+          
+          if (hoursDiff < 1) {
+            await squashCredService.awardForAction(userId, 'QUICK_RESOLUTION');
+          }
+          
+          // Award extra points for mutual satisfaction
+          if (satisfaction && otherUserSatisfied) {
+            await squashCredService.awardForAction(userId, 'PEACEFUL_RESOLUTION');
+          }
+        } catch (error) {
+          console.error('Error awarding SquashCred for resolution:', error);
+        }
       } else if (!satisfaction || (otherUserSatisfied === false)) {
         // Conflict is unresolved - trigger rehash if we have the necessary data and haven't already rehashed
         if (conflict.user1_translated_message && 
@@ -232,6 +269,13 @@ export const conflictService = {
             // Reset satisfaction votes so both users can vote on the rehashed content
             updateData.user1_satisfaction = null;
             updateData.user2_satisfaction = null;
+            
+            // Award SquashCred for rehashing
+            try {
+              await squashCredService.awardForAction(userId, 'REHASH_CONFLICT');
+            } catch (error) {
+              console.error('Error awarding SquashCred for rehash:', error);
+            }
             
             console.log('AI rehash completed successfully');
           } catch (error) {
@@ -304,6 +348,13 @@ export const conflictService = {
           // Reset satisfaction votes so both users can vote on the new reflection
           updateData.user1_satisfaction = null;
           updateData.user2_satisfaction = null;
+          
+          // Award SquashCred for core issue reflection
+          try {
+            await squashCredService.awardForAction(userId, 'CORE_ISSUE_REFLECTION');
+          } catch (error) {
+            console.error('Error awarding SquashCred for core issue:', error);
+          }
           
           console.log('AI core issues reflection completed successfully');
         } catch (error) {

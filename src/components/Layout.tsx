@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Home, MessageSquare, History, User, LogOut, Trophy } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import UserDisplayName from './UserDisplayName';
+import SquashCredDisplay from './SquashCredDisplay';
 import Toast from './Toast';
 import AchievementToast from './AchievementToast';
 import GeneralAchievementToast from './GeneralAchievementToast';
@@ -106,14 +107,24 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             </div>
             
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-600">
-                Hey, <UserDisplayName 
-                  username={user?.username}
-                  archetypeEmoji={user?.archetype_emoji}
-                  supporterEmoji={user?.supporter_emoji}
-                  fallback={user?.first_name || user?.email || 'User'}
-                />
-              </span>
+              <div className="flex items-center space-x-4">
+                <span className="text-sm text-gray-600">
+                  Hey, <UserDisplayName 
+                    username={user?.username}
+                    archetypeEmoji={user?.archetype_emoji}
+                    supporterEmoji={user?.supporter_emoji}
+                    fallback={user?.first_name || user?.email || 'User'}
+                  />
+                </span>
+                {user?.id && (
+                  <SquashCredDisplay 
+                    userId={user.id} 
+                    showTier={false}
+                    size="sm"
+                    className="hidden sm:flex"
+                  />
+                )}
+              </div>
               <button
                 onClick={handleSignOut}
                 className="flex items-center space-x-1 text-gray-600 hover:text-coral-500 transition-colors"

@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+import { squashCredService, SQUASHCRED_ACTIONS } from './squashcred';
 
 export interface PublicAIRuling {
   conflict_id: string;
@@ -113,6 +114,15 @@ export const aiJudgmentFeedService = {
       // Check for voting achievements
       try {
         const { generalAchievementsService } = await import('./generalAchievements');
+        
+        // Award SquashCred for voting
+        await squashCredService.awardForAction(userId, 'VOTE_ON_PUBLIC_CONFLICT');
+        
+        // Award extra points for helpful votes
+        if (voteType === 'ai_right' || voteType === 'get_therapy') {
+          await squashCredService.awardForAction(userId, 'HELPFUL_VOTE');
+        }
+        
         await generalAchievementsService.checkAndUnlockAchievements(userId, {
           hasVotedOnConflict: true,
           hasVotedAiRight: voteType === 'ai_right',
