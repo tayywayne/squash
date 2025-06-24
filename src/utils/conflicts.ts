@@ -1,5 +1,7 @@
 import { supabase } from './supabase';
 import { openAI } from './openai';
+import { generalAchievementsService } from './generalAchievements';
+import { achievementsService } from './achievements';
 
 export interface CreateConflictData {
   title: string;
@@ -69,6 +71,47 @@ export const conflictService = {
 
       // TODO: Send email notification to user2_email
       // This would typically be done via a Supabase Edge Function or webhook
+
+      // Check for achievements after creating first conflict
+      try {
+        const userConflicts = await conflictService.getUserConflicts(userId, ''); // We don't have email here
+        
+        // Check for core issue achievement
+        await generalAchievementsService.checkAndUnlockAchievements(userId, {
+          hasWrittenCoreIssue: true
+        });
+        
+        // Check for achievements
+        const userConflicts = await conflictService.getUserConflicts(userId, '');
+        const resolvedConflicts = userConflicts.filter(c => c.status === 'resolved');
+        const archetypeAchievements = await achievementsService.getUserArchetypeAchievements(userId);
+        
+        await generalAchievementsService.checkAndUnlockAchievements(userId, {
+          totalConflicts: userConflicts.length,
+          resolvedConflicts: resolvedConflicts.length,
+          archetypeCount: archetypeAchievements.length,
+          hasRehash: !satisfaction && conflict.ai_summary !== null,
+          hasQuickResolution: satisfaction && conflict.created_at && 
+            (new Date().getTime() - new Date(conflict.created_at).getTime()) < 10 * 60 * 1000 // 10 minutes
+        });
+        
+        // Check for achievements
+        const userConflicts = await conflictService.getUserConflicts(userId, '');
+        const archetypeAchievements = await achievementsService.getUserArchetypeAchievements(userId);
+        
+        await generalAchievementsService.checkAndUnlockAchievements(userId, {
+          totalConflicts: userConflicts.length,
+          archetypeCount: archetypeAchievements.length,
+          hasIFeelMessage: response.toLowerCase().includes('i feel')
+        });
+        await generalAchievementsService.checkAndUnlockAchievements(userId, {
+          totalConflicts: userConflicts.length,
+          hasLongMessage: conflictData.description.length > 900,
+          hasIFeelMessage: conflictData.description.toLowerCase().includes('i feel')
+        });
+      } catch (error) {
+        console.error('Error checking achievements after conflict creation:', error);
+      }
 
       return data.id;
     } catch (error) {
@@ -339,6 +382,20 @@ export const conflictService = {
 
       if (error) {
         throw error;
+      }
+      
+      // Check for AI judgment achievement
+      try {
+        await generalAchievementsService.checkAndUnlockAchievements(conflict.user1_id, {
+          hasAiJudgment: true
+        });
+        if (conflict.user2_id) {
+          await generalAchievementsService.checkAndUnlockAchievements(conflict.user2_id, {
+            hasAiJudgment: true
+          });
+        }
+      } catch (error) {
+        console.error('Error checking achievements after final ruling:', error);
       }
     } catch (error) {
       console.error('Error generating final ruling:', error);

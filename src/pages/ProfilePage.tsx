@@ -6,6 +6,7 @@ import { storageService } from '../utils/storage';
 import { archetypeService, ARCHETYPES } from '../utils/archetypes';
 import SupporterCard from '../components/SupporterCard';
 import ArchetypeAchievements from '../components/ArchetypeAchievements';
+import GeneralAchievements from '../components/GeneralAchievements';
 import Toast from '../components/Toast';
 
 const ProfilePage: React.FC = () => {
@@ -336,6 +337,11 @@ const ProfilePage: React.FC = () => {
           {/* Archetype Achievements */}
           {user?.id && (
             <ArchetypeAchievements userId={user.id} className="mt-6" />
+          )}
+
+          {/* General Achievements */}
+          {user?.id && (
+            <GeneralAchievements userId={user.id} className="mt-6" />
           )}
 
           {/* Tips & Philosophy */}

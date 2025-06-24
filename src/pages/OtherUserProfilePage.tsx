@@ -7,6 +7,7 @@ import { useAuth } from '../hooks/useAuth';
 import UserDisplayName from '../components/UserDisplayName';
 import SupporterCard from '../components/SupporterCard';
 import ArchetypeAchievements from '../components/ArchetypeAchievements';
+import GeneralAchievements from '../components/GeneralAchievements';
 import { archetypeService } from '../utils/archetypes';
 import { Profile } from '../types';
 import Toast from '../components/Toast';
@@ -229,6 +230,9 @@ const OtherUserProfilePage: React.FC = () => {
 
       {/* Archetype Achievements */}
       <ArchetypeAchievements userId={userId} className="mb-6" />
+
+      {/* General Achievements */}
+      <GeneralAchievements userId={userId} className="mb-6" />
 
       {/* Shared Conflict History */}
       <div className="bg-white/80 backdrop-blur-sm p-6 rounded-lg border border-gray-200 shadow-lg">
