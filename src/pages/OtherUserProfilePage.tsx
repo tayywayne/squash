@@ -136,7 +136,7 @@ const OtherUserProfilePage: React.FC = () => {
 
   return (
     <div className={`min-h-screen ${getSupporterBackgroundGradient()}`}>
-      <div className="max-w-4xl mx-auto p-6">
+      <div className="max-w-4xl mx-auto p-4 sm:p-6">
       {toast && (
         <Toast
           message={toast.message}
@@ -157,24 +157,24 @@ const OtherUserProfilePage: React.FC = () => {
       </div>
 
       {/* Profile Info */}
-      <div className="bg-white/90 backdrop-blur-sm p-6 rounded-lg border border-gray-200 shadow-lg mb-6">
+      <div className="bg-white/90 backdrop-blur-sm p-4 sm:p-6 rounded-lg border border-gray-200 shadow-lg mb-6 overflow-hidden">
         <div className="flex items-start space-x-6">
           <div className="flex-shrink-0">
             {profile.avatar_url ? (
               <img
                 src={profile.avatar_url}
                 alt={`${profile.username}'s avatar`}
-                className="w-24 h-24 rounded-full object-cover border-2 border-gray-200"
+                className="w-16 h-16 sm:w-24 sm:h-24 rounded-full object-cover border-2 border-gray-200"
               />
             ) : (
-              <div className="w-24 h-24 bg-coral-100 rounded-full flex items-center justify-center">
-                <User size={48} className="text-coral-600" />
+              <div className="w-16 h-16 sm:w-24 sm:h-24 bg-coral-100 rounded-full flex items-center justify-center">
+                <User size={32} className="text-coral-600 sm:w-12 sm:h-12" />
               </div>
             )}
           </div>
           
-          <div className="flex-1">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+          <div className="flex-1 min-w-0">
+            <h1 className="text-lg sm:text-2xl font-bold text-gray-900 mb-2 break-words">
               <UserDisplayName 
                 username={profile.username}
                 archetypeEmoji={profile.archetype_emoji}
@@ -185,20 +185,23 @@ const OtherUserProfilePage: React.FC = () => {
               />
             </h1>
             {profile.username && (
-              <p className="text-gray-600 mb-2">@{profile.username}</p>
+              <p className="text-gray-600 mb-2 text-sm sm:text-base break-all">@{profile.username}</p>
             )}
-            <div className="flex items-center space-x-4 text-sm text-gray-500">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500">
               <span className="flex items-center">
                 <Calendar className="h-4 w-4 mr-1" />
-                Joined {formatTimeAgo(profile.created_at)}
+                <span className="hidden sm:inline">Joined {formatTimeAgo(profile.created_at)}</span>
+                <span className="sm:hidden">{formatTimeAgo(profile.created_at)}</span>
               </span>
               {userId && (
-                <SquashCredDisplay 
-                  userId={userId} 
-                  showTier={true}
-                  showTooltip={false}
-                  size="sm"
-                />
+                <div className="overflow-hidden">
+                  <SquashCredDisplay 
+                    userId={userId} 
+                    showTier={true}
+                    showTooltip={false}
+                    size="sm"
+                  />
+                </div>
               )}
             </div>
           </div>
@@ -217,12 +220,12 @@ const OtherUserProfilePage: React.FC = () => {
 
       {/* Conflict Archetype Display */}
       {archetypeInfo && (
-        <div className="bg-white/80 backdrop-blur-sm p-6 rounded-lg border border-gray-200 shadow-lg mb-6">
+        <div className="bg-white/80 backdrop-blur-sm p-4 sm:p-6 rounded-lg border border-gray-200 shadow-lg mb-6 overflow-hidden">
           <div className="flex items-center space-x-3 mb-2">
             <span className="text-3xl">{archetypeInfo.emoji}</span>
-            <div>
-              <h3 className="text-xl font-semibold text-gray-900">{archetypeInfo.title}</h3>
-              <p className="text-sm text-gray-600">{archetypeInfo.description}</p>
+            <div className="min-w-0 flex-1">
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 break-words">{archetypeInfo.title}</h3>
+              <p className="text-sm text-gray-600 break-words leading-relaxed">{archetypeInfo.description}</p>
             </div>
           </div>
           {profile.archetype_assigned_at && (
@@ -244,7 +247,7 @@ const OtherUserProfilePage: React.FC = () => {
       <GeneralAchievements userId={userId} className="mb-6" />
 
       {/* Shared Conflict History */}
-      <div className="bg-white/80 backdrop-blur-sm p-6 rounded-lg border border-gray-200 shadow-lg">
+      <div className="bg-white/80 backdrop-blur-sm p-4 sm:p-6 rounded-lg border border-gray-200 shadow-lg overflow-hidden">
         <h2 className="text-xl font-semibold text-gray-900 mb-4">
           Your Conflict History Together
         </h2>
@@ -264,17 +267,17 @@ const OtherUserProfilePage: React.FC = () => {
         ) : (
           <>
             {/* Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
               <div className="text-center p-4 bg-gray-50 rounded-lg">
-                <div className="text-2xl font-bold text-coral-500">{sharedConflicts.length}</div>
+                <div className="text-xl sm:text-2xl font-bold text-coral-500">{sharedConflicts.length}</div>
                 <div className="text-sm text-gray-600">Total Conflicts</div>
               </div>
               <div className="text-center p-4 bg-gray-50 rounded-lg">
-                <div className="text-2xl font-bold text-teal-500">{totalClosedConflicts}</div>
+                <div className="text-xl sm:text-2xl font-bold text-teal-500">{totalClosedConflicts}</div>
                 <div className="text-sm text-gray-600">Closed Together</div>
               </div>
               <div className="text-center p-4 bg-gray-50 rounded-lg">
-                <div className="text-2xl font-bold text-lavender-500">
+                <div className="text-xl sm:text-2xl font-bold text-lavender-500">
                   {sharedConflicts.length > 0 ? Math.round((totalClosedConflicts / sharedConflicts.length) * 100) : 0}%
                 </div>
                 <div className="text-sm text-gray-600">Resolution Rate</div>
@@ -287,17 +290,17 @@ const OtherUserProfilePage: React.FC = () => {
                 <h3 className="text-lg font-semibold text-gray-900 mb-3">Active Conflicts</h3>
                 <div className="space-y-3">
                   {activeConflicts.map((conflict) => (
-                    <div key={conflict.id} className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <div key={conflict.id} className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg overflow-hidden">
                       <div className="flex items-center justify-between">
-                        <div>
-                          <h4 className="font-medium text-gray-900">{conflict.title}</h4>
+                        <div className="min-w-0 flex-1 pr-4">
+                          <h4 className="font-medium text-gray-900 break-words">{conflict.title}</h4>
                           <p className="text-sm text-gray-600">
                             Status: {conflict.status} • {formatTimeAgo(conflict.created_at)}
                           </p>
                         </div>
                         <button
                           onClick={() => navigate(`/conflict/${conflict.id}`)}
-                          className="text-coral-500 hover:text-coral-600 font-medium"
+                          className="text-coral-500 hover:text-coral-600 font-medium text-sm flex-shrink-0"
                         >
                           View →
                         </button>
@@ -314,10 +317,10 @@ const OtherUserProfilePage: React.FC = () => {
                 <h3 className="text-lg font-semibold text-gray-900 mb-3">Closed Conflicts</h3>
                 <div className="space-y-3">
                   {[...resolvedConflicts, ...finalJudgmentConflicts].slice(0, 5).map((conflict) => (
-                    <div key={conflict.id} className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                    <div key={conflict.id} className="p-4 bg-green-50 border border-green-200 rounded-lg overflow-hidden">
                       <div className="flex items-center justify-between">
-                        <div>
-                          <h4 className="font-medium text-gray-900">{conflict.title}</h4>
+                        <div className="min-w-0 flex-1 pr-4">
+                          <h4 className="font-medium text-gray-900 break-words">{conflict.title}</h4>
                           <p className="text-sm text-gray-600">
                             {conflict.status === 'final_judgment' ? '⚖️' : <CheckCircle className="inline h-4 w-4 mr-1" />}
                             {conflict.status === 'final_judgment' ? 'Final judgment' : 'Resolved'} {conflict.resolved_at ? formatTimeAgo(conflict.resolved_at) : formatTimeAgo(conflict.created_at)}
@@ -325,7 +328,7 @@ const OtherUserProfilePage: React.FC = () => {
                         </div>
                         <button
                           onClick={() => navigate(`/conflict/${conflict.id}`)}
-                          className="text-teal-500 hover:text-teal-600 font-medium"
+                          className="text-teal-500 hover:text-teal-600 font-medium text-sm flex-shrink-0"
                         >
                           View →
                         </button>
@@ -347,7 +350,7 @@ const OtherUserProfilePage: React.FC = () => {
 
 
       {/* Conflict Resolution Philosophy */}
-      <div className="mt-6 bg-white/70 backdrop-blur-sm p-6 rounded-lg border border-gray-200 shadow-lg">
+      <div className="mt-6 bg-white/70 backdrop-blur-sm p-4 sm:p-6 rounded-lg border border-gray-200 shadow-lg overflow-hidden">
         <h3 className="text-lg font-semibold text-gray-900 mb-3">
           <UserDisplayName 
             username={profile.username}
@@ -356,7 +359,7 @@ const OtherUserProfilePage: React.FC = () => {
             showEmoji={false}
           />'s Conflict Resolution Journey
         </h3>
-        <div className="text-sm text-gray-700">
+        <div className="text-sm text-gray-700 leading-relaxed">
           {sharedConflicts.length > 0 ? (
             <p>
               You and <UserDisplayName 

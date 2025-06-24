@@ -85,7 +85,7 @@ const LeaderboardPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
+    <div className="max-w-6xl mx-auto p-4 sm:p-6">
       {toast && (
         <Toast
           message={toast.message}
@@ -106,8 +106,8 @@ const LeaderboardPage: React.FC = () => {
       </div>
 
       {/* Controls */}
-      <div className="bg-white p-6 rounded-lg border border-gray-200 mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="bg-white p-4 sm:p-6 rounded-lg border border-gray-200 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
           {/* Time Frame Selector */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-3">
@@ -123,8 +123,9 @@ const LeaderboardPage: React.FC = () => {
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
-                <Calendar className="h-4 w-4 mr-2" />
-                All Time
+                <Calendar className="h-4 w-4 mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">All Time</span>
+                <span className="sm:hidden">All</span>
               </button>
               <button
                 onClick={() => setTimeFrame('weekly')}
@@ -134,8 +135,9 @@ const LeaderboardPage: React.FC = () => {
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
-                <TrendingUp className="h-4 w-4 mr-2" />
-                This Week
+                <TrendingUp className="h-4 w-4 mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">This Week</span>
+                <span className="sm:hidden">Week</span>
               </button>
             </div>
           </div>
@@ -155,8 +157,9 @@ const LeaderboardPage: React.FC = () => {
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
-                <TrendingUp className="h-4 w-4 mr-2" />
-                Least Problematic
+                <TrendingUp className="h-4 w-4 mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">Least Problematic</span>
+                <span className="sm:hidden">Best</span>
               </button>
               <button
                 onClick={() => setCategory('most-problematic')}
@@ -166,15 +169,16 @@ const LeaderboardPage: React.FC = () => {
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
-                <TrendingDown className="h-4 w-4 mr-2" />
-                Most Problematic
+                <TrendingDown className="h-4 w-4 mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">Most Problematic</span>
+                <span className="sm:hidden">Worst</span>
               </button>
             </div>
           </div>
         </div>
 
         {/* Category Description */}
-        <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+        <div className="mt-4 p-3 bg-gray-50 rounded-lg overflow-hidden">
           <p className="text-sm text-gray-600">
             {category === 'least-problematic' 
               ? '🏆 Ranked by highest resolution rate, then by most conflicts resolved. These users are conflict resolution champions!'
@@ -206,14 +210,23 @@ const LeaderboardPage: React.FC = () => {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full min-w-[600px]">
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  <th className="px-6 py-4 text-left text-sm font-medium text-gray-900">Rank</th>
-                  <th className="px-6 py-4 text-left text-sm font-medium text-gray-900">User</th>
-                  <th className="px-6 py-4 text-center text-sm font-medium text-gray-900">Total Conflicts</th>
-                  <th className="px-6 py-4 text-center text-sm font-medium text-gray-900">Resolved</th>
-                  <th className="px-6 py-4 text-center text-sm font-medium text-gray-900">Resolution Rate</th>
+                  <th className="px-3 sm:px-6 py-4 text-left text-sm font-medium text-gray-900">Rank</th>
+                  <th className="px-3 sm:px-6 py-4 text-left text-sm font-medium text-gray-900">User</th>
+                  <th className="px-3 sm:px-6 py-4 text-center text-sm font-medium text-gray-900">
+                    <span className="hidden sm:inline">Total Conflicts</span>
+                    <span className="sm:hidden">Total</span>
+                  </th>
+                  <th className="px-3 sm:px-6 py-4 text-center text-sm font-medium text-gray-900">
+                    <span className="hidden sm:inline">Resolved</span>
+                    <span className="sm:hidden">Done</span>
+                  </th>
+                  <th className="px-3 sm:px-6 py-4 text-center text-sm font-medium text-gray-900">
+                    <span className="hidden sm:inline">Resolution Rate</span>
+                    <span className="sm:hidden">Rate</span>
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
@@ -221,29 +234,29 @@ const LeaderboardPage: React.FC = () => {
                   const rank = index + 1;
                   return (
                     <tr key={user.user_id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4">
-                        <div className={`inline-flex items-center justify-center w-12 h-12 rounded-full ${getRankBadgeColor(rank)}`}>
+                      <td className="px-3 sm:px-6 py-4">
+                        <div className={`inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full ${getRankBadgeColor(rank)}`}>
                           {getRankIcon(rank)}
                         </div>
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="px-3 sm:px-6 py-4">
                         <div className="flex items-center space-x-3">
                           {user.avatar_url ? (
                             <img
                               src={user.avatar_url}
                               alt={`${user.username || user.first_name || 'Anonymous User'}'s avatar`}
                               supporterEmoji={user.supporter_emoji}
-                              className="w-10 h-10 rounded-full object-cover border-2 border-gray-200"
+                              className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover border-2 border-gray-200 flex-shrink-0"
                             />
                           ) : (
-                            <div className="w-10 h-10 bg-coral-100 rounded-full flex items-center justify-center">
-                              <User size={20} className="text-coral-600" />
+                            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-coral-100 rounded-full flex items-center justify-center flex-shrink-0">
+                              <User size={16} className="text-coral-600 sm:w-5 sm:h-5" />
                             </div>
                           )}
-                          <div>
+                          <div className="min-w-0 flex-1">
                             <button
                               onClick={() => navigate(`/user-profile/${user.user_id}`)}
-                              className="font-medium text-gray-900 hover:text-coral-600 transition-colors"
+                              className="font-medium text-gray-900 hover:text-coral-600 transition-colors text-sm sm:text-base truncate block"
                             >
                               <UserDisplayName 
                                 username={user.username}
@@ -254,17 +267,17 @@ const LeaderboardPage: React.FC = () => {
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-center">
-                        <span className="text-lg font-semibold text-gray-900">
+                      <td className="px-3 sm:px-6 py-4 text-center">
+                        <span className="text-base sm:text-lg font-semibold text-gray-900">
                           {user.total_conflicts}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-center">
-                        <span className="text-lg font-semibold text-teal-600">
+                      <td className="px-3 sm:px-6 py-4 text-center">
+                        <span className="text-base sm:text-lg font-semibold text-teal-600">
                           {user.resolved_conflicts}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-center">
+                      <td className="px-3 sm:px-6 py-4 text-center">
                         <div className="flex items-center justify-center">
                           <div className={`px-3 py-1 rounded-full text-sm font-medium ${
                             user.resolution_rate >= 80 
@@ -290,25 +303,25 @@ const LeaderboardPage: React.FC = () => {
 
       {/* Footer Stats */}
       {sortedData.length > 0 && (
-        <div className="mt-6 bg-gradient-to-r from-coral-50 to-teal-50 p-6 rounded-lg border border-gray-200">
+        <div className="mt-6 bg-gradient-to-r from-coral-50 to-teal-50 p-4 sm:p-6 rounded-lg border border-gray-200">
           <h3 className="text-lg font-semibold text-gray-900 mb-3">
             {timeFrame === 'all-time' ? 'All-Time' : 'This Week\'s'} Leaderboard Stats
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
             <div>
-              <div className="text-2xl font-bold text-coral-500">
+              <div className="text-xl sm:text-2xl font-bold text-coral-500">
                 {sortedData.reduce((sum, user) => sum + user.total_conflicts, 0)}
               </div>
               <div className="text-sm text-gray-600">Total Conflicts</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-teal-500">
+              <div className="text-xl sm:text-2xl font-bold text-teal-500">
                 {sortedData.reduce((sum, user) => sum + user.resolved_conflicts, 0)}
               </div>
               <div className="text-sm text-gray-600">Total Resolved</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-lavender-500">
+              <div className="text-xl sm:text-2xl font-bold text-lavender-500">
                 {sortedData.length > 0 
                   ? Math.round(
                       (sortedData.reduce((sum, user) => sum + user.resolved_conflicts, 0) /

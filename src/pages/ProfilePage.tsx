@@ -136,7 +136,7 @@ const ProfilePage: React.FC = () => {
 
   return (
     <div className={`min-h-screen ${getSupporterBackgroundGradient()}`}>
-      <div className="max-w-4xl mx-auto p-6">
+      <div className="max-w-4xl mx-auto p-4 sm:p-6">
         {toast && (
           <Toast
             message={toast.message}
@@ -155,9 +155,9 @@ const ProfilePage: React.FC = () => {
 
         <div className="space-y-6">
           {/* User Info */}
-          <div className="bg-white/90 backdrop-blur-sm p-6 rounded-lg border border-gray-200 shadow-lg">
+          <div className="bg-white/90 backdrop-blur-sm p-4 sm:p-6 rounded-lg border border-gray-200 shadow-lg">
             <div className="flex items-start justify-between mb-6">
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-3 sm:space-x-4 min-w-0 flex-1">
                 <div className="relative">
                   {(isEditing && editForm.avatar_url) || user?.avatar_url ? (
                     <img
@@ -175,27 +175,27 @@ const ProfilePage: React.FC = () => {
                     </div>
                   )}
                 </div>
-                <div>
+                <div className="min-w-0 flex-1">
                   {isEditing ? (
                     <div className="space-y-2">
                       <div className="space-y-2">
-                        <div className="grid grid-cols-2 gap-2">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                           <input
                             type="text"
                             value={editForm.first_name}
                             onChange={(e) => setEditForm(prev => ({ ...prev, first_name: e.target.value }))}
                             placeholder="First name"
-                            className="text-lg font-semibold text-gray-900 bg-transparent border-b border-gray-300 focus:border-coral-500 outline-none"
+                            className="text-base sm:text-lg font-semibold text-gray-900 bg-transparent border-b border-gray-300 focus:border-coral-500 outline-none w-full"
                           />
                           <input
                             type="text"
                             value={editForm.last_name}
                             onChange={(e) => setEditForm(prev => ({ ...prev, last_name: e.target.value }))}
                             placeholder="Last name"
-                            className="text-lg font-semibold text-gray-900 bg-transparent border-b border-gray-300 focus:border-coral-500 outline-none"
+                            className="text-base sm:text-lg font-semibold text-gray-900 bg-transparent border-b border-gray-300 focus:border-coral-500 outline-none w-full"
                           />
                         </div>
-                        <div className="text-gray-600">
+                        <div className="text-gray-600 text-sm sm:text-base truncate">
                           @{user?.username || 'Username not set'}
                         </div>
                         <p className="text-xs text-gray-500">
@@ -213,7 +213,7 @@ const ProfilePage: React.FC = () => {
                           value={editForm.avatar_url}
                           onChange={(e) => setEditForm(prev => ({ ...prev, avatar_url: e.target.value }))}
                           placeholder="https://example.com/your-photo.jpg"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-coral-500 focus:border-coral-500 text-sm"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-coral-500 focus:border-coral-500 text-xs sm:text-sm"
                         />
                         <p className="text-xs text-gray-500">
                           Enter a URL to an image you'd like to use as your profile photo.
@@ -222,19 +222,19 @@ const ProfilePage: React.FC = () => {
                     </div>
                   ) : (
                     <>
-                      <h2 className="text-xl font-semibold text-gray-900">
+                      <h2 className="text-lg sm:text-xl font-semibold text-gray-900 truncate">
                         {user?.first_name && user?.last_name 
                           ? `${user.first_name} ${user.last_name}` 
                           : user?.username || 'Set your name'
                         }
                       </h2>
                       {user?.username && (
-                        <p className="text-gray-600">@{user.username}</p>
+                        <p className="text-gray-600 text-sm sm:text-base truncate">@{user.username}</p>
                       )}
-                      <p className="text-gray-500 text-sm">{user?.email}</p>
+                      <p className="text-gray-500 text-xs sm:text-sm truncate">{user?.email}</p>
                       <p className="text-sm text-gray-500">
                                         {user?.id && (
-                    <div className="mt-2">
+                    <div className="mt-2 overflow-hidden">
                       <SquashCredDisplay 
                         userId={user.id} 
                         showTier={true}
@@ -249,13 +249,13 @@ const ProfilePage: React.FC = () => {
                 </div>
               </div>
               
-              <div className="flex space-x-2">
+              <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 flex-shrink-0">
                 {isEditing && !editingDisabled ? (
                   <>
                     <button
                       onClick={handleSaveProfile}
                       disabled={loading}
-                      className="flex items-center space-x-1 bg-coral-500 hover:bg-coral-600 text-white px-3 py-2 rounded-lg transition-colors disabled:opacity-50"
+                      className="flex items-center justify-center space-x-1 bg-coral-500 hover:bg-coral-600 text-white px-3 py-2 rounded-lg transition-colors disabled:opacity-50 text-sm"
                     >
                       {loading ? (
                         <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
@@ -267,7 +267,7 @@ const ProfilePage: React.FC = () => {
                     <button
                       onClick={handleEditToggle}
                       disabled={loading}
-                      className="flex items-center space-x-1 bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-2 rounded-lg transition-colors"
+                      className="flex items-center justify-center space-x-1 bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-2 rounded-lg transition-colors text-sm"
                     >
                       <X size={16} />
                       <span>Cancel</span>
@@ -276,7 +276,7 @@ const ProfilePage: React.FC = () => {
                 ) : (
                   <button
                     onClick={handleEditToggle}
-                    className="flex items-center space-x-1 text-coral-600 hover:text-coral-700 font-medium"
+                    className="flex items-center space-x-1 text-coral-600 hover:text-coral-700 font-medium text-sm"
                   >
                     <Edit3 size={16} />
                     <span>Edit Profile</span>
@@ -286,7 +286,7 @@ const ProfilePage: React.FC = () => {
             </div>
 
             {statsLoading ? (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
                 {[1, 2, 3].map((i) => (
                   <div key={i} className="p-4 bg-gray-50 rounded-lg animate-pulse">
                     <div className="h-8 bg-gray-200 rounded mb-2"></div>
@@ -295,17 +295,17 @@ const ProfilePage: React.FC = () => {
                 ))}
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
                 <div className="p-4 bg-gray-50 rounded-lg">
-                  <p className="text-2xl font-bold text-coral-500">{totalConflictsCount}</p>
+                  <p className="text-xl sm:text-2xl font-bold text-coral-500">{totalConflictsCount}</p>
                   <p className="text-sm text-gray-600">Total Conflicts</p>
                 </div>
                 <div className="p-4 bg-gray-50 rounded-lg">
-                  <p className="text-2xl font-bold text-teal-500">{resolvedConflictsCount}</p>
+                  <p className="text-xl sm:text-2xl font-bold text-teal-500">{resolvedConflictsCount}</p>
                   <p className="text-sm text-gray-600">Successfully Resolved</p>
                 </div>
                 <div className="p-4 bg-gray-50 rounded-lg">
-                  <p className="text-2xl font-bold text-lavender-500">{resolutionRate}%</p>
+                  <p className="text-xl sm:text-2xl font-bold text-lavender-500">{resolutionRate}%</p>
                   <p className="text-sm text-gray-600">Resolution Rate</p>
 
                 </div>
@@ -315,16 +315,16 @@ const ProfilePage: React.FC = () => {
 
           {/* Conflict Archetype Display */}
           {archetypeInfo && (
-            <div className="mt-6 p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200">
+            <div className="mt-6 p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200 overflow-hidden">
               <div className="flex items-center space-x-3 mb-2">
                 <Award className="h-5 w-5 text-purple-600" />
                 <h3 className="text-lg font-semibold text-purple-900">Conflict Archetype</h3>
               </div>
-              <div className="flex items-center space-x-3 mb-2">
+              <div className="flex items-start space-x-3 mb-2">
                 <span className="text-3xl">{archetypeInfo.emoji}</span>
-                <div>
+                <div className="min-w-0 flex-1">
                   <h4 className="text-xl font-bold text-purple-800">{archetypeInfo.title}</h4>
-                  <p className="text-sm text-purple-700">{archetypeInfo.description}</p>
+                  <p className="text-sm text-purple-700 leading-relaxed">{archetypeInfo.description}</p>
                 </div>
               </div>
               {user?.archetype_assigned_at && (
@@ -364,8 +364,8 @@ const ProfilePage: React.FC = () => {
           )}
 
           {/* Tips & Philosophy */}
-          <div className="bg-white/80 backdrop-blur-sm p-6 rounded-lg border border-gray-200 shadow-lg">
-            <div className="bg-white/80 backdrop-blur-sm p-6 rounded-lg border border-purple-200 shadow-lg">
+          <div className="bg-white/80 backdrop-blur-sm p-4 sm:p-6 rounded-lg border border-gray-200 shadow-lg">
+            <div className="bg-white/80 backdrop-blur-sm p-4 sm:p-6 rounded-lg border border-purple-200 shadow-lg">
               <div className="space-y-3 text-sm text-gray-700">
                 <p>
                   <strong>Remember:</strong> The goal isn't to "win" – it's to understand and be understood.
