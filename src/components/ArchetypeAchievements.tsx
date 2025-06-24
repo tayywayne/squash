@@ -131,7 +131,7 @@ const ArchetypeAchievements: React.FC<ArchetypeAchievementsProps> = ({ userId, c
         })}
       </div>
 
-      {/* Collection Progress */}
+      {/* Collection Progress
       <div className="mt-4 pt-4 border-t border-gray-200">
         <div className="flex items-center justify-between text-sm text-gray-600">
           <span>Collection Progress</span>
@@ -142,7 +142,7 @@ const ArchetypeAchievements: React.FC<ArchetypeAchievementsProps> = ({ userId, c
             className="bg-gradient-to-r from-purple-500 to-indigo-500 h-2 rounded-full transition-all duration-500"
             style={{ width: `${Math.min((achievements.length / 20) * 100, 100)}%` }}
           />
-        </div>
+        </div>  */}
       </div>
     </div>
   );
