@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Send, ThumbsUp, ThumbsDown, Heart, Laugh, Angry } from 'lucide-react';
+import { Send, ThumbsUp, ThumbsDown, Heart, Laugh, Angry, Trash2 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { conflictService, Conflict } from '../utils/conflicts';
 import { profileService } from '../utils/profiles';
@@ -23,6 +23,8 @@ const ConflictPage: React.FC = () => {
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
   const [publicVotes, setPublicVotes] = useState<VoteCount[]>([]);
   const [publicVotesLoading, setPublicVotesLoading] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   // Load conflict data
   useEffect(() => {
@@ -314,6 +316,26 @@ const ConflictPage: React.FC = () => {
     }
   };
 
+  const handleDeleteConflict = async () => {
+    if (!conflictId || !user?.id) return;
+
+    setDeleteLoading(true);
+    try {
+      await conflictService.deleteConflict(conflictId, user.id);
+      setToast({ message: 'Conflict deleted successfully', type: 'success' });
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 1500);
+    } catch (error) {
+      console.error('Error deleting conflict:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to delete conflict';
+      setToast({ message: errorMessage, type: 'error' });
+    } finally {
+      setDeleteLoading(false);
+      setShowDeleteConfirm(false);
+    }
+  };
+
   if (initialLoading) {
     return (
       <div className="max-w-4xl mx-auto p-6 text-center">
@@ -355,9 +377,24 @@ const ConflictPage: React.FC = () => {
 
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          {conflict.title}
-        </h1>
+        <div className="flex items-start justify-between mb-2">
+          <h1 className="text-3xl font-bold text-gray-900 flex-1">
+            {conflict.title}
+          </h1>
+          
+          {/* Delete button - only show for active conflicts and only for the creator (user1) */}
+          {isUser1 && (conflict.status === 'pending' || conflict.status === 'active') && (
+            <button
+              onClick={() => setShowDeleteConfirm(true)}
+              className="ml-4 flex items-center space-x-2 text-red-600 hover:text-red-700 hover:bg-red-50 px-3 py-2 rounded-lg transition-colors"
+              title="Delete conflict"
+            >
+              <Trash2 size={18} />
+              <span className="text-sm font-medium">Delete</span>
+            </button>
+          )}
+        </div>
+        
         <p className="text-gray-600">
           <span className="flex items-center space-x-2">
             <span>vs. {getOtherUserDisplay(conflict)}</span>
@@ -393,6 +430,51 @@ const ConflictPage: React.FC = () => {
           />
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="text-red-500">
+                <Trash2 size={24} />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900">Delete Conflict</h3>
+            </div>
+            
+            <p className="text-gray-600 mb-6">
+              Are you sure you want to delete "{conflict.title}"? This action cannot be undone and will permanently remove the conflict and all associated data.
+            </p>
+            
+            <div className="flex space-x-3">
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                disabled={deleteLoading}
+                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDeleteConflict}
+                disabled={deleteLoading}
+                className="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center space-x-2"
+              >
+                {deleteLoading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                    <span>Deleting...</span>
+                  </>
+                ) : (
+                  <>
+                    <Trash2 size={16} />
+                    <span>Delete</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Input Phase */}
       {phase === 'input' && canRespond && (
