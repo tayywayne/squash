@@ -348,9 +348,6 @@ const HomePage: React.FC = () => {
         </div>
       </div>
     </div>
-  </div>
-</section>
-
 
           {/* Call to Action
           <div className="mt-12 text-center">
