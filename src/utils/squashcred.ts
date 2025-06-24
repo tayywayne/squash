@@ -33,6 +33,7 @@ export const SQUASHCRED_ACTIONS = {
   QUICK_RESOLUTION: { points: 25, reason: 'Resolved conflict in under 1 hour' },
   PEACEFUL_RESOLUTION: { points: 30, reason: 'Achieved mutual satisfaction' },
   VOTE_ON_PUBLIC_CONFLICT: { points: 2, reason: 'Voted on a public conflict' },
+  VOTE_ON_REDDIT_CONFLICT: { points: 5, reason: 'Voted on daily Reddit conflict' },
   HELPFUL_VOTE: { points: 5, reason: 'Cast a constructive vote' },
   
   // Losing points

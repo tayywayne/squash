@@ -54,6 +54,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     { name: 'Dashboard', href: '/dashboard', icon: Home, emoji: '🏠' },
     //{ name: 'Conflicts', href: '/conflicts', icon: MessageSquare, emoji: '💬' },
     //{ name: 'History', href: '/history', icon: History, emoji: '📚' },
+    { name: 'Reddit Drama', href: '/reddit-conflict', icon: MessageSquare, emoji: '🤔' },
     { name: 'Public Shame', href: '/public-shame', icon: Trophy, emoji: '⚖️' },
     { name: 'Leaderboard', href: '/leaderboard', icon: Trophy, emoji: '🏆' },
     { name: 'Support Us', href: '/support-us', icon: User, emoji: '💝' },

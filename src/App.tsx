@@ -13,6 +13,7 @@ import LeaderboardPage from './pages/LeaderboardPage';
 import SupportUsPage from './pages/SupportUsPage';
 import SupportSuccessPage from './pages/SupportSuccessPage';
 import AIJudgmentFeedPage from './pages/AIJudgmentFeedPage';
+import RedditConflictPage from './pages/RedditConflictPage';
 
 function App() {
   const { user, loading } = useAuth();
@@ -58,6 +59,7 @@ function App() {
                     <Route path="/leaderboard" element={<LeaderboardPage />} />
                     <Route path="/support-us" element={<SupportUsPage />} />
                     <Route path="/public-shame" element={<AIJudgmentFeedPage />} />
+                    <Route path="/reddit-conflict" element={<RedditConflictPage />} />
                   </Routes>
                 </Layout>
               }
@@ -68,6 +70,7 @@ function App() {
           <>
             <Route path="/login" element={<AuthPage />} />
             <Route path="/public-shame" element={<AIJudgmentFeedPage />} />
+            <Route path="/reddit-conflict" element={<RedditConflictPage />} />
             <Route path="/*" element={<Navigate to="/" replace />} />
           </>
         )}
