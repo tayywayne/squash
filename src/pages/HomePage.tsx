@@ -389,7 +389,7 @@ const HomePage: React.FC = () => {
           <div className="bg-gradient-to-r from-coral-500 to-teal-500 rounded-2xl p-12 text-white">
             <h2 className="text-4xl font-bold mb-4">Ready to Squash Some Beef?</h2>
             <p className="text-xl mb-8 opacity-90">
-              Join thousands of people who've learned that conflict doesn't have to mean the end of relationships.
+              Join a community of people who've learned that conflict doesn't have to mean the end of relationships.
             </p>
             <button
               onClick={() => navigate('/login')}
@@ -399,7 +399,7 @@ const HomePage: React.FC = () => {
               <ArrowRight size={20} />
             </button>
             <p className="text-sm mt-4 opacity-75">
-              No credit card required. Start resolving conflicts in under 2 minutes.
+              No credit card ever required. Start resolving conflicts in under 2 minutes.
             </p>
           </div>
         </div>
