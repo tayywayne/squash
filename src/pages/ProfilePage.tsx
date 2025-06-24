@@ -360,7 +360,7 @@ const ProfilePage: React.FC = () => {
 
           {/* SquashCred History */}
           {user?.id && (
-            <SquashCredHistory userId={user.id} className="mt-6" />
+            <SquashCredHistory userId={user.id} limit={5} className="mt-6" />
           )}
 
           {/* Tips & Philosophy */}
