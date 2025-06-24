@@ -45,7 +45,7 @@ serve(async (req) => {
       'https://www.reddit.com/r/AmItheAsshole/top.json?t=day&limit=25',
       {
         headers: {
-          'User-Agent': 'Squashie-App/1.0 (contact: squashiehelp@gmail.com)'
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
         }
       }
     )
