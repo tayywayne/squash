@@ -227,6 +227,9 @@ const OtherUserProfilePage: React.FC = () => {
         </div>
       )}
 
+      {/* Archetype Achievements */}
+      <ArchetypeAchievements userId={userId} className="mb-6" />
+
       {/* Shared Conflict History */}
       <div className="bg-white/80 backdrop-blur-sm p-6 rounded-lg border border-gray-200 shadow-lg">
         <h2 className="text-xl font-semibold text-gray-900 mb-4">
@@ -328,8 +331,7 @@ const OtherUserProfilePage: React.FC = () => {
         )}
       </div>
 
-      {/* Archetype Achievements */}
-      <ArchetypeAchievements userId={userId} className="mb-6" />
+
 
       {/* Conflict Resolution Philosophy */}
       <div className="mt-6 bg-white/70 backdrop-blur-sm p-6 rounded-lg border border-gray-200 shadow-lg">
