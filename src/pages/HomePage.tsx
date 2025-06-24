@@ -302,12 +302,12 @@ const HomePage: React.FC = () => {
           See who ranks as the least problematic (high resolution rates) and most problematic (low resolution rates) users. 
           Because nothing motivates better conflict resolution than public rankings.
         </p>
-        <div className="space-y-2 text-xs text-orange-700">
+        <div className="space-y-2 text-xs text-orange-700 bg-orange-100 p-3 rounded-lg border border-orange-300">
           <div className="flex items-center space-x-2">
             <span className="text-green-600">🥇</span>
             <span>Least Problematic: Conflict resolution champions</span>
           </div>
-          <div className="bg-red-100 p-3 rounded-lg border border-red-300">
+          <div className="flex items-center space-x-2">
             <span className="text-red-600">🔥</span>
             <span>Most Problematic: Maybe work on that...</span>
           </div>
