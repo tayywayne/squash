@@ -238,7 +238,7 @@ const ProfilePage: React.FC = () => {
                       <SquashCredDisplay 
                         userId={user.id} 
                         showTier={true}
-                        showTooltip={true}
+                        showTooltip={false}
                         size="md"
                       />
                     </div>
