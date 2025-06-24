@@ -20,11 +20,13 @@ const AchievementToast: React.FC<AchievementToastProps> = ({
   const [isLeaving, setIsLeaving] = useState(false);
 
   useEffect(() => {
+    // Trigger entrance animation
     const timer = setTimeout(() => setIsVisible(true), 100);
     
+    // Auto-close after duration
     const closeTimer = setTimeout(() => {
       setIsLeaving(true);
-      setTimeout(onClose, 300);
+      setTimeout(onClose, 300); // Allow exit animation
     }, duration);
 
     return () => {
@@ -46,30 +48,30 @@ const AchievementToast: React.FC<AchievementToastProps> = ({
           : 'translate-x-full opacity-0 scale-95'
       }`}
     >
-      <div className="bg-primary-teal text-background-white border-brutal border-border-black overflow-hidden">
+      <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg shadow-2xl border border-purple-400 overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 pb-2 border-b-brutal border-background-white">
+        <div className="flex items-center justify-between p-4 pb-2">
           <div className="flex items-center space-x-2">
-            <Trophy className="h-5 w-5" />
-            <span className="font-black text-sm uppercase">ACHIEVEMENT UNLOCKED!</span>
+            <Trophy className="h-5 w-5 text-yellow-300" />
+            <span className="font-bold text-sm">Achievement Unlocked!</span>
           </div>
           <button
             onClick={handleClose}
-            className="hover:opacity-70 transition-opacity"
+            className="text-purple-200 hover:text-white transition-colors"
           >
             <X className="h-4 w-4" />
           </button>
         </div>
 
         {/* Content */}
-        <div className="p-4">
+        <div className="px-4 pb-4">
           <div className="flex items-start space-x-3">
-            <div className="text-4xl">{archetype.emoji}</div>
+            <div className="text-3xl">{archetype.emoji}</div>
             <div className="flex-1">
-              <h3 className="font-black text-lg uppercase mb-1">
+              <h3 className="font-bold text-lg text-yellow-300 mb-1">
                 {archetype.title}
               </h3>
-              <p className="text-sm font-medium leading-relaxed opacity-90">
+              <p className="text-purple-100 text-sm leading-relaxed">
                 {archetype.description}
               </p>
             </div>
@@ -77,14 +79,14 @@ const AchievementToast: React.FC<AchievementToastProps> = ({
         </div>
 
         {/* Animated border */}
-        <div className="h-1 bg-primary-orange"></div>
+        <div className="h-1 bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-400 animate-pulse"></div>
       </div>
 
-      {/* Effects */}
-      <div className="absolute -top-2 -right-2 text-primary-orange animate-bounce">
+      {/* Sparkle effects */}
+      <div className="absolute -top-2 -right-2 text-yellow-300 animate-bounce">
         ✨
       </div>
-      <div className="absolute -top-1 -left-1 text-primary-orange animate-bounce delay-150">
+      <div className="absolute -top-1 -left-1 text-yellow-300 animate-bounce delay-150">
         ⭐
       </div>
     </div>
