@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ExternalLink, ChevronDown, ChevronUp, Calendar, User, MessageSquare, RefreshCw } from 'lucide-react';
+import { ExternalLink, ChevronDown, ChevronUp, Calendar, User, MessageSquare } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { redditConflictsService, RedditConflict, RedditVoteType, REDDIT_VOTE_OPTIONS } from '../utils/redditConflicts';
 import Toast from '../components/Toast';
@@ -11,7 +11,6 @@ const RedditConflictPage: React.FC = () => {
   const [userVote, setUserVote] = useState<string | null>(null);
   const [votingLoading, setVotingLoading] = useState<string | null>(null);
   const [showOriginalText, setShowOriginalText] = useState(false);
-  const [fetchingNew, setFetchingNew] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
 
   // Load current conflict
@@ -70,30 +69,6 @@ const RedditConflictPage: React.FC = () => {
     }
   };
 
-  const handleFetchNewConflict = async () => {
-    if (!user?.id) {
-      setToast({ message: 'Please log in to fetch new conflicts', type: 'error' });
-      return;
-    }
-
-    setFetchingNew(true);
-    try {
-      const { success, error } = await redditConflictsService.fetchNewDailyConflict();
-      
-      if (success) {
-        // Reload the page to show new conflict
-        window.location.reload();
-      } else {
-        setToast({ message: error || 'Failed to fetch new conflict', type: 'error' });
-      }
-    } catch (error) {
-      console.error('Error fetching new conflict:', error);
-      setToast({ message: 'Failed to fetch new conflict', type: 'error' });
-    } finally {
-      setFetchingNew(false);
-    }
-  };
-
   const getVoteCount = (voteType: string): number => {
     return conflict?.vote_counts[voteType] || 0;
   };
@@ -132,27 +107,13 @@ const RedditConflictPage: React.FC = () => {
         <div className="text-6xl mb-4">📭</div>
         <h1 className="text-2xl font-bold text-gray-900 mb-2">No Daily Conflict Available</h1>
         <p className="text-gray-600 mb-6">
-          We haven't fetched today's conflict from r/AmItheAsshole yet.
+          Today's conflict from r/AmItheAsshole hasn't been posted yet. Check back later!
         </p>
-        {user && (
-          <button
-            onClick={handleFetchNewConflict}
-            disabled={fetchingNew}
-            className="bg-coral-500 hover:bg-coral-600 text-white px-6 py-3 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 mx-auto"
-          >
-            {fetchingNew ? (
-              <>
-                <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                <span>Fetching...</span>
-              </>
-            ) : (
-              <>
-                <RefreshCw size={16} />
-                <span>Fetch Today's Conflict</span>
-              </>
-            )}
-          </button>
-        )}
+        <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200 max-w-md mx-auto">
+          <p className="text-sm text-yellow-800">
+            💡 New conflicts are automatically posted daily. The system updates once per day with fresh drama from Reddit!
+          </p>
+        </div>
       </div>
     );
   }
