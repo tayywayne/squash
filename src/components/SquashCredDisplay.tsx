@@ -107,35 +107,35 @@ const SquashCredDisplay: React.FC<SquashCredDisplayProps> = ({
       )}
 
       {/* Tooltip */}
-      {showTooltip && (
-        <div className="relative">
-          <button
-            onClick={() => setShowTooltipModal(!showTooltipModal)}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
-          >
-            <Info className="h-3 w-3" />
-          </button>
-          
-          {showTooltipModal && (
-            <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 z-50">
-              <div className="bg-gray-900 text-white text-xs rounded-lg p-3 shadow-lg max-w-64">
-                <div className="font-semibold mb-1">
-                  {tier_emoji} {tier_title}
-                </div>
-                <div className="text-gray-300 mb-2">
-                  {pointsData.tier_range}
-                </div>
-                <div className="text-gray-400 text-xs">
-                  Earn SquashCred by resolving conflicts, being helpful, and maintaining good behavior. 
-                  Lose points for ghosting, spam, or excessive drama.
-                </div>
-                {/* Tooltip arrow */}
-                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-b-4 border-transparent border-b-gray-900"></div>
-              </div>
-            </div>
-          )}
+{showTooltip && (
+  <div className="relative">
+    <button
+      onClick={() => setShowTooltipModal(!showTooltipModal)}
+      className="text-gray-400 hover:text-gray-600 transition-colors"
+    >
+      <Info className="h-3 w-3" />
+    </button>
+    
+    {showTooltipModal && (
+      <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 z-50">
+        <div className="bg-gray-900 text-white text-xs rounded-lg p-3 shadow-lg max-w-sm w-full">
+          <div className="font-semibold mb-1">
+            {tier_emoji} {tier_title}
+          </div>
+          <div className="text-gray-300 mb-2">
+            {pointsData.tier_range}
+          </div>
+          <div className="text-gray-400 text-xs">
+            Earn SquashCred by resolving conflicts, being helpful, and maintaining good behavior. 
+            Lose points for ghosting, spam, or excessive drama. Stay spicy — but not toxic.
+          </div>
+          {/* Tooltip arrow */}
+          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-b-4 border-transparent border-b-gray-900"></div>
         </div>
-      )}
+      </div>
+    )}
+  </div>
+)}
     </div>
   );
 };
