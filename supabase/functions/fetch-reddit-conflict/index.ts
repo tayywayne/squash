@@ -45,7 +45,7 @@ serve(async (req) => {
       'https://www.reddit.com/r/AmItheAsshole/top.json?t=day&limit=25',
       {
         headers: {
-          'User-Agent': 'Squashie-Bot/1.0 (conflict resolution app)'
+          'User-Agent': 'Squashie-App/1.0 (contact: squashiehelp@gmail.com)'
         }
       }
     )
