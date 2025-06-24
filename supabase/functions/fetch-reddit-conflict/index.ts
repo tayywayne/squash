@@ -55,7 +55,7 @@ async function getRedditAccessToken(): Promise<string> {
   if (!response.ok) {
     const errorText = await response.text()
     console.error('Reddit auth error:', response.status, errorText)
-    throw new Error(`Reddit authentication failed: ${response.status}. Please verify your Reddit API credentials.`)
+    throw new Error(`Reddit authentication failed: ${response.status}`)
   }
 
   const data: RedditAccessTokenResponse = await response.json()
@@ -81,11 +81,43 @@ Deno.serve(async (req) => {
   try {
     console.log('🔍 Fetching daily Reddit conflict from r/AmItheAsshole...')
 
-    // Check if Reddit credentials are configured
-    if (!REDDIT_CLIENT_ID || !REDDIT_CLIENT_SECRET) {
-      console.warn('Reddit API credentials not configured, using fallback approach')
-      
-      // Try to fetch without authentication (limited access)
+    let redditData
+    let posts
+    let authMethod = 'unauthenticated'
+
+    // Try authenticated access first if credentials are available
+    if (REDDIT_CLIENT_ID && REDDIT_CLIENT_SECRET) {
+      try {
+        console.log('🔑 Attempting authenticated Reddit access...')
+        const accessToken = await getRedditAccessToken()
+        
+        const redditResponse = await fetch(
+          'https://oauth.reddit.com/r/AmItheAsshole/top?t=day&limit=25',
+          {
+            headers: {
+              'Authorization': `Bearer ${accessToken}`,
+              'User-Agent': REDDIT_USER_AGENT
+            }
+          }
+        )
+
+        if (!redditResponse.ok) {
+          throw new Error(`Reddit OAuth API error: ${redditResponse.status}`)
+        }
+
+        redditData = await redditResponse.json()
+        posts = redditData.data.children
+        authMethod = 'authenticated'
+        console.log(`📊 Found ${posts.length} posts from Reddit (authenticated)`)
+      } catch (authError) {
+        console.warn('🔄 Authenticated access failed, falling back to unauthenticated:', authError.message)
+        // Fall through to unauthenticated access
+      }
+    }
+
+    // Fall back to unauthenticated access if authenticated failed or credentials not available
+    if (!redditData) {
+      console.log('🌐 Using unauthenticated Reddit access...')
       const redditResponse = await fetch(
         'https://www.reddit.com/r/AmItheAsshole/top.json?t=day&limit=25',
         {
@@ -96,115 +128,13 @@ Deno.serve(async (req) => {
       )
 
       if (!redditResponse.ok) {
-        throw new Error('Reddit API access failed and no valid credentials configured. Please configure REDDIT_CLIENT_ID and REDDIT_CLIENT_SECRET environment variables.')
+        throw new Error(`Reddit API access failed: ${redditResponse.status}. Both authenticated and unauthenticated access failed.`)
       }
 
-      const redditData = await redditResponse.json()
-      const posts = redditData.data.children
-
+      redditData = await redditResponse.json()
+      posts = redditData.data.children
       console.log(`📊 Found ${posts.length} posts from Reddit (unauthenticated)`)
-
-      // Filter for valid posts
-      const validPosts = posts
-        .map((child: any) => child.data as RedditPost)
-        .filter((post: RedditPost) => 
-          post.selftext && 
-          post.selftext.length > 100 &&
-          post.selftext.length < 10000 &&
-          !post.selftext.includes('[removed]') &&
-          !post.selftext.includes('[deleted]') &&
-          post.title &&
-          post.author !== '[deleted]' &&
-          !post.title.toLowerCase().includes('update') &&
-          post.title.toLowerCase().includes('aita')
-        )
-
-      console.log(`✅ Found ${validPosts.length} valid posts after filtering`)
-
-      if (validPosts.length === 0) {
-        throw new Error('No valid posts found')
-      }
-
-      const selectedPost = validPosts[0]
-      console.log(`📝 Selected post: ${selectedPost.title}`)
-
-      // Check if we already have this post
-      const { data: existingPost } = await supabaseClient
-        .from('reddit_conflicts')
-        .select('id')
-        .eq('reddit_post_id', selectedPost.id)
-        .single()
-
-      if (existingPost) {
-        console.log('📋 Post already exists, skipping...')
-        return new Response(
-          JSON.stringify({ message: 'Post already exists', post_id: selectedPost.id }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        )
-      }
-
-      // Deactivate previous conflicts
-      await supabaseClient
-        .from('reddit_conflicts')
-        .update({ is_active: false })
-        .eq('is_active', true)
-
-      // Insert new conflict with fallback AI content
-      const { data: newConflict, error } = await supabaseClient
-        .from('reddit_conflicts')
-        .insert({
-          reddit_post_id: selectedPost.id,
-          subreddit: 'AmItheAsshole',
-          title: selectedPost.title,
-          author: selectedPost.author,
-          original_text: selectedPost.selftext,
-          ai_summary: 'AI summary temporarily unavailable - vote based on the original post!',
-          ai_suggestion: 'AI suggestion temporarily unavailable - use your best judgment!',
-          is_active: true
-        })
-        .select()
-        .single()
-
-      if (error) {
-        throw error
-      }
-
-      console.log('✅ New Reddit conflict created successfully (fallback mode)')
-
-      return new Response(
-        JSON.stringify({ 
-          success: true, 
-          conflict_id: newConflict.id,
-          title: selectedPost.title 
-        }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
     }
-
-    // Get Reddit access token
-    const accessToken = await getRedditAccessToken()
-
-    // Fetch top posts from r/AmItheAsshole for today using OAuth
-    const redditResponse = await fetch(
-      'https://oauth.reddit.com/r/AmItheAsshole/top?t=day&limit=25',
-      {
-        headers: {
-          'Authorization': `Bearer ${accessToken}`,
-          'User-Agent': REDDIT_USER_AGENT
-        }
-      }
-    )
-
-    if (!redditResponse.ok) {
-      const errorText = await redditResponse.text()
-      console.error('Reddit API error:', redditResponse.status, errorText)
-      throw new Error(`Reddit API error: ${redditResponse.status}`)
-    }
-
-    const redditData = await redditResponse.json()
-    const posts = redditData.data.children
-
-    console.log(`📊 Found ${posts.length} posts from Reddit`)
 
     // Filter for valid posts
     const validPosts = posts
@@ -212,22 +142,21 @@ Deno.serve(async (req) => {
       .filter((post: RedditPost) => 
         post.selftext && 
         post.selftext.length > 100 &&
-        post.selftext.length < 10000 && // Not too long
+        post.selftext.length < 10000 &&
         !post.selftext.includes('[removed]') &&
         !post.selftext.includes('[deleted]') &&
         post.title &&
         post.author !== '[deleted]' &&
-        !post.title.toLowerCase().includes('update') && // Skip update posts
-        post.title.toLowerCase().includes('aita') // Must contain AITA
+        !post.title.toLowerCase().includes('update') &&
+        post.title.toLowerCase().includes('aita')
       )
 
-    console.log(`✅ Found ${validPosts.length} valid posts after filtering`)
+    console.log(`✅ Found ${validPosts.length} valid posts after filtering (${authMethod})`)
 
     if (validPosts.length === 0) {
       throw new Error('No valid posts found')
     }
 
-    // Select the top valid post
     const selectedPost = validPosts[0]
     console.log(`📝 Selected post: ${selectedPost.title}`)
 
@@ -248,50 +177,16 @@ Deno.serve(async (req) => {
 
     // Generate AI summary and suggestion using OpenAI
     const openaiApiKey = Deno.env.get('OPENAI_API_KEY')
+    let aiSummary = 'AI summary temporarily unavailable - vote based on the original post!'
+    let aiSuggestion = 'AI suggestion temporarily unavailable - use your best judgment!'
+    
     if (!openaiApiKey) {
       console.warn('OpenAI API key not configured, using fallback content')
-      
-      // Deactivate previous conflicts
-      await supabaseClient
-        .from('reddit_conflicts')
-        .update({ is_active: false })
-        .eq('is_active', true)
+    } else {
+      try {
+        console.log('🤖 Generating AI summary and suggestion...')
 
-      // Insert new conflict with fallback AI content
-      const { data: newConflict, error } = await supabaseClient
-        .from('reddit_conflicts')
-        .insert({
-          reddit_post_id: selectedPost.id,
-          subreddit: 'AmItheAsshole',
-          title: selectedPost.title,
-          author: selectedPost.author,
-          original_text: selectedPost.selftext,
-          ai_summary: 'AI summary temporarily unavailable - vote based on the original post!',
-          ai_suggestion: 'AI suggestion temporarily unavailable - use your best judgment!',
-          is_active: true
-        })
-        .select()
-        .single()
-
-      if (error) {
-        throw error
-      }
-
-      console.log('✅ New Reddit conflict created successfully (with fallback AI content)')
-
-      return new Response(
-        JSON.stringify({ 
-          success: true, 
-          conflict_id: newConflict.id,
-          title: selectedPost.title 
-        }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
-    }
-
-    console.log('🤖 Generating AI summary and suggestion...')
-
-    const aiPrompt = `You are an AI conflict mediator. Take the following Reddit post from r/AmItheAsshole and:
+        const aiPrompt = `You are an AI conflict mediator. Take the following Reddit post from r/AmItheAsshole and:
 
 1. Summarize the conflict clearly in 2-3 sentences (under 300 characters)
 2. Suggest a neutral, fair resolution with a slight tone of sass or humor (under 400 characters)
@@ -304,48 +199,43 @@ Content: ${selectedPost.selftext}
 
 Respond in JSON format with "summary" and "suggestion" fields.`
 
-    const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${openaiApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
-        messages: [
-          {
-            role: 'system',
-            content: 'You are a helpful AI that provides conflict resolution advice in JSON format.'
+        const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${openaiApiKey}`,
+            'Content-Type': 'application/json',
           },
-          {
-            role: 'user',
-            content: aiPrompt
-          }
-        ],
-        max_tokens: 500,
-        temperature: 0.7,
-      }),
-    })
+          body: JSON.stringify({
+            model: 'gpt-3.5-turbo',
+            messages: [
+              {
+                role: 'system',
+                content: 'You are a helpful AI that provides conflict resolution advice in JSON format.'
+              },
+              {
+                role: 'user',
+                content: aiPrompt
+              }
+            ],
+            max_tokens: 500,
+            temperature: 0.7,
+          }),
+        })
 
-    if (!openaiResponse.ok) {
-      console.warn(`OpenAI API error: ${openaiResponse.status}, using fallback`)
-    }
-
-    let aiSummary = 'AI summary temporarily unavailable - vote based on the original post!'
-    let aiSuggestion = 'AI suggestion temporarily unavailable - use your best judgment!'
-    
-    if (openaiResponse.ok) {
-      try {
-        const openaiData = await openaiResponse.json()
-        const aiContent = openaiData.choices[0]?.message?.content || ''
-        
-        const aiResult = JSON.parse(aiContent)
-        aiSummary = aiResult.summary || aiSummary
-        aiSuggestion = aiResult.suggestion || aiSuggestion
-        
-        console.log('🤖 AI processing complete')
+        if (openaiResponse.ok) {
+          const openaiData = await openaiResponse.json()
+          const aiContent = openaiData.choices[0]?.message?.content || ''
+          
+          const aiResult = JSON.parse(aiContent)
+          aiSummary = aiResult.summary || aiSummary
+          aiSuggestion = aiResult.suggestion || aiSuggestion
+          
+          console.log('🤖 AI processing complete')
+        } else {
+          console.warn(`OpenAI API error: ${openaiResponse.status}, using fallback`)
+        }
       } catch (error) {
-        console.warn('Failed to parse AI response, using fallback')
+        console.warn('Failed to process AI response, using fallback:', error.message)
       }
     }
 
