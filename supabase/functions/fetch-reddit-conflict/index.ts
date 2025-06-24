@@ -13,6 +13,11 @@ const supabaseClient = createClient(
   Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
 )
 
+// Reddit API credentials
+const REDDIT_CLIENT_ID = Deno.env.get('REDDIT_CLIENT_ID') ?? 'HEXXIIN'
+const REDDIT_CLIENT_SECRET = Deno.env.get('REDDIT_CLIENT_SECRET') ?? 'Zs-LllanhtWY60yPz5AGruUpruWfGg'
+const REDDIT_USER_AGENT = Deno.env.get('REDDIT_USER_AGENT') ?? 'SquashieBot/1.0 (by u/HEXXIIN)'
+
 interface RedditPost {
   id: string
   title: string
@@ -20,6 +25,39 @@ interface RedditPost {
   selftext: string
   created_utc: number
   permalink: string
+}
+
+interface RedditAccessTokenResponse {
+  access_token: string
+  token_type: string
+  expires_in: number
+  scope: string
+}
+
+async function getRedditAccessToken(): Promise<string> {
+  console.log('🔑 Getting Reddit access token...')
+  
+  const credentials = btoa(`${REDDIT_CLIENT_ID}:${REDDIT_CLIENT_SECRET}`)
+  
+  const response = await fetch('https://www.reddit.com/api/v1/access_token', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Basic ${credentials}`,
+      'User-Agent': REDDIT_USER_AGENT,
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: 'grant_type=client_credentials'
+  })
+
+  if (!response.ok) {
+    const errorText = await response.text()
+    console.error('Reddit auth error:', response.status, errorText)
+    throw new Error(`Reddit authentication failed: ${response.status}`)
+  }
+
+  const data: RedditAccessTokenResponse = await response.json()
+  console.log('✅ Reddit access token obtained')
+  return data.access_token
 }
 
 serve(async (req) => {
@@ -40,22 +78,30 @@ serve(async (req) => {
   try {
     console.log('🔍 Fetching daily Reddit conflict from r/AmItheAsshole...')
 
-    // Fetch top posts from r/AmItheAsshole for today
+    // Get Reddit access token
+    const accessToken = await getRedditAccessToken()
+
+    // Fetch top posts from r/AmItheAsshole for today using OAuth
     const redditResponse = await fetch(
-      'https://www.reddit.com/r/AmItheAsshole/top.json?t=day&limit=25',
+      'https://oauth.reddit.com/r/AmItheAsshole/top?t=day&limit=25',
       {
         headers: {
-          'User-Agent': 'SquashieApp/1.0 (Conflict Resolution Platform)'
+          'Authorization': `Bearer ${accessToken}`,
+          'User-Agent': REDDIT_USER_AGENT
         }
       }
     )
 
     if (!redditResponse.ok) {
+      const errorText = await redditResponse.text()
+      console.error('Reddit API error:', redditResponse.status, errorText)
       throw new Error(`Reddit API error: ${redditResponse.status}`)
     }
 
     const redditData = await redditResponse.json()
     const posts = redditData.data.children
+
+    console.log(`📊 Found ${posts.length} posts from Reddit`)
 
     // Filter for valid posts
     const validPosts = posts
@@ -63,11 +109,16 @@ serve(async (req) => {
       .filter((post: RedditPost) => 
         post.selftext && 
         post.selftext.length > 100 &&
+        post.selftext.length < 10000 && // Not too long
         !post.selftext.includes('[removed]') &&
         !post.selftext.includes('[deleted]') &&
         post.title &&
-        post.author !== '[deleted]'
+        post.author !== '[deleted]' &&
+        !post.title.toLowerCase().includes('update') && // Skip update posts
+        post.title.toLowerCase().includes('aita') // Must contain AITA
       )
+
+    console.log(`✅ Found ${validPosts.length} valid posts after filtering`)
 
     if (validPosts.length === 0) {
       throw new Error('No valid posts found')
@@ -95,8 +146,47 @@ serve(async (req) => {
     // Generate AI summary and suggestion using OpenAI
     const openaiApiKey = Deno.env.get('OPENAI_API_KEY')
     if (!openaiApiKey) {
-      throw new Error('OpenAI API key not configured')
+      console.warn('OpenAI API key not configured, using fallback content')
+      
+      // Deactivate previous conflicts
+      await supabaseClient
+        .from('reddit_conflicts')
+        .update({ is_active: false })
+        .eq('is_active', true)
+
+      // Insert new conflict with fallback AI content
+      const { data: newConflict, error } = await supabaseClient
+        .from('reddit_conflicts')
+        .insert({
+          reddit_post_id: selectedPost.id,
+          subreddit: 'AmItheAsshole',
+          title: selectedPost.title,
+          author: selectedPost.author,
+          original_text: selectedPost.selftext,
+          ai_summary: 'AI summary temporarily unavailable - vote based on the original post!',
+          ai_suggestion: 'AI suggestion temporarily unavailable - use your best judgment!',
+          is_active: true
+        })
+        .select()
+        .single()
+
+      if (error) {
+        throw error
+      }
+
+      console.log('✅ New Reddit conflict created successfully (with fallback AI content)')
+
+      return new Response(
+        JSON.stringify({ 
+          success: true, 
+          conflict_id: newConflict.id,
+          title: selectedPost.title 
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
     }
+
+    console.log('🤖 Generating AI summary and suggestion...')
 
     const aiPrompt = `You are an AI conflict mediator. Take the following Reddit post from r/AmItheAsshole and:
 
@@ -135,24 +225,26 @@ Respond in JSON format with "summary" and "suggestion" fields.`
     })
 
     if (!openaiResponse.ok) {
-      throw new Error(`OpenAI API error: ${openaiResponse.status}`)
+      console.warn(`OpenAI API error: ${openaiResponse.status}, using fallback`)
     }
 
-    const openaiData = await openaiResponse.json()
-    const aiContent = openaiData.choices[0]?.message?.content || ''
+    let aiSummary = 'AI summary temporarily unavailable - vote based on the original post!'
+    let aiSuggestion = 'AI suggestion temporarily unavailable - use your best judgment!'
     
-    let aiSummary = 'AI summary unavailable'
-    let aiSuggestion = 'AI suggestion unavailable'
-    
-    try {
-      const aiResult = JSON.parse(aiContent)
-      aiSummary = aiResult.summary || aiSummary
-      aiSuggestion = aiResult.suggestion || aiSuggestion
-    } catch (error) {
-      console.warn('Failed to parse AI response, using fallback')
+    if (openaiResponse.ok) {
+      try {
+        const openaiData = await openaiResponse.json()
+        const aiContent = openaiData.choices[0]?.message?.content || ''
+        
+        const aiResult = JSON.parse(aiContent)
+        aiSummary = aiResult.summary || aiSummary
+        aiSuggestion = aiResult.suggestion || aiSuggestion
+        
+        console.log('🤖 AI processing complete')
+      } catch (error) {
+        console.warn('Failed to parse AI response, using fallback')
+      }
     }
-
-    console.log('🤖 AI processing complete')
 
     // Deactivate previous conflicts
     await supabaseClient
