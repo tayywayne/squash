@@ -259,16 +259,8 @@ const ProfilePage: React.FC = () => {
                       className="flex items-center space-x-1 bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-2 rounded-lg transition-colors"
                     >
                       <X size={16} />
-                    {user?.id && (
-                      <div className="mt-2">
-                        <SquashCredDisplay 
-                          userId={user.id} 
-                          showTier={true}
-                          showTooltip={true}
-                          size="md"
-                        />
-                      </div>
-                    )}
+                      <span>Cancel</span>
+                    </button>
                   </>
                 ) : (
                   <button
@@ -384,19 +376,6 @@ const ProfilePage: React.FC = () => {
                 </p>
                 <p>
                   <strong>Reality check:</strong> Sometimes you're both right. Sometimes you're both wrong. Sometimes it doesn't matter who's right.
-                </p>
-              </div>
-            </div>
-
-            {/* Profile Tips */}
-            <div className="bg-white/80 backdrop-blur-sm p-6 rounded-lg border border-gray-200 shadow-lg">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">👤 Profile Tips</h2>
-              <div className="space-y-3 text-sm text-gray-700">
-                <p>
-                  <strong>Avatar:</strong> A friendly photo helps humanize conflicts. You can use any image URL - try uploading to a service like Imgur or use a Gravatar URL.
-                </p>
-                <p>
-                  <strong>Privacy:</strong> Your profile is visible to other users. Keep it professional but personable.
                 </p>
               </div>
             </div>
