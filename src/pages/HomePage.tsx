@@ -440,12 +440,13 @@ const HomePage: React.FC = () => {
                   href="https://bolt.new" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="inline-flex items-center space-x-2 bg-black hover:bg-gray-800 text-white px-3 py-2 rounded-lg text-xs font-medium transition-colors border border-gray-700"
+                  className="inline-block hover:opacity-80 transition-opacity"
                 >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="text-yellow-400">
-                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-                  </svg>
-                  <span>Built with Bolt.new</span>
+                  <img 
+                    src="/logotext_poweredby_360w.png" 
+                    alt="Powered by Bolt.new" 
+                    className="h-8 w-auto"
+                  />
                 </a>
               </div>
             </div>
