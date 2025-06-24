@@ -119,7 +119,7 @@ const RedditConflictPage: React.FC = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <div className="max-w-4xl mx-auto p-4 sm:p-6">
       {toast && (
         <Toast
           message={toast.message}
@@ -141,18 +141,18 @@ const RedditConflictPage: React.FC = () => {
         </div>
 
         {/* Stats */}
-        <div className="bg-gradient-to-r from-orange-50 to-red-50 p-6 rounded-lg border border-orange-200">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+        <div className="bg-gradient-to-r from-orange-50 to-red-50 p-4 sm:p-6 rounded-lg border border-orange-200">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
             <div>
-              <div className="text-2xl font-bold text-orange-600">{getTotalVotes()}</div>
+              <div className="text-xl sm:text-2xl font-bold text-orange-600">{getTotalVotes()}</div>
               <div className="text-sm text-gray-600">Total Votes</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-red-600">r/AmItheAsshole</div>
+              <div className="text-lg sm:text-2xl font-bold text-red-600">r/AmItheAsshole</div>
               <div className="text-sm text-gray-600">Source Subreddit</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-purple-600">Daily</div>
+              <div className="text-xl sm:text-2xl font-bold text-purple-600">Daily</div>
               <div className="text-sm text-gray-600">Fresh Content</div>
             </div>
           </div>
@@ -160,18 +160,18 @@ const RedditConflictPage: React.FC = () => {
       </div>
 
       {/* Main Conflict Card */}
-      <div className="bg-white rounded-lg border border-gray-200 shadow-sm mb-6">
+      <div className="bg-white rounded-lg border border-gray-200 shadow-sm mb-6 overflow-hidden">
         {/* Conflict Header */}
-        <div className="p-6 border-b border-gray-200">
+        <div className="p-4 sm:p-6 border-b border-gray-200">
           <div className="flex items-start justify-between mb-4">
-            <div className="flex-1">
-              <h2 className="text-2xl font-bold text-gray-900 mb-3">
+            <div className="flex-1 min-w-0 pr-4">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3 break-words">
                 {conflict.title}
               </h2>
-              <div className="flex items-center space-x-4 text-sm text-gray-500">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500">
                 <div className="flex items-center space-x-2">
                   <User size={16} />
-                  <span>u/{conflict.author}</span>
+                  <span className="break-all">u/{conflict.author}</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Calendar size={16} />
@@ -184,29 +184,38 @@ const RedditConflictPage: React.FC = () => {
               </div>
             </div>
             
-
+            <a
+              href={`https://reddit.com/r/${conflict.subreddit}/comments/${conflict.reddit_post_id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center space-x-2 bg-orange-500 hover:bg-orange-600 text-white px-3 sm:px-4 py-2 rounded-lg transition-colors text-sm flex-shrink-0"
+            >
+              <span className="hidden sm:inline">View on Reddit</span>
+              <span className="sm:hidden">Reddit</span>
+              <ExternalLink size={16} />
+            </a>
           </div>
         </div>
 
         {/* AI Summary */}
-        <div className="p-6 border-b border-gray-200">
+        <div className="p-4 sm:p-6 border-b border-gray-200">
           <h3 className="text-lg font-semibold text-gray-900 mb-3">
             🤖 Squashie's Summary
           </h3>
-          <p className="text-gray-700 leading-relaxed mb-4">
+          <p className="text-gray-700 leading-relaxed mb-4 break-words">
             {conflict.ai_summary}
           </p>
           
           <h4 className="text-md font-semibold text-gray-900 mb-2">
             💡 Suggested Resolution
           </h4>
-          <p className="text-gray-700 leading-relaxed">
+          <p className="text-gray-700 leading-relaxed break-words">
             {conflict.ai_suggestion}
           </p>
         </div>
 
         {/* Original Text (Expandable) */}
-        <div className="p-6 border-b border-gray-200">
+        <div className="p-4 sm:p-6 border-b border-gray-200">
           <button
             onClick={() => setShowOriginalText(!showOriginalText)}
             className="flex items-center justify-between w-full text-left"
@@ -223,7 +232,7 @@ const RedditConflictPage: React.FC = () => {
           
           {showOriginalText && (
             <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
-              <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">
+              <p className="text-gray-700 whitespace-pre-wrap leading-relaxed break-words">
                 {conflict.original_text}
               </p>
             </div>
@@ -231,13 +240,13 @@ const RedditConflictPage: React.FC = () => {
         </div>
 
         {/* Voting Section */}
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">
             🗳️ Cast Your Judgment
           </h3>
           
           {!user ? (
-            <div className="text-center py-4">
+            <div className="text-center py-4 px-2">
               <p className="text-gray-600 mb-4">Log in to cast your vote and earn SquashCred</p>
               <button
                 onClick={() => window.location.href = '/login'}
@@ -247,7 +256,7 @@ const RedditConflictPage: React.FC = () => {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {REDDIT_VOTE_OPTIONS.map((option) => {
                 const voteCount = getVoteCount(option.type);
                 const isSelected = userVote === option.type;
@@ -258,7 +267,7 @@ const RedditConflictPage: React.FC = () => {
                     key={option.type}
                     onClick={() => handleVote(option.type)}
                     disabled={isLoading || userVote !== null}
-                    className={`flex items-center justify-between p-4 rounded-lg border-2 transition-all ${
+                    className={`flex items-center justify-between p-3 sm:p-4 rounded-lg border-2 transition-all text-sm ${
                       isSelected
                         ? 'border-coral-500 bg-coral-50 text-coral-700'
                         : userVote !== null
@@ -268,14 +277,14 @@ const RedditConflictPage: React.FC = () => {
                   >
                     <div className="flex items-center space-x-3">
                       <span className="text-2xl">{option.emoji}</span>
-                      <div className="text-left">
-                        <div className="font-bold text-lg">{option.label}</div>
-                        <div className="text-sm text-gray-600">{option.description}</div>
+                      <div className="text-left min-w-0 flex-1">
+                        <div className="font-bold text-base sm:text-lg">{option.label}</div>
+                        <div className="text-xs sm:text-sm text-gray-600 break-words">{option.description}</div>
                       </div>
                     </div>
                     <div className="flex items-center space-x-2">
                       {isSelected && <span className="text-xs text-coral-600">✓</span>}
-                      <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-medium">
+                      <span className="bg-gray-100 text-gray-700 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium flex-shrink-0">
                         {voteCount}
                       </span>
                     </div>
@@ -287,7 +296,7 @@ const RedditConflictPage: React.FC = () => {
           
           {/* Show message if user has already voted */}
           {user && userVote && (
-            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg overflow-hidden">
               <p className="text-sm text-blue-800">
                 ✅ You've already cast your vote! Votes cannot be changed to maintain fairness.
               </p>
@@ -298,11 +307,11 @@ const RedditConflictPage: React.FC = () => {
 
       {/* Footer */}
       <div className="text-center">
-        <div className="bg-blue-50 p-6 rounded-lg border border-blue-200">
+        <div className="bg-blue-50 p-4 sm:p-6 rounded-lg border border-blue-200">
           <h3 className="text-lg font-semibold text-blue-900 mb-2">
             📢 About Reddit Conflicts
           </h3>
-          <p className="text-sm text-blue-800">
+          <p className="text-sm text-blue-800 leading-relaxed">
             These conflicts are sourced from r/AmItheAsshole and processed through Squashie's AI for educational purposes. 
             Vote responsibly and remember: everyone's just trying to figure out how to be a decent human.
           </p>
