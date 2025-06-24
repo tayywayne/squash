@@ -196,7 +196,7 @@ const OtherUserProfilePage: React.FC = () => {
                 <SquashCredDisplay 
                   userId={userId} 
                   showTier={true}
-                  showTooltip={true}
+                  showTooltip={false}
                   size="sm"
                 />
               )}
