@@ -184,15 +184,7 @@ const RedditConflictPage: React.FC = () => {
               </div>
             </div>
             
-            <a
-              href={`https://reddit.com/r/${conflict.subreddit}/comments/${conflict.reddit_post_id}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center space-x-2 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg transition-colors"
-            >
-              <span>View on Reddit</span>
-              <ExternalLink size={16} />
-            </a>
+
           </div>
         </div>
 
