@@ -59,25 +59,25 @@ const HomePage: React.FC = () => {
     {
       step: 1,
       title: 'Share Your Side',
-      description: 'Tell us what happened and how you feel. Be honest - our AI will help make it constructive so say what you need to.',
+      description: 'Tell us what went down — unfiltered. We’ll make it less spicy before sharing.',
       emoji: '💬'
     },
     {
       step: 2,
       title: 'They Respond',
-      description: 'The other person gets invited to share their perspective in the same safe environment.',
-      emoji: '🤝'
+      description: 'They get the same chance to express their side, no judgment (yet).',
+      emoji: '✍️'
     },
     {
       step: 3,
       title: 'AI Mediation',
-      description: 'Our AI analyzes both sides and provides a balanced summary with actionable next steps.',
+      description: 'We translate emotional chaos into clarity, then deliver a suggested compromise that’s actually useful.',
       emoji: '🤖'
     },
     {
       step: 4,
-      title: 'Resolution',
-      description: 'Both parties review the mediation and work together toward mutual understanding. ',
+      title: 'Peace (Hopefully)',
+      description: 'You both review it. You vote. You heal. If it works, great. If not… well, there’s always the rehash button.',
       emoji: '✨'
     }
   ];
