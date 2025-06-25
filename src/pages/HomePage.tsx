@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Users, CheckCircle, MessageSquare, Zap, Shield, Heart, Star, HelpCircle, Trophy, Sparkles } from 'lucide-react';
 import { conflictService } from '../utils/conflicts';
-import StickerCollection from '../components/StickerCollection';
+// import StickerCollection from '../components/StickerCollection';
 
 interface GlobalStats {
   totalConflicts: number;
@@ -85,7 +85,7 @@ const HomePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-white relative">
       {/* Sticker Collection - positioned behind content */}
-      <StickerCollection />
+      {/* <StickerCollection /> */}
       
       {/* Navigation */}
       <nav className="bg-dark-teal border-b-3 border-black sticky top-0 z-50">
