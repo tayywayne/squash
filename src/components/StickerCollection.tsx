@@ -112,76 +112,76 @@ const StickerCollection: React.FC = () => {
   };
 
   return (
-    <div className="hidden md:block absolute inset-0 pointer-events-none overflow-hidden">
+    <div className="absolute inset-0 pointer-events-none overflow-hidden">
       {/* Stickers positioned around the page */}
       <div className="relative w-full h-full">
         {/* Top left cluster */}
-        <div className="absolute top-20 left-10 pointer-events-auto">
+        <div className="absolute top-20 left-4 md:left-10 pointer-events-auto">
           <div className={`${stickers[0].bgColor} ${stickers[0].textColor} ${getShapeClasses(stickers[0].shape)} border-4 border-black shadow-brutal transition-all duration-300 ${stickers[0].animation} cursor-pointer transform rotate-12`}>
-            <span className="font-black text-xs leading-tight relative z-10">{stickers[0].text}</span>
+            <span className="font-black text-xs md:text-xs leading-tight relative z-10">{stickers[0].text}</span>
           </div>
         </div>
 
         {/* Top right */}
-        <div className="absolute top-32 right-16 pointer-events-auto">
+        <div className="absolute top-32 right-4 md:right-16 pointer-events-auto">
           <div className={`${stickers[1].bgColor} ${stickers[1].textColor} ${getShapeClasses(stickers[1].shape)} border-4 border-black shadow-brutal transition-all duration-300 ${stickers[1].animation} cursor-pointer transform -rotate-6`}>
-            <span className="font-black text-xs leading-tight">{stickers[1].text}</span>
+            <span className="font-black text-xs md:text-xs leading-tight">{stickers[1].text}</span>
           </div>
         </div>
 
         {/* Left side middle */}
-        <div className="absolute top-1/2 left-8 pointer-events-auto">
+        <div className="absolute top-1/2 left-2 md:left-8 pointer-events-auto">
           <div className={`${stickers[2].bgColor} ${stickers[2].textColor} ${getShapeClasses(stickers[2].shape)} border-4 border-black shadow-brutal transition-all duration-300 ${stickers[2].animation} cursor-pointer transform rotate-3 px-6 py-4`}>
-            <span className="font-black text-xs leading-tight">{stickers[2].text}</span>
+            <span className="font-black text-xs md:text-xs leading-tight">{stickers[2].text}</span>
           </div>
         </div>
 
         {/* Right side middle */}
-        <div className="absolute top-1/2 right-12 pointer-events-auto">
+        <div className="absolute top-1/2 right-2 md:right-12 pointer-events-auto">
           <div className={`${stickers[3].bgColor} ${stickers[3].textColor} ${getShapeClasses(stickers[3].shape)} border-4 border-black shadow-brutal transition-all duration-300 ${stickers[3].animation} cursor-pointer transform -rotate-12`}>
-            <span className="font-black text-xs leading-tight text-center">{stickers[3].text}</span>
+            <span className="font-black text-xs md:text-xs leading-tight text-center">{stickers[3].text}</span>
           </div>
         </div>
 
         {/* Bottom left */}
-        <div className="absolute bottom-32 left-20 pointer-events-auto">
+        <div className="absolute bottom-32 left-4 md:left-20 pointer-events-auto">
           <div className={`${stickers[4].bgColor} ${stickers[4].textColor} ${getShapeClasses(stickers[4].shape)} border-4 border-black shadow-brutal transition-all duration-300 ${stickers[4].animation} cursor-pointer transform rotate-6`}>
-            <span className="font-black text-xs leading-tight">{stickers[4].text}</span>
+            <span className="font-black text-xs md:text-xs leading-tight">{stickers[4].text}</span>
           </div>
         </div>
 
         {/* Bottom right */}
-        <div className="absolute bottom-20 right-20 pointer-events-auto">
+        <div className="absolute bottom-20 right-4 md:right-20 pointer-events-auto">
           <div className={`${stickers[5].bgColor} ${stickers[5].textColor} ${getShapeClasses(stickers[5].shape)} border-4 border-black shadow-brutal transition-all duration-300 ${stickers[5].animation} cursor-pointer`}>
-            <span className="font-black text-xs leading-tight">{stickers[5].text}</span>
+            <span className="font-black text-xs md:text-xs leading-tight">{stickers[5].text}</span>
           </div>
         </div>
 
         {/* Top center */}
         <div className="absolute top-16 left-1/2 transform -translate-x-1/2 pointer-events-auto">
           <div className={`${stickers[6].bgColor} ${stickers[6].textColor} ${getShapeClasses(stickers[6].shape)} border-4 border-black shadow-brutal transition-all duration-300 ${stickers[6].animation} cursor-pointer transform rotate-45`}>
-            <span className="font-black text-xs leading-tight transform -rotate-45 block">{stickers[6].text}</span>
+            <span className="font-black text-xs md:text-xs leading-tight transform -rotate-45 block">{stickers[6].text}</span>
           </div>
         </div>
 
         {/* Center right */}
-        <div className="absolute top-1/3 right-4 pointer-events-auto">
+        <div className="absolute top-1/3 right-1 md:right-4 pointer-events-auto">
           <div className={`${stickers[7].bgColor} ${stickers[7].textColor} ${getShapeClasses(stickers[7].shape)} border-4 border-black shadow-brutal transition-all duration-300 ${stickers[7].animation} cursor-pointer`}>
-            <span className="font-black text-xs leading-tight text-center">{stickers[7].text}</span>
+            <span className="font-black text-xs md:text-xs leading-tight text-center">{stickers[7].text}</span>
           </div>
         </div>
 
         {/* Bottom center left */}
-        <div className="absolute bottom-40 left-1/3 pointer-events-auto">
+        <div className="absolute bottom-40 left-1/4 md:left-1/3 pointer-events-auto">
           <div className={`${stickers[8].bgColor} ${stickers[8].textColor} ${getShapeClasses(stickers[8].shape)} border-4 border-black shadow-brutal transition-all duration-300 ${stickers[8].animation} cursor-pointer transform -rotate-3 px-6 py-4`}>
-            <span className="font-black text-xs leading-tight relative z-10">{stickers[8].text}</span>
+            <span className="font-black text-xs md:text-xs leading-tight relative z-10">{stickers[8].text}</span>
           </div>
         </div>
 
         {/* Bottom center right */}
-        <div className="absolute bottom-48 right-1/3 pointer-events-auto">
+        <div className="absolute bottom-48 right-1/4 md:right-1/3 pointer-events-auto">
           <div className={`${stickers[9].bgColor} ${stickers[9].textColor} ${getShapeClasses(stickers[9].shape)} border-4 border-black shadow-brutal transition-all duration-300 ${stickers[9].animation} cursor-pointer transform rotate-6`}>
-            <span className="font-black text-xs leading-tight">{stickers[9].text}</span>
+            <span className="font-black text-xs md:text-xs leading-tight">{stickers[9].text}</span>
           </div>
         </div>
       </div>
