@@ -50,6 +50,7 @@ export const useScrollAnimation = (options: UseScrollAnimationOptions = {}) => {
 
 export const useStaggeredAnimation = (itemCount: number, delay: number = 100) => {
   const [visibleItems, setVisibleItems] = useState<Set<number>>(new Set());
+  const [hasTriggered, setHasTriggered] = useState(false);
   const containerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -58,13 +59,15 @@ export const useStaggeredAnimation = (itemCount: number, delay: number = 100) =>
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
+        if (entry.isIntersecting && !hasTriggered) {
           // Stagger the animation of child items
           for (let i = 0; i < itemCount; i++) {
             setTimeout(() => {
               setVisibleItems(prev => new Set([...prev, i]));
             }, i * delay);
           }
+          setHasTriggered(true);
+          observer.disconnect();
         }
       },
       {
@@ -78,7 +81,7 @@ export const useStaggeredAnimation = (itemCount: number, delay: number = 100) =>
     return () => {
       observer.unobserve(container);
     };
-  }, [itemCount, delay]);
+  }, [itemCount, delay, hasTriggered]);
 
   return { containerRef, visibleItems };
 };
