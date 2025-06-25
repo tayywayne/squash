@@ -1,4 +1,20 @@
 ![squashie logo](./rdBanner.png)
+Docs Navigation
+[Features](./DOCS/FEATURES.md) • 
+[Database](./DOCS/DATABASE_SCHEMA.md) • 
+[Prompts](./DOCS/PROMPTS.md) • 
+[Routes](./DOCS/ROUTES.md) • 
+[Archetypes](./DOCS/ARCHETYPES.md) • 
+[Achievements](./DOCS/ACHIEVEMENTS.md) • 
+[SquashCred](./DOCS/SQUASHCRED.md) • 
+[Public Shame](./DOCS/PUBLIC_SHAME_GUIDE.md) • 
+[Supporter Mode](./DOCS/SUPPORTER_MODE.md) • 
+[Quests](./DOCS/QUESTS.md) • 
+[Integrations](./DOCS/INTEGRATIONS.md) • 
+[Contributing](./DOCS/CONTRIBUTING.md)
+
+---
+
 # 🧃 Squashie
 
 **Resolve drama. Earn achievements. Avoid total social collapse.**  
