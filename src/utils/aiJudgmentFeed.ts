@@ -138,7 +138,7 @@ export const aiJudgmentFeedService = {
         await generalAchievementsService.checkAndUnlockAchievements(userId, {
           hasVotedOnConflict: true,
           hasVotedAiRight: voteType === 'ai_right',
-          hasVotedTherapy: voteType === 'get_therapy'
+          hasVotedTherapy: voteType === 'get_therapy',
           publicVoteCount,
           aiRightVotes,
           therapyVotes,
