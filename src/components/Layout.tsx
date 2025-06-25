@@ -51,12 +51,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   }, [user?.conflict_archetype]);
 
   const navigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: Home, emoji: '🏠' },
-    { name: 'Public Shame', href: '/public-shame', icon: Trophy, emoji: '⚖️' },
+    { name: 'Dashboard', href: '/dashboard', icon: Home, emoji: '🎛️' },
+    { name: 'Public Shame', href: '/public-shame', icon: Trophy, emoji: '🧨' },
     { name: 'Leaderboard',  href: '/leaderboard', icon: Trophy, emoji: '🏆' },
-    { name: 'Support Us', href: '/support-us', icon: User, emoji: '💝' },
-    { name: 'Reddit Drama', href: '/reddit-conflict', icon: MessageSquare, emoji: '🤔' },
-    { name: 'Profile', href: '/profile', icon: User, emoji: '👤' },
+    { name: 'Support Us', href: '/support-us', icon: User, emoji: '🎁' },
+    { name: 'Reddit Drama', href: '/reddit-conflict', icon: MessageSquare, emoji: '👓' },
+    { name: 'Profile', href: '/profile', icon: User, emoji: '👾' },
   ];
 
   const handleSignOut = async () => {
