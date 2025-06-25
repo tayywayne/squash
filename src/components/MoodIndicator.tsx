@@ -53,7 +53,7 @@ const MoodIndicator: React.FC<MoodIndicatorProps> = ({
 
   return (
     <div className={`flex items-center space-x-2 ${currentMood?.color}`}>
-      <span className={`${sizeClasses[size]} bg-white p-1`}>{currentMood?.emoji}</span>
+      <span className={`${sizeClasses[size]} p-1`}>{currentMood?.emoji}</span>
       <span className="font-black text-sm">{currentMood?.label}</span>
     </div>
   );
