@@ -101,6 +101,21 @@ export const redditConflictsService = {
       // Award SquashCred for voting on Reddit conflict (different from public conflicts)
       try {
         await squashCredService.awardForAction(userId, 'VOTE_ON_REDDIT_CONFLICT');
+        
+        // Get vote counts for achievements
+        const { data: userVotes } = await supabase
+          .from('reddit_conflict_votes')
+          .select('vote_type')
+          .eq('voter_id', userId);
+        
+        const redditVoteCount = userVotes?.length || 0;
+        
+        // Check for achievements
+        const { generalAchievementsService } = await import('./generalAchievements');
+        await generalAchievementsService.checkAndUnlockAchievements(userId, {
+          redditVoteCount
+        });
+        
       } catch (credError) {
         console.error('Error awarding SquashCred for Reddit vote:', credError);
       }

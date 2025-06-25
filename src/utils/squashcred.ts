@@ -69,6 +69,26 @@ export const squashCredService = {
       }
 
       console.log(`✅ SquashCred awarded. New balance: ${data}`);
+      
+      // Check for SquashCred-related achievements
+      try {
+        const { generalAchievementsService } = await import('./generalAchievements');
+        
+        // Check if points are negative
+        const hasNegativePoints = data < 0;
+        
+        // Check if this was a comeback (from negative to positive)
+        const hasComeback = amount > 0 && data > 0 && (data - amount) < 0;
+        
+        await generalAchievementsService.checkAndUnlockAchievements(userId, {
+          squashCredPoints: data,
+          hasNegativePoints: hasNegativePoints && data <= -50,
+          hasComeback
+        });
+      } catch (error) {
+        console.error('Error checking SquashCred achievements:', error);
+      }
+      
       return { newBalance: data };
     } catch (error) {
       console.error('❌ Error in awardPoints:', error);

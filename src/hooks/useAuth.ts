@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { auth } from '../utils/supabase';
 import { supabase } from '../utils/supabase';
 import { Profile } from '../types';
+import { generalAchievementsService } from '../utils/generalAchievements';
 
 interface AuthUser {
   id: string;
@@ -255,6 +256,28 @@ export const useAuth = () => {
 
       // Update local user state
       setUser(prev => prev ? { ...prev, ...updates } : null);
+      
+      // Check for username change achievement
+      if (updates.username && user.id) {
+        try {
+          await generalAchievementsService.checkAndUnlockAchievements(user.id, {
+            hasChangedUsername: true
+          });
+        } catch (error) {
+          console.error('Error checking username change achievement:', error);
+        }
+      }
+      
+      // Check for avatar update achievement
+      if (updates.avatar_url && user.id) {
+        try {
+          await generalAchievementsService.checkAndUnlockAchievements(user.id, {
+            hasCustomAvatar: true
+          });
+        } catch (error) {
+          console.error('Error checking avatar update achievement:', error);
+        }
+      }
       
       return { error: null };
     } catch (error) {

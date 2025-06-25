@@ -123,10 +123,27 @@ export const aiJudgmentFeedService = {
           await squashCredService.awardForAction(userId, 'HELPFUL_VOTE');
         }
         
+        // Get vote counts for achievements
+        const { data: userVotes } = await supabase
+          .from('conflict_votes')
+          .select('vote_type')
+          .eq('voter_id', userId);
+        
+        const publicVoteCount = userVotes?.length || 0;
+        const aiRightVotes = userVotes?.filter(v => v.vote_type === 'ai_right').length || 0;
+        const therapyVotes = userVotes?.filter(v => v.vote_type === 'get_therapy').length || 0;
+        const bothWrongVotes = userVotes?.filter(v => v.vote_type === 'both_wrong').length || 0;
+        const resetVotes = userVotes?.filter(v => v.vote_type === 'reset_conflict').length || 0;
+        
         await generalAchievementsService.checkAndUnlockAchievements(userId, {
           hasVotedOnConflict: true,
           hasVotedAiRight: voteType === 'ai_right',
           hasVotedTherapy: voteType === 'get_therapy'
+          publicVoteCount,
+          aiRightVotes,
+          therapyVotes,
+          bothWrongVotes,
+          resetVotes
         });
       } catch (achievementError) {
         console.error('Error checking voting achievements:', achievementError);

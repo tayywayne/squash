@@ -4,6 +4,7 @@ import { useAuth } from '../hooks/useAuth';
 import { conflictService, Conflict } from '../utils/conflicts';
 import { storageService } from '../utils/storage';
 import { archetypeService, ARCHETYPES } from '../utils/archetypes';
+import { generalAchievementsService } from '../utils/generalAchievements';
 import SupporterCard from '../components/SupporterCard';
 import ArchetypeAchievements from '../components/ArchetypeAchievements';
 import GeneralAchievements from '../components/GeneralAchievements';
@@ -107,6 +108,30 @@ const ProfilePage: React.FC = () => {
       } else {
         setToast({ message: 'Profile updated successfully!', type: 'success' });
         setIsEditing(false);
+        
+        // Check for profile update achievements
+        if (user?.id) {
+          try {
+            // Get profile update count
+            const { data: updates } = await supabase
+              .from('profile_updates')
+              .select('update_type')
+              .eq('user_id', user.id);
+            
+            const profileUpdateCount = updates?.length || 0;
+            const hasChangedUsername = updates?.some(u => u.update_type === 'username') || false;
+            const hasCustomAvatar = editForm.avatar_url.trim() !== '' || user.avatar_url !== '';
+            
+            await generalAchievementsService.checkAndUnlockAchievements(user.id, {
+              profileUpdateCount,
+              hasChangedUsername,
+              hasCustomAvatar
+            });
+          } catch (error) {
+            console.error('Error checking profile update achievements:', error);
+          }
+        }
+        
       }
     } catch (error) {
       setToast({ message: 'Something went wrong. Please try again.', type: 'error' });

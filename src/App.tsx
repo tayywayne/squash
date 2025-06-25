@@ -14,9 +14,27 @@ import SupportUsPage from './pages/SupportUsPage';
 import SupportSuccessPage from './pages/SupportSuccessPage';
 import AIJudgmentFeedPage from './pages/AIJudgmentFeedPage';
 import RedditConflictPage from './pages/RedditConflictPage';
+import { achievementTracker } from './utils/achievementTracker';
 
 function App() {
   const { user, loading } = useAuth();
+  
+  // Check for time-based achievements periodically
+  useEffect(() => {
+    if (user?.id) {
+      // Check achievements on initial load
+      achievementTracker.trackAchievementProgress(user.id);
+      achievementTracker.checkTimeBasedAchievements(user.id);
+      achievementTracker.checkSpecialDateAchievements(user.id);
+      
+      // Set up periodic checks
+      const interval = setInterval(() => {
+        achievementTracker.checkTimeBasedAchievements(user.id);
+      }, 3600000); // Check every hour
+      
+      return () => clearInterval(interval);
+    }
+  }, [user?.id]);
 
   if (loading) {
     return (

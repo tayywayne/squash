@@ -3,6 +3,7 @@ import { openAI } from './openai';
 import { generalAchievementsService } from './generalAchievements';
 import { achievementsService } from './achievements';
 import { squashCredService, SQUASHCRED_ACTIONS } from './squashcred';
+import { analyzeMessage, isWeekend, isHoliday, getTimeCategory, getDayOfWeek } from './messageAnalyzer';
 
 export interface CreateConflictData {
   title: string;
@@ -87,12 +88,50 @@ export const conflictService = {
           await squashCredService.awardForAction(userId, 'FIRST_CONFLICT');
         }
         
+        // Analyze the message for achievements
+        const messageAnalysis = analyzeMessage(conflictData.description);
+        const now = new Date();
+        const timeCategory = getTimeCategory(now);
+        const dayOfWeek = getDayOfWeek(now);
+        
+        // Count weekend conflicts
+        const weekendConflicts = userConflicts.filter(c => isWeekend(new Date(c.created_at))).length;
+        
+        // Count Monday conflicts
+        const mondayConflicts = userConflicts.filter(c => getDayOfWeek(new Date(c.created_at)) === 'Monday').length;
+        
+        // Check if it's a holiday
+        const isHolidayToday = isHoliday(now);
+        
+        // Check if it's the user's birthday (would need profile data with birth date)
+        // For now, we'll just use a placeholder
+        const isBirthday = false;
+        
         await generalAchievementsService.checkAndUnlockAchievements(userId, {
           totalConflicts: userConflicts.length,
           resolvedConflicts: resolvedConflicts.length,
           archetypeCount: archetypeAchievements.length,
           hasLongMessage: conflictData.description.length > 900,
           hasIFeelMessage: conflictData.description.toLowerCase().includes('i feel')
+          // New context fields
+          weekendConflicts: isWeekend(now) ? weekendConflicts + 1 : weekendConflicts,
+          emojiCount: messageAnalysis.emojiCount,
+          capsPercentage: messageAnalysis.capsPercentage,
+          questionMarkCount: messageAnalysis.questionMarkCount,
+          exclamationCount: messageAnalysis.exclamationCount,
+          sorryCount: messageAnalysis.sorryCount,
+          literallyCount: messageAnalysis.literallyCount,
+          obviouslyCount: messageAnalysis.obviouslyCount,
+          hasWhatever: messageAnalysis.hasWhatever,
+          fineCount: messageAnalysis.fineCount,
+          isBirthday,
+          isHoliday: isHolidayToday,
+          mondayConflicts: dayOfWeek === 'Monday' ? mondayConflicts + 1 : mondayConflicts,
+          isEarlyMorning: timeCategory.isEarlyMorning,
+          isLateNight: timeCategory.isLateNight,
+          isLunchTime: timeCategory.isLunchTime,
+          isMidnightActivity: timeCategory.isMidnight,
+          activeConflictCount: userConflicts.filter(c => c.status === 'pending' || c.status === 'active').length
         });
       } catch (error) {
         console.error('Error checking achievements after conflict creation:', error);
@@ -151,6 +190,14 @@ export const conflictService = {
         throw new Error('Conflict not found');
       }
 
+      // Analyze the message for achievements
+      const messageAnalysis = analyzeMessage(response);
+      const now = new Date();
+      const timeCategory = getTimeCategory(now);
+      
+      // Calculate response time
+      const responseTimeHours = (now.getTime() - new Date(conflict.created_at).getTime()) / (1000 * 60 * 60);
+      
       // Translate the response using OpenAI
       const translatedResponse = await openAI.translateMessage(response, 'responsive');
 
@@ -189,6 +236,27 @@ export const conflictService = {
       // Award SquashCred for responding to conflict
       try {
         await squashCredService.awardForAction(userId, 'RESPOND_TO_CONFLICT');
+        
+        // Check for achievements related to response
+        await generalAchievementsService.checkAndUnlockAchievements(userId, {
+          emojiCount: messageAnalysis.emojiCount,
+          capsPercentage: messageAnalysis.capsPercentage,
+          questionMarkCount: messageAnalysis.questionMarkCount,
+          exclamationCount: messageAnalysis.exclamationCount,
+          sorryCount: messageAnalysis.sorryCount,
+          literallyCount: messageAnalysis.literallyCount,
+          obviouslyCount: messageAnalysis.obviouslyCount,
+          hasWhatever: messageAnalysis.hasWhatever,
+          fineCount: messageAnalysis.fineCount,
+          responseTimeHours,
+          isEarlyMorning: timeCategory.isEarlyMorning,
+          isLateNight: timeCategory.isLateNight,
+          isLunchTime: timeCategory.isLunchTime,
+          isMidnightActivity: timeCategory.isMidnight,
+          hasDelayedResponse: responseTimeHours >= 168, // 7 days
+          speed_demon: responseTimeHours < 0.083 // 5 minutes
+        });
+        
       } catch (error) {
         console.error('Error awarding SquashCred for response:', error);
       }
@@ -233,6 +301,32 @@ export const conflictService = {
           const now = new Date();
           const hoursDiff = (now.getTime() - createdAt.getTime()) / (1000 * 60 * 60);
           
+          // Get user conflicts for achievement context
+          const userConflicts = await conflictService.getUserConflicts(userId, '');
+          const resolvedConflicts = userConflicts.filter(c => c.status === 'resolved').length;
+          const isFirstResolution = resolvedConflicts === 0;
+          
+          // Check if it's a Friday resolution
+          const isFriday = getDayOfWeek(now) === 'Friday';
+          const fridayResolutions = userConflicts.filter(c => 
+            c.status === 'resolved' && 
+            c.resolved_at && 
+            getDayOfWeek(new Date(c.resolved_at)) === 'Friday'
+          ).length;
+          
+          // Check for same-day resolutions
+          const sameDayResolutions = userConflicts.filter(c => {
+            if (c.status !== 'resolved' || !c.resolved_at) return false;
+            const created = new Date(c.created_at);
+            const resolved = new Date(c.resolved_at);
+            return created.toDateString() === resolved.toDateString();
+          }).length;
+          
+          // Check for high resolution rate
+          const totalUserConflicts = userConflicts.length;
+          const hasHighResolutionRate = totalUserConflicts >= 10 && 
+            (resolvedConflicts / totalUserConflicts) >= 0.9;
+          
           if (hoursDiff < 1) {
             await squashCredService.awardForAction(userId, 'QUICK_RESOLUTION');
           }
@@ -241,6 +335,16 @@ export const conflictService = {
           if (satisfaction && otherUserSatisfied) {
             await squashCredService.awardForAction(userId, 'PEACEFUL_RESOLUTION');
           }
+          
+          // Check for achievements
+          await generalAchievementsService.checkAndUnlockAchievements(userId, {
+            isFirstResolution,
+            fridayResolutions: isFriday ? fridayResolutions + 1 : fridayResolutions,
+            sameDayResolutions: sameDayResolutions + 1,
+            hasQuickResolution: hoursDiff < 1,
+            hasHighResolutionRate
+          });
+          
         } catch (error) {
           console.error('Error awarding SquashCred for resolution:', error);
         }
@@ -273,6 +377,17 @@ export const conflictService = {
             // Award SquashCred for rehashing
             try {
               await squashCredService.awardForAction(userId, 'REHASH_CONFLICT');
+              
+              // Get rehash count for achievements
+              const userConflicts = await conflictService.getUserConflicts(userId, '');
+              const rehashCount = userConflicts.filter(c => c.rehash_attempted_at).length;
+              
+              // Check for achievements
+              await generalAchievementsService.checkAndUnlockAchievements(userId, {
+                hasRehash: true,
+                rehashCount
+              });
+              
             } catch (error) {
               console.error('Error awarding SquashCred for rehash:', error);
             }
@@ -309,6 +424,9 @@ export const conflictService = {
         throw new Error('Conflict not found');
       }
 
+      // Analyze the core issue message
+      const messageAnalysis = analyzeMessage(coreIssue);
+      
       const updateData: any = {};
       
       if (conflict.user1_id === userId) {
@@ -352,6 +470,29 @@ export const conflictService = {
           // Award SquashCred for core issue reflection
           try {
             await squashCredService.awardForAction(userId, 'CORE_ISSUE_REFLECTION');
+            
+            // Get user conflicts for achievement context
+            const userConflicts = await conflictService.getUserConflicts(userId, '');
+            const coreIssueCount = userConflicts.filter(c => 
+              (c.user1_id === userId && c.user1_core_issue) || 
+              (c.user2_id === userId && c.user2_core_issue)
+            ).length;
+            
+            // Check for achievements
+            await generalAchievementsService.checkAndUnlockAchievements(userId, {
+              hasWrittenCoreIssue: true,
+              coreIssueCount,
+              emojiCount: messageAnalysis.emojiCount,
+              capsPercentage: messageAnalysis.capsPercentage,
+              questionMarkCount: messageAnalysis.questionMarkCount,
+              exclamationCount: messageAnalysis.exclamationCount,
+              sorryCount: messageAnalysis.sorryCount,
+              literallyCount: messageAnalysis.literallyCount,
+              obviouslyCount: messageAnalysis.obviouslyCount,
+              hasWhatever: messageAnalysis.hasWhatever,
+              fineCount: messageAnalysis.fineCount
+            });
+            
           } catch (error) {
             console.error('Error awarding SquashCred for core issue:', error);
           }
@@ -413,12 +554,22 @@ export const conflictService = {
       
       // Check for AI judgment achievement
       try {
+        // Get user conflicts for achievement context
+        const user1Conflicts = await conflictService.getUserConflicts(conflict.user1_id, '');
+        const aiJudgmentCount1 = user1Conflicts.filter(c => c.status === 'final_judgment').length;
+        
         await generalAchievementsService.checkAndUnlockAchievements(conflict.user1_id, {
-          hasAiJudgment: true
+          hasAiJudgment: true,
+          aiJudgmentCount: aiJudgmentCount1
         });
         if (conflict.user2_id) {
+          // Get user conflicts for achievement context
+          const user2Conflicts = await conflictService.getUserConflicts(conflict.user2_id, '');
+          const aiJudgmentCount2 = user2Conflicts.filter(c => c.status === 'final_judgment').length;
+          
           await generalAchievementsService.checkAndUnlockAchievements(conflict.user2_id, {
-            hasAiJudgment: true
+            hasAiJudgment: true,
+            aiJudgmentCount: aiJudgmentCount2
           });
         }
       } catch (error) {

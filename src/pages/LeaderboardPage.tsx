@@ -4,12 +4,16 @@ import { leaderboardService, LeaderboardUser } from '../utils/leaderboard';
 import { useNavigate } from 'react-router-dom';
 import UserDisplayName from '../components/UserDisplayName';
 import Toast from '../components/Toast';
+import { supabase } from '../utils/supabase';
+import { useAuth } from '../hooks/useAuth';
+import { generalAchievementsService } from '../utils/generalAchievements';
 
 type TimeFrame = 'all-time' | 'weekly';
 type Category = 'least-problematic' | 'most-problematic';
 
 const LeaderboardPage: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [timeFrame, setTimeFrame] = useState<TimeFrame>('all-time');
   const [category, setCategory] = useState<Category>('least-problematic');
   const [leaderboardData, setLeaderboardData] = useState<LeaderboardUser[]>([]);
@@ -26,6 +30,35 @@ const LeaderboardPage: React.FC = () => {
           : await leaderboardService.getLeaderboardStatsWeekly();
         
         setLeaderboardData(data);
+        
+        // Log leaderboard view for achievements if user is logged in
+        if (user?.id) {
+          try {
+            // Log the view
+            await supabase.rpc('log_leaderboard_view', { p_user_id: user.id });
+            
+            // Get view count
+            const { data: viewCount } = await supabase.rpc('get_leaderboard_view_count', { p_user_id: user.id });
+            
+            // Check for leaderboard lurker achievement
+            if (viewCount) {
+              await generalAchievementsService.checkAndUnlockAchievements(user.id, {
+                leaderboardViews: viewCount
+              });
+            }
+            
+            // Check if user is in top 10
+            const isTopTen = data.findIndex(u => u.user_id === user.id) < 10 && data.length >= 10;
+            if (isTopTen) {
+              await generalAchievementsService.checkAndUnlockAchievements(user.id, {
+                isTopTen: true
+              });
+            }
+          } catch (error) {
+            console.error('Error logging leaderboard view:', error);
+          }
+        }
+        
       } catch (error) {
         console.error('Error loading leaderboard data:', error);
         setToast({ message: 'Failed to load leaderboard data', type: 'error' });

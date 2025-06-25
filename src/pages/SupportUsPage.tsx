@@ -4,6 +4,7 @@ import { ArrowLeft, Heart, ExternalLink, Gift, Crown, Ban as Bandage } from 'luc
 import { useAuth } from '../hooks/useAuth';
 import { stripeService } from '../utils/stripe';
 import Toast from '../components/Toast';
+import { generalAchievementsService } from '../utils/generalAchievements';
 
 const SupportUsPage: React.FC = () => {
   const navigate = useNavigate();
@@ -65,6 +66,18 @@ const SupportUsPage: React.FC = () => {
       } else if (url) {
         // Redirect to Stripe checkout
         window.location.href = url;
+        
+        // Check for supporter achievement
+        if (user?.id) {
+          try {
+            await generalAchievementsService.checkAndUnlockAchievements(user.id, {
+              isSupporter: true
+            });
+          } catch (error) {
+            console.error('Error checking supporter achievement:', error);
+          }
+        }
+        
       } else {
         setToast({ message: 'Failed to create checkout session', type: 'error' });
       }
