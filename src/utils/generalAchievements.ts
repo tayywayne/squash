@@ -439,6 +439,30 @@ export const ACHIEVEMENTS: Record<string, Achievement> = {
     name: 'Comeback Story',
     emoji: '📈',
     description: 'Went from negative to positive SquashCred. Redemption arc complete.'
+  },
+  first_quest_started: {
+    code: 'first_quest_started',
+    name: 'Quest Beginner',
+    emoji: '🧩',
+    description: 'Started your first Conflict Confidence Quest.'
+  },
+  quest_master: {
+    code: 'quest_master',
+    name: 'Quest Master',
+    emoji: '📚',
+    description: 'Completed 5+ Conflict Confidence Quests.'
+  },
+  quest_perfectionist: {
+    code: 'quest_perfectionist',
+    name: 'Quest Perfectionist',
+    emoji: '💯',
+    description: 'Completed a quest with all correct answers on the first try.'
+  },
+  quest_collector: {
+    code: 'quest_collector',
+    name: 'Quest Collector',
+    emoji: '🏆',
+    description: 'Completed quests in all difficulty levels.'
   }
 };
 
@@ -1026,6 +1050,30 @@ export const generalAchievementsService = {
         if (isNewAchievement) newAchievements.push('comeback_story');
       }
     } catch (error) {
+      // First quest started
+      if (context.hasStartedFirstQuest) {
+        const { isNewAchievement } = await generalAchievementsService.unlockAchievement(userId, 'first_quest_started');
+        if (isNewAchievement) newAchievements.push('first_quest_started');
+      }
+
+      // Quest master (5+ quests completed)
+      if (context.questsCompleted && context.questsCompleted >= 5) {
+        const { isNewAchievement } = await generalAchievementsService.unlockAchievement(userId, 'quest_master');
+        if (isNewAchievement) newAchievements.push('quest_master');
+      }
+
+      // Quest perfectionist (perfect score)
+      if (context.questPerfectScore) {
+        const { isNewAchievement } = await generalAchievementsService.unlockAchievement(userId, 'quest_perfectionist');
+        if (isNewAchievement) newAchievements.push('quest_perfectionist');
+      }
+
+      // Quest collector (all difficulties)
+      if (context.hasCompletedAllDifficulties) {
+        const { isNewAchievement } = await generalAchievementsService.unlockAchievement(userId, 'quest_collector');
+        if (isNewAchievement) newAchievements.push('quest_collector');
+      }
+
       console.error('❌ Error checking achievements:', error);
     }
 

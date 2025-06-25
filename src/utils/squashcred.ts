@@ -43,6 +43,10 @@ export const SQUASHCRED_ACTIONS = {
   FIRST_REDDIT_VOTE: { points: 10, reason: 'Cast your first vote on a Reddit conflict' },
   FIRST_ARCHETYPE_UNLOCK: { points: 15, reason: 'Unlocked your first conflict archetype' },
   FIRST_ACHIEVEMENT_UNLOCK: { points: 15, reason: 'Unlocked your first achievement' },
+  FIRST_QUEST_STARTED: { points: 10, reason: 'Started your first quest' },
+  QUEST_COMPLETED: { points: 20, reason: 'Completed a quest' },
+  QUEST_PERFECT_SCORE: { points: 30, reason: 'Completed a quest with perfect score' },
+  QUEST_HARD_COMPLETED: { points: 40, reason: 'Completed a hard difficulty quest' },
   WEEKEND_RESOLUTION: { points: 15, reason: 'Resolved a conflict on the weekend' },
   CONSECUTIVE_LOGINS: { points: 20, reason: 'Logged in 7 days in a row' },
   
