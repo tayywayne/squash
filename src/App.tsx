@@ -10,6 +10,8 @@ import ConflictPage from './pages/ConflictPage';
 import ProfilePage from './pages/ProfilePage';
 import OtherUserProfilePage from './pages/OtherUserProfilePage';
 import LeaderboardPage from './pages/LeaderboardPage';
+import QuestsPage from './pages/QuestsPage';
+import QuestDetailPage from './pages/QuestDetailPage';
 import SupportUsPage from './pages/SupportUsPage';
 import SupportSuccessPage from './pages/SupportSuccessPage';
 import AIJudgmentFeedPage from './pages/AIJudgmentFeedPage';
@@ -83,6 +85,8 @@ function App() {
                     <Route path="/conflict/:conflictId" element={<ConflictPage />} />
                     <Route path="/resolution/:resolutionId" element={<ConflictPage />} />
                     <Route path="/profile" element={<ProfilePage />} />
+                    <Route path="/quests" element={<QuestsPage />} />
+                    <Route path="/quest/:questId" element={<QuestDetailPage />} />
                     <Route path="/user-profile/:userId" element={<OtherUserProfilePage />} />
                     <Route path="/leaderboard" element={<LeaderboardPage />} />
                     <Route path="/support-us" element={<SupportUsPage />} />
