@@ -215,11 +215,17 @@ export const useAuth = () => {
   };
 
   const signOut = async () => {
-    const { error } = await auth.signOut();
-    if (!error) {
+    try {
+      const { error } = await auth.signOut();
+      // Always clear local user state regardless of API response
+      // This handles cases where the session is already invalid on the server
       setUser(null);
+      return { error };
+    } catch (error) {
+      // Even if the logout request fails completely, clear local state
+      setUser(null);
+      return { error };
     }
-    return { error };
   };
 
   const updateProfile = async (updates: { 
