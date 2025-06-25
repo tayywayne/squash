@@ -20,10 +20,18 @@ function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-coral-50 to-teal-50 flex items-center justify-center">
+      <div className="min-h-screen bg-light-pink flex items-center justify-center">
         <div className="text-center">
-          <div className="text-6xl mb-4 animate-bounce-gentle">💣</div>
-          <p className="text-lg text-gray-600">Loading your conflict resolution portal...</p>
+          <div className="bg-white p-8 border-4 border-black shadow-brutal-lg transform rotate-1">
+            <div className="text-6xl mb-4 animate-bounce-gentle">💣</div>
+            <h2 className="text-2xl font-black text-dark-blue mb-2">LOADING...</h2>
+            <p className="text-lg font-bold text-dark-blue">Your conflict resolution portal is starting up!</p>
+            <div className="mt-4 flex justify-center">
+              <div className="bg-lime-green px-4 py-2 border-3 border-black transform -rotate-1">
+                <span className="text-dark-blue font-black text-sm">PLEASE WAIT</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );
