@@ -38,8 +38,8 @@ const GeneralAchievements: React.FC<GeneralAchievementsProps> = ({ userId, class
     return (
       <div className={`bg-white p-6 border-3 border-black shadow-brutal ${className}`}>
         <div className="flex items-center space-x-2 mb-4">
-          <Star className="h-5 w-5 text-vivid-orange" />
-          <h3 className="text-lg font-black text-dark-teal">ACHIEVEMENTS</h3>
+          <Star className="h-5 w-5 text-accent" />
+          <h3 className="text-lg font-black text-dark">ACHIEVEMENTS</h3>
         </div>
         <div className="animate-pulse">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
@@ -56,12 +56,12 @@ const GeneralAchievements: React.FC<GeneralAchievementsProps> = ({ userId, class
     return (
       <div className={`bg-white p-6 border-3 border-black shadow-brutal ${className}`}>
         <div className="flex items-center space-x-2 mb-4">
-          <Star className="h-5 w-5 text-vivid-orange" />
-          <h3 className="text-lg font-black text-dark-teal">ACHIEVEMENTS</h3>
+          <Star className="h-5 w-5 text-accent" />
+          <h3 className="text-lg font-black text-dark">ACHIEVEMENTS</h3>
         </div>
         <div className="text-center py-8">
           <div className="text-4xl mb-3">🎯</div>
-          <p className="text-dark-teal font-bold">
+          <p className="text-dark font-bold">
             No achievements unlocked yet. Start resolving conflicts to earn your first badges!
           </p>
         </div>
@@ -73,10 +73,10 @@ const GeneralAchievements: React.FC<GeneralAchievementsProps> = ({ userId, class
     <div className={`bg-white p-6 border-3 border-black shadow-brutal ${className}`}>
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-2">
-          <Star className="h-5 w-5 text-vivid-orange" />
-          <h3 className="text-lg font-black text-dark-teal">ACHIEVEMENTS</h3>
+          <Star className="h-5 w-5 text-accent" />
+          <h3 className="text-lg font-black text-dark">ACHIEVEMENTS</h3>
         </div>
-        <div className="flex items-center space-x-1 text-sm text-dark-teal">
+        <div className="flex items-center space-x-1 text-sm text-dark">
           <Trophy size={16} />
           <span className="font-bold">{achievements.length} UNLOCKED</span>
         </div>
@@ -86,32 +86,32 @@ const GeneralAchievements: React.FC<GeneralAchievementsProps> = ({ userId, class
         {achievements.map((achievement, index) => (
           <div
             key={`${achievement.code}-${index}`}
-            className="group relative bg-vivid-orange p-4 border-3 border-black hover:shadow-brutal transition-all duration-200 cursor-pointer"
+            className="group relative bg-accent p-4 border-3 border-black hover:shadow-brutal transition-all duration-200 cursor-pointer"
           >
             {/* Achievement Badge */}
             <div className="text-center">
               <div className="text-2xl mb-2">{achievement.emoji}</div>
-              <div className="text-xs font-black text-white leading-tight">
+              <div className="text-xs font-black text-text leading-tight">
                 {achievement.name}
               </div>
             </div>
 
             {/* Unlock Date */}
-            <div className="flex items-center justify-center mt-2 text-xs text-white">
+            <div className="flex items-center justify-center mt-2 text-xs text-text">
               <Calendar size={10} className="mr-1" />
               <span className="font-bold">{formatUnlockDate(achievement.unlocked_at)}</span>
             </div>
 
             {/* Tooltip on Hover */}
             <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
-              <div className="bg-dark-teal text-white text-xs border-3 border-black p-4 shadow-brutal w-80 max-w-sm">
-                <div className="font-black mb-1 text-vivid-orange">
+              <div className="bg-dark text-text text-xs border-3 border-black p-4 shadow-brutal w-80 max-w-sm">
+                <div className="font-black mb-1 text-accent">
                   {achievement.name}
                 </div>
-                <div className="text-white mb-2">
+                <div className="text-text mb-2">
                   {achievement.description}
                 </div>
-                <div className="text-vivid-orange text-xs font-bold">
+                <div className="text-accent text-xs font-bold">
                   Unlocked: {formatUnlockDate(achievement.unlocked_at)}
                 </div>
                 {/* Tooltip arrow */}
@@ -125,7 +125,7 @@ const GeneralAchievements: React.FC<GeneralAchievementsProps> = ({ userId, class
       {/* Achievement Progress Hint */}
       <div className="mt-4 pt-4 border-t-3 border-black">
         <div className="text-center">
-          <p className="text-xs text-dark-teal font-bold">
+          <p className="text-xs text-dark font-bold">
             Keep resolving conflicts to unlock more achievements! 🎯
           </p>
         </div>
