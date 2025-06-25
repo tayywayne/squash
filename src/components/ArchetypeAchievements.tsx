@@ -94,17 +94,17 @@ const ArchetypeAchievements: React.FC<ArchetypeAchievementsProps> = ({ userId, c
           return (
             <div
               key={`${achievement.archetype_name}-${index}`}
-              className="group relative bg-lime-chartreuse border-3 border-black cursor-pointer w-16 h-16"
+              className="group relative bg-lime-chartreuse border-3 border-black cursor-pointer w-20 h-20"
             >
               {/* Achievement Badge */}
-              <div className="text-center p-2 flex flex-col items-center justify-between h-full">
+              <div className="text-center p-2 flex flex-col items-center justify-between h-full overflow-hidden">
                 <div className="text-xl">{achievement.emoji}</div>
-                <div className="text-xs font-black text-dark-teal leading-tight mt-1">
+                <div className="text-xs font-black text-dark-teal leading-tight mt-1 line-clamp-2">
                   {archetypeInfo?.title || achievement.archetype_name}
                 </div>
 
                 {/* Unlock Date */}
-                <div className="flex items-center justify-center mt-auto text-[8px] text-dark-teal">
+                <div className="flex items-center justify-center mt-auto text-[9px] text-dark-teal">
                   <Calendar size={10} className="mr-1" />
                   <span className="font-bold">{formatUnlockDate(achievement.unlocked_at)}</span>
                 </div>
