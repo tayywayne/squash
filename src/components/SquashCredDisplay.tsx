@@ -98,7 +98,7 @@ const SquashCredDisplay: React.FC<SquashCredDisplayProps> = ({
 
       {/* Tier Display */}
       {showTier && (
-        <div className="flex items-center space-x-1 bg-lime-chartreuse border-2 border-black px-2 py-1">
+        <div className="flex items-center space-x-1 bg-lime-chartreuse px-2 py-1">
           <span className="text-lg">{tier_emoji}</span>
           <span className={`${sizeClasses.tier} text-dark-teal font-bold`}>
             {tier_title}
