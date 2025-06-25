@@ -278,7 +278,7 @@ const HomePage: React.FC = () => {
             {features.map((feature, index) => (
               <div 
                 key={index} 
-                className={`bg-white border-3 border-black p-8 shadow-brutal hover:shadow-brutal-lg transition-all transform hover:-translate-y-1 hover:animate-pop ${
+                className={`bg-white border-3 border-black p-8 shadow-brutal ${
                   featureCards.visibleItems.has(index) ? 'animate-bounce-in' : 'opacity-0 scale-75'
                 }`}
                 style={{ animationDelay: `${index * 150}ms` }}
@@ -364,7 +364,7 @@ const HomePage: React.FC = () => {
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
           >
             {/* Public Shame Board */}
-            <div className={`bg-white border-3 border-black p-8 shadow-brutal hover:shadow-brutal-lg transition-all transform hover:-translate-y-1 hover:animate-wiggle ${
+            <div className={`bg-white border-3 border-black p-8 shadow-brutal ${
               additionalFeatureCards.visibleItems.has(0) ? 'animate-slide-in-left' : 'opacity-0 -translate-x-10'
             }`}>
               <div className="text-center mb-6">
@@ -383,7 +383,7 @@ const HomePage: React.FC = () => {
             </div>
 
             {/* Leaderboards */}
-            <div className={`bg-white border-3 border-black p-8 shadow-brutal hover:shadow-brutal-lg transition-all transform hover:-translate-y-1 hover:animate-shake ${
+            <div className={`bg-white border-3 border-black p-8 shadow-brutal ${
               additionalFeatureCards.visibleItems.has(1) ? 'animate-slide-up' : 'opacity-0 translate-y-10'
             }`} style={{ animationDelay: '100ms' }}>
               <div className="text-center mb-6">
@@ -407,7 +407,7 @@ const HomePage: React.FC = () => {
             </div>
 
             {/* Conflict Archetypes */}
-            <div className={`bg-white border-3 border-black p-8 shadow-brutal hover:shadow-brutal-lg transition-all transform hover:-translate-y-1 hover:animate-pop ${
+            <div className={`bg-white border-3 border-black p-8 shadow-brutal ${
               additionalFeatureCards.visibleItems.has(2) ? 'animate-slide-in-right' : 'opacity-0 translate-x-10'
             }`} style={{ animationDelay: '200ms' }}>
               <div className="text-center mb-6">
@@ -426,7 +426,7 @@ const HomePage: React.FC = () => {
             </div>
 
             {/* Achievements */}
-            <div className={`bg-white border-3 border-black p-8 shadow-brutal hover:shadow-brutal-lg transition-all transform hover:-translate-y-1 hover:animate-bounce ${
+            <div className={`bg-white border-3 border-black p-8 shadow-brutal ${
               additionalFeatureCards.visibleItems.has(3) ? 'animate-bounce-in' : 'opacity-0 scale-75'
             }`} style={{ animationDelay: '300ms' }}>
               <div className="text-center mb-6">
