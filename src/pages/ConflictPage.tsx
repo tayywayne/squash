@@ -4,6 +4,7 @@ import { ArrowLeft, Clock, User, MessageSquare, ThumbsUp, ThumbsDown, Send, Aler
 import { useAuth } from '../hooks/useAuth';
 import { conflictService, Conflict } from '../utils/conflicts';
 import { profileService } from '../utils/profiles';
+import { aiJudgmentFeedService, VoteCount, VOTE_OPTIONS } from '../utils/aiJudgmentFeed';
 import { generalAchievementsService } from '../utils/generalAchievements';
 import { squashCredService } from '../utils/squashcred';
 import MoodIndicator from '../components/MoodIndicator';
@@ -17,6 +18,7 @@ const ConflictPage: React.FC = () => {
   const { user } = useAuth();
   const [conflict, setConflict] = useState<Conflict | null>(null);
   const [otherUserProfile, setOtherUserProfile] = useState<Profile | null>(null);
+  const [voteCounts, setVoteCounts] = useState<VoteCount[]>([]);
   const [loading, setLoading] = useState(true);
   const [responseText, setResponseText] = useState('');
   const [coreIssueText, setCoreIssueText] = useState('');
@@ -52,6 +54,16 @@ const ConflictPage: React.FC = () => {
             } catch (error) {
               console.error('Error loading other user profile:', error);
             }
+          }
+        }
+
+        // Load vote counts if this is a final judgment
+        if (conflictData.status === 'final_judgment') {
+          try {
+            const counts = await aiJudgmentFeedService.getConflictVoteCounts(conflictData.id);
+            setVoteCounts(counts);
+          } catch (error) {
+            console.error('Error loading vote counts:', error);
           }
         }
       } catch (error) {
@@ -141,6 +153,16 @@ const ConflictPage: React.FC = () => {
       const updatedConflict = await conflictService.getConflictById(conflict.id);
       if (updatedConflict) {
         setConflict(updatedConflict);
+        
+        // Load vote counts for the new final judgment
+        if (updatedConflict.status === 'final_judgment') {
+          try {
+            const counts = await aiJudgmentFeedService.getConflictVoteCounts(updatedConflict.id);
+            setVoteCounts(counts);
+          } catch (error) {
+            console.error('Error loading vote counts:', error);
+          }
+        }
       }
     } catch (error) {
       console.error('Error generating final ruling:', error);
@@ -175,36 +197,31 @@ const ConflictPage: React.FC = () => {
     return `${Math.floor(diffInDays / 7)} weeks ago`;
   };
 
-  const getOtherUserDisplay = () => {
+  const getOtherUserDisplayName = (): string => {
     if (!conflict || !user?.id) return 'Other User';
     
     if (user.id === conflict.user1_id) {
       // Current user is user1, show user2's info
-      if (otherUserProfile) {
-        return (
-          <UserDisplayName 
-            username={otherUserProfile.username}
-            archetypeEmoji={otherUserProfile.archetype_emoji}
-            supporterEmoji={otherUserProfile.supporter_emoji}
-            fallback={conflict.user2_email}
-          />
-        );
+      if (otherUserProfile?.username) {
+        return otherUserProfile.username;
       }
       return conflict.user2_email;
     } else {
       // Current user is user2, show user1's info
-      if (otherUserProfile) {
-        return (
-          <UserDisplayName 
-            username={otherUserProfile.username}
-            archetypeEmoji={otherUserProfile.archetype_emoji}
-            supporterEmoji={otherUserProfile.supporter_emoji}
-            fallback="User 1"
-          />
-        );
+      if (otherUserProfile?.username) {
+        return otherUserProfile.username;
       }
       return 'User 1';
     }
+  };
+
+  const getOtherUserProfile = (): Profile | null => {
+    return otherUserProfile;
+  };
+
+  const getVoteCount = (voteType: string): number => {
+    const count = voteCounts.find(c => c.vote_type === voteType);
+    return count ? Number(count.vote_count) : 0;
   };
 
   const isUser1 = user?.id === conflict?.user1_id;
@@ -264,7 +281,18 @@ const ConflictPage: React.FC = () => {
             <div className="flex flex-wrap items-center gap-4 text-sm text-dark-teal font-bold">
               <div className="flex items-center space-x-2">
                 <User size={16} />
-                <span>vs. {getOtherUserDisplay()}</span>
+                <span>vs. {
+                  otherUserProfile ? (
+                    <UserDisplayName 
+                      username={otherUserProfile.username}
+                      archetypeEmoji={otherUserProfile.archetype_emoji}
+                      supporterEmoji={otherUserProfile.supporter_emoji}
+                      fallback={getOtherUserDisplayName()}
+                    />
+                  ) : (
+                    getOtherUserDisplayName()
+                  )
+                }</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Clock size={16} />
@@ -305,7 +333,7 @@ const ConflictPage: React.FC = () => {
             <div className="flex items-center space-x-3 mb-3">
               <span className="text-2xl">💬</span>
               <h3 className="text-lg font-black text-dark-teal">
-                {isUser1 ? 'YOUR MESSAGE' : `${getOtherUserDisplay()}'S MESSAGE`}
+                {isUser1 ? 'YOUR MESSAGE' : `${getOtherUserDisplayName()}'S MESSAGE`}
               </h3>
               <MoodIndicator mood={conflict.user1_mood as MoodLevel} size="sm" />
             </div>
@@ -322,7 +350,7 @@ const ConflictPage: React.FC = () => {
               <div className="flex items-center space-x-3 mb-3">
                 <span className="text-2xl">💭</span>
                 <h3 className="text-lg font-black text-white">
-                  {isUser2 ? 'YOUR RESPONSE' : `${getOtherUserDisplay()}'S RESPONSE`}
+                  {isUser2 ? 'YOUR RESPONSE' : `${getOtherUserDisplayName()}'S RESPONSE`}
                 </h3>
               </div>
               <p className="text-white font-bold leading-relaxed break-words">
@@ -368,7 +396,7 @@ const ConflictPage: React.FC = () => {
             <div className="bg-lime-chartreuse p-4 border-3 border-black text-center">
               <span className="text-2xl">⏳</span>
               <h3 className="text-lg font-black text-dark-teal mt-2">
-                WAITING FOR {getOtherUserDisplay().toString().toUpperCase()} TO RESPOND
+                WAITING FOR {getOtherUserDisplayName().toUpperCase()} TO RESPOND
               </h3>
             </div>
           </div>
@@ -564,11 +592,38 @@ const ConflictPage: React.FC = () => {
                   {conflict.final_ai_ruling}
                 </p>
               </div>
-              <div className="mt-4 bg-vivid-orange border-3 border-black p-3">
-                <p className="text-white font-black text-sm">
-                  🎭 CASE CLOSED - THIS CONFLICT IS NOW PUBLIC 🎭
-                </p>
-              </div>
+              
+              {/* Public Voting Section */}
+              {conflict.status === 'final_judgment' && (
+                <div className="mt-6">
+                  <h4 className="text-lg font-black text-lime-chartreuse mb-4 border-b-2 border-lime-chartreuse pb-2">
+                    🗳️ PUBLIC VOTES ON THIS RULING
+                  </h4>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {VOTE_OPTIONS.map((option) => {
+                      const voteCount = getVoteCount(option.type);
+                      
+                      return (
+                        <div
+                          key={option.type}
+                          className="bg-white border-3 border-black p-3 text-center"
+                        >
+                          <div className="text-2xl mb-2">{option.emoji}</div>
+                          <div className="font-black text-dark-teal text-xs mb-1">{option.label}</div>
+                          <div className="bg-dark-teal text-white px-2 py-1 text-xs font-black border-2 border-black">
+                            {voteCount} votes
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div className="mt-4 bg-vivid-orange border-3 border-black p-3">
+                    <p className="text-white font-black text-sm">
+                      🎭 This conflict is now on the Public Shame Board for everyone to vote on! 🎭
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}
