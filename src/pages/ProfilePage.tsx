@@ -73,9 +73,9 @@ const ProfilePage: React.FC = () => {
     if (!user?.supporter_level) return '';
     
     const gradients = {
-      tip_1: 'bg-gradient-to-r from-blue-400 to-blue-600',
-      tip_2: 'bg-gradient-to-r from-pink-100 to-pink-400', 
-      tip_3: 'bg-gradient-to-r from-yellow-100 to-red-400'
+      tip_1: 'bg-green-teal',
+      tip_2: 'bg-vivid-orange', 
+      tip_3: 'bg-lime-chartreuse'
     };
     
     return gradients[user.supporter_level as keyof typeof gradients] || '';
@@ -155,7 +155,7 @@ const ProfilePage: React.FC = () => {
 
         <div className="space-y-6">
           {/* User Info */}
-          <div className="bg-white/90 backdrop-blur-sm p-4 sm:p-6 rounded-lg border border-gray-200 shadow-lg">
+          <div className="bg-white/90 backdrop-blur-sm p-4 sm:p-6 border-3 border-black shadow-brutal">
             <div className="flex items-start justify-between mb-6">
               <div className="flex items-center space-x-3 sm:space-x-4 min-w-0 flex-1">
                 <div className="relative">
@@ -163,7 +163,7 @@ const ProfilePage: React.FC = () => {
                     <img
                       src={isEditing ? editForm.avatar_url : user.avatar_url}
                       alt="Profile"
-                      className="w-16 h-16 rounded-full object-cover border-2 border-gray-200"
+                      className="w-16 h-16 rounded-full object-cover border-3 border-black"
                       onError={(e) => {
                         // Hide broken images
                         e.currentTarget.style.display = 'none';
@@ -185,27 +185,27 @@ const ProfilePage: React.FC = () => {
                             value={editForm.first_name}
                             onChange={(e) => setEditForm(prev => ({ ...prev, first_name: e.target.value }))}
                             placeholder="First name"
-                            className="text-base sm:text-lg font-semibold text-gray-900 bg-transparent border-b border-gray-300 focus:border-coral-500 outline-none w-full"
+                            className="text-base sm:text-lg font-semibold text-dark-teal bg-transparent border-3 border-black focus:border-vivid-orange outline-none w-full p-2"
                           />
                           <input
                             type="text"
                             value={editForm.last_name}
                             onChange={(e) => setEditForm(prev => ({ ...prev, last_name: e.target.value }))}
                             placeholder="Last name"
-                            className="text-base sm:text-lg font-semibold text-gray-900 bg-transparent border-b border-gray-300 focus:border-coral-500 outline-none w-full"
+                            className="text-base sm:text-lg font-semibold text-dark-teal bg-transparent border-3 border-black focus:border-vivid-orange outline-none w-full p-2"
                           />
                         </div>
-                        <div className="text-gray-600 text-sm sm:text-base truncate">
+                        <div className="text-dark-teal text-sm sm:text-base truncate">
                           @{user?.username || 'Username not set'}
                         </div>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-dark-teal">
                           Username cannot be changed after account creation
                         </p>
                       </div>
                       
                       {/* Avatar URL Section */}
                       <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-black text-dark-teal">
                           Profile Photo URL
                         </label>
                         <input
@@ -213,26 +213,26 @@ const ProfilePage: React.FC = () => {
                           value={editForm.avatar_url}
                           onChange={(e) => setEditForm(prev => ({ ...prev, avatar_url: e.target.value }))}
                           placeholder="https://example.com/your-photo.jpg"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-coral-500 focus:border-coral-500 text-xs sm:text-sm"
+                          className="w-full px-3 py-2 border-3 border-black focus:border-vivid-orange text-xs sm:text-sm font-bold text-dark-teal"
                         />
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-dark-teal">
                           Enter a URL to an image you'd like to use as your profile photo.
                         </p>
                       </div>
                     </div>
                   ) : (
                     <>
-                      <h2 className="text-lg sm:text-xl font-semibold text-gray-900 truncate">
+                      <h2 className="text-lg sm:text-xl font-black text-dark-teal truncate">
                         {user?.first_name && user?.last_name 
                           ? `${user.first_name} ${user.last_name}` 
                           : user?.username || 'Set your name'
                         }
                       </h2>
                       {user?.username && (
-                        <p className="text-gray-600 text-sm sm:text-base truncate">@{user.username}</p>
+                        <p className="text-dark-teal text-sm sm:text-base truncate">@{user.username}</p>
                       )}
-                      <p className="text-gray-500 text-xs sm:text-sm truncate">{user?.email}</p>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-dark-teal text-xs sm:text-sm truncate">{user?.email}</p>
+                      <p className="text-sm text-dark-teal">
                                         {user?.id && (
                     <div className="mt-2 overflow-hidden">
                       <SquashCredDisplay 
@@ -255,7 +255,7 @@ const ProfilePage: React.FC = () => {
                     <button
                       onClick={handleSaveProfile}
                       disabled={loading}
-                      className="flex items-center justify-center space-x-1 bg-coral-500 hover:bg-coral-600 text-white px-3 py-2 rounded-lg transition-colors disabled:opacity-50 text-sm"
+                      className="flex items-center justify-center space-x-1 bg-vivid-orange hover:bg-orange-600 text-white px-3 py-2 border-3 border-black shadow-brutal hover:shadow-brutal-sm transition-all transform hover:translate-x-1 hover:translate-y-1 disabled:opacity-50 text-sm font-black"
                     >
                       {loading ? (
                         <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
@@ -267,7 +267,7 @@ const ProfilePage: React.FC = () => {
                     <button
                       onClick={handleEditToggle}
                       disabled={loading}
-                      className="flex items-center justify-center space-x-1 bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-2 rounded-lg transition-colors text-sm"
+                      className="flex items-center justify-center space-x-1 bg-white hover:bg-gray-100 text-dark-teal px-3 py-2 border-3 border-black shadow-brutal hover:shadow-brutal-sm transition-all transform hover:translate-x-1 hover:translate-y-1 text-sm font-black"
                     >
                       <X size={16} />
                       <span>Cancel</span>
@@ -276,7 +276,7 @@ const ProfilePage: React.FC = () => {
                 ) : (
                   <button
                     onClick={handleEditToggle}
-                    className="flex items-center space-x-1 text-coral-600 hover:text-coral-700 font-medium text-sm"
+                    className="flex items-center space-x-1 text-vivid-orange hover:text-orange-600 font-black text-sm"
                   >
                     <Edit3 size={16} />
                     <span>Edit Profile</span>
@@ -288,7 +288,7 @@ const ProfilePage: React.FC = () => {
             {statsLoading ? (
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
                 {[1, 2, 3].map((i) => (
-                  <div key={i} className="p-4 bg-gray-50 rounded-lg animate-pulse">
+                  <div key={i} className="p-4 bg-white border-3 border-black shadow-brutal animate-pulse">
                     <div className="h-8 bg-gray-200 rounded mb-2"></div>
                     <div className="h-4 bg-gray-200 rounded"></div>
                   </div>
@@ -296,17 +296,17 @@ const ProfilePage: React.FC = () => {
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-                <div className="p-4 bg-gray-50 rounded-lg">
-                  <p className="text-xl sm:text-2xl font-bold text-coral-500">{totalConflictsCount}</p>
-                  <p className="text-sm text-gray-600">Total Conflicts</p>
+                <div className="p-4 bg-white border-3 border-black shadow-brutal">
+                  <p className="text-xl sm:text-2xl font-black text-vivid-orange">{totalConflictsCount}</p>
+                  <p className="text-sm text-dark-teal font-bold">Total Conflicts</p>
                 </div>
-                <div className="p-4 bg-gray-50 rounded-lg">
-                  <p className="text-xl sm:text-2xl font-bold text-teal-500">{resolvedConflictsCount}</p>
-                  <p className="text-sm text-gray-600">Successfully Resolved</p>
+                <div className="p-4 bg-white border-3 border-black shadow-brutal">
+                  <p className="text-xl sm:text-2xl font-black text-green-teal">{resolvedConflictsCount}</p>
+                  <p className="text-sm text-dark-teal font-bold">Successfully Resolved</p>
                 </div>
-                <div className="p-4 bg-gray-50 rounded-lg">
-                  <p className="text-xl sm:text-2xl font-bold text-lavender-500">{resolutionRate}%</p>
-                  <p className="text-sm text-gray-600">Resolution Rate</p>
+                <div className="p-4 bg-white border-3 border-black shadow-brutal">
+                  <p className="text-xl sm:text-2xl font-black text-lime-chartreuse">{resolutionRate}%</p>
+                  <p className="text-sm text-dark-teal font-bold">Resolution Rate</p>
 
                 </div>
               </div>
@@ -315,20 +315,20 @@ const ProfilePage: React.FC = () => {
 
           {/* Conflict Archetype Display */}
           {archetypeInfo && (
-            <div className="mt-6 p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200 overflow-hidden">
+            <div className="mt-6 p-4 bg-lime-chartreuse border-3 border-black shadow-brutal overflow-hidden">
               <div className="flex items-center space-x-3 mb-2">
-                <Award className="h-5 w-5 text-purple-600" />
-                <h3 className="text-lg font-semibold text-purple-900">Conflict Archetype</h3>
+                <Award className="h-5 w-5 text-dark-teal" />
+                <h3 className="text-lg font-black text-dark-teal">Conflict Archetype</h3>
               </div>
               <div className="flex items-start space-x-3 mb-2">
                 <span className="text-3xl">{archetypeInfo.emoji}</span>
                 <div className="min-w-0 flex-1">
-                  <h4 className="text-xl font-bold text-purple-800">{archetypeInfo.title}</h4>
-                  <p className="text-sm text-purple-700 leading-relaxed">{archetypeInfo.description}</p>
+                  <h4 className="text-xl font-black text-dark-teal">{archetypeInfo.title}</h4>
+                  <p className="text-sm text-dark-teal leading-relaxed font-bold">{archetypeInfo.description}</p>
                 </div>
               </div>
               {user?.archetype_assigned_at && (
-                <p className="text-xs text-purple-600 mt-2">
+                <p className="text-xs text-dark-teal mt-2 font-bold">
                   Assigned: {new Date(user.archetype_assigned_at).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'long',
@@ -364,20 +364,20 @@ const ProfilePage: React.FC = () => {
           )}
 
           {/* Tips & Philosophy */}
-          <div className="bg-white/80 backdrop-blur-sm p-4 sm:p-6 rounded-lg border border-gray-200 shadow-lg">
-            <div className="bg-white/80 backdrop-blur-sm p-4 sm:p-6 rounded-lg border border-purple-200 shadow-lg">
-              <div className="space-y-3 text-sm text-gray-700">
+          <div className="bg-white/80 backdrop-blur-sm p-4 sm:p-6 border-3 border-black shadow-brutal">
+            <div className="bg-white/80 backdrop-blur-sm p-4 sm:p-6 border-3 border-black shadow-brutal">
+              <div className="space-y-3 text-sm text-dark-teal">
                 <p>
-                  <strong>Remember:</strong> The goal isn't to "win" – it's to understand and be understood.
+                  <strong className="font-black">Remember:</strong> The goal isn't to "win" – it's to understand and be understood.
                 </p>
                 <p>
-                  <strong>Pro tip:</strong> Most conflicts stem from unmet expectations or poor communication. Start there.
+                  <strong className="font-black">Pro tip:</strong> Most conflicts stem from unmet expectations or poor communication. Start there.
                 </p>
                 <p>
-                  <strong>Mindset shift:</strong> Instead of "How can I prove I'm right?" try "How can we both feel heard?"
+                  <strong className="font-black">Mindset shift:</strong> Instead of "How can I prove I'm right?" try "How can we both feel heard?"
                 </p>
                 <p>
-                  <strong>Reality check:</strong> Sometimes you're both right. Sometimes you're both wrong. Sometimes it doesn't matter who's right.
+                  <strong className="font-black">Reality check:</strong> Sometimes you're both right. Sometimes you're both wrong. Sometimes it doesn't matter who's right.
                 </p>
               </div>
             </div>

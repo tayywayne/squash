@@ -105,9 +105,9 @@ const OtherUserProfilePage: React.FC = () => {
     if (!profile?.supporter_level) return '';
     
     const gradients = {
-      tip_1: 'bg-gradient-to-r from-blue-400 to-blue-600',
-      tip_2: 'bg-gradient-to-r from-pink-100 to-pink-400', 
-      tip_3: 'bg-gradient-to-r from-yellow-100 to-red-400'
+      tip_1: 'bg-green-teal',
+      tip_2: 'bg-vivid-orange', 
+      tip_3: 'bg-lime-chartreuse'
     };
     
     return gradients[profile.supporter_level as keyof typeof gradients] || '';
@@ -157,24 +157,24 @@ const OtherUserProfilePage: React.FC = () => {
       </div>
 
       {/* Profile Info */}
-      <div className="bg-white/90 backdrop-blur-sm p-4 sm:p-6 rounded-lg border border-gray-200 shadow-lg mb-6 overflow-hidden">
+      <div className="bg-white/90 backdrop-blur-sm p-4 sm:p-6 border-3 border-black shadow-brutal mb-6 overflow-hidden">
         <div className="flex items-start space-x-6">
           <div className="flex-shrink-0">
             {profile.avatar_url ? (
               <img
                 src={profile.avatar_url}
                 alt={`${profile.username}'s avatar`}
-                className="w-16 h-16 sm:w-24 sm:h-24 rounded-full object-cover border-2 border-gray-200"
+                className="w-16 h-16 sm:w-24 sm:h-24 rounded-full object-cover border-3 border-black"
               />
             ) : (
-              <div className="w-16 h-16 sm:w-24 sm:h-24 bg-coral-100 rounded-full flex items-center justify-center">
-                <User size={32} className="text-coral-600 sm:w-12 sm:h-12" />
+              <div className="w-16 h-16 sm:w-24 sm:h-24 bg-lime-chartreuse rounded-full flex items-center justify-center">
+                <User size={32} className="text-dark-teal sm:w-12 sm:h-12" />
               </div>
             )}
           </div>
           
           <div className="flex-1 min-w-0">
-            <h1 className="text-lg sm:text-2xl font-bold text-gray-900 mb-2 break-words">
+            <h1 className="text-lg sm:text-2xl font-black text-dark-teal mb-2 break-words">
               <UserDisplayName 
                 username={profile.username}
                 archetypeEmoji={profile.archetype_emoji}
@@ -185,9 +185,9 @@ const OtherUserProfilePage: React.FC = () => {
               />
             </h1>
             {profile.username && (
-              <p className="text-gray-600 mb-2 text-sm sm:text-base break-all">@{profile.username}</p>
+              <p className="text-dark-teal mb-2 text-sm sm:text-base break-all font-bold">@{profile.username}</p>
             )}
-            <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-dark-teal">
               <span className="flex items-center">
                 <Calendar className="h-4 w-4 mr-1" />
                 <span className="hidden sm:inline">Joined {formatTimeAgo(profile.created_at)}</span>
@@ -220,16 +220,16 @@ const OtherUserProfilePage: React.FC = () => {
 
       {/* Conflict Archetype Display */}
       {archetypeInfo && (
-        <div className="bg-white/80 backdrop-blur-sm p-4 sm:p-6 rounded-lg border border-gray-200 shadow-lg mb-6 overflow-hidden">
+        <div className="bg-white/80 backdrop-blur-sm p-4 sm:p-6 border-3 border-black shadow-brutal mb-6 overflow-hidden">
           <div className="flex items-center space-x-3 mb-2">
             <span className="text-3xl">{archetypeInfo.emoji}</span>
             <div className="min-w-0 flex-1">
-              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 break-words">{archetypeInfo.title}</h3>
-              <p className="text-sm text-gray-600 break-words leading-relaxed">{archetypeInfo.description}</p>
+              <h3 className="text-lg sm:text-xl font-black text-dark-teal break-words">{archetypeInfo.title}</h3>
+              <p className="text-sm text-dark-teal break-words leading-relaxed font-bold">{archetypeInfo.description}</p>
             </div>
           </div>
           {profile.archetype_assigned_at && (
-            <p className="text-xs text-gray-500 mt-2">
+            <p className="text-xs text-dark-teal mt-2 font-bold">
               Assigned: {new Date(profile.archetype_assigned_at).toLocaleDateString('en-US', {
                 year: 'numeric',
                 month: 'long',
@@ -247,8 +247,8 @@ const OtherUserProfilePage: React.FC = () => {
       <GeneralAchievements userId={userId} className="mb-6" />
 
       {/* Shared Conflict History */}
-      <div className="bg-white/80 backdrop-blur-sm p-4 sm:p-6 rounded-lg border border-gray-200 shadow-lg overflow-hidden">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">
+      <div className="bg-white/80 backdrop-blur-sm p-4 sm:p-6 border-3 border-black shadow-brutal overflow-hidden">
+        <h2 className="text-xl font-black text-dark-teal mb-4">
           Your Conflict History Together
         </h2>
         
@@ -257,50 +257,50 @@ const OtherUserProfilePage: React.FC = () => {
             <div className="animate-pulse-slow mb-4">
               <div className="text-4xl">⏳</div>
             </div>
-            <p className="text-gray-600">Loading shared conflicts...</p>
+            <p className="text-dark-teal font-bold">Loading shared conflicts...</p>
           </div>
         ) : sharedConflicts.length === 0 ? (
           <div className="text-center py-8">
             <div className="text-4xl mb-4">🤝</div>
-            <p className="text-gray-600">No shared conflicts yet. Hopefully it stays that way!</p>
+            <p className="text-dark-teal font-bold">No shared conflicts yet. Hopefully it stays that way!</p>
           </div>
         ) : (
           <>
             {/* Stats */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-              <div className="text-center p-4 bg-gray-50 rounded-lg">
-                <div className="text-xl sm:text-2xl font-bold text-coral-500">{sharedConflicts.length}</div>
-                <div className="text-sm text-gray-600">Total Conflicts</div>
+              <div className="text-center p-4 bg-white border-3 border-black shadow-brutal">
+                <div className="text-xl sm:text-2xl font-black text-vivid-orange">{sharedConflicts.length}</div>
+                <div className="text-sm text-dark-teal font-bold">Total Conflicts</div>
               </div>
-              <div className="text-center p-4 bg-gray-50 rounded-lg">
-                <div className="text-xl sm:text-2xl font-bold text-teal-500">{totalClosedConflicts}</div>
-                <div className="text-sm text-gray-600">Closed Together</div>
+              <div className="text-center p-4 bg-white border-3 border-black shadow-brutal">
+                <div className="text-xl sm:text-2xl font-black text-green-teal">{totalClosedConflicts}</div>
+                <div className="text-sm text-dark-teal font-bold">Closed Together</div>
               </div>
-              <div className="text-center p-4 bg-gray-50 rounded-lg">
-                <div className="text-xl sm:text-2xl font-bold text-lavender-500">
+              <div className="text-center p-4 bg-white border-3 border-black shadow-brutal">
+                <div className="text-xl sm:text-2xl font-black text-lime-chartreuse">
                   {sharedConflicts.length > 0 ? Math.round((totalClosedConflicts / sharedConflicts.length) * 100) : 0}%
                 </div>
-                <div className="text-sm text-gray-600">Resolution Rate</div>
+                <div className="text-sm text-dark-teal font-bold">Resolution Rate</div>
               </div>
             </div>
 
             {/* Active Conflicts */}
             {activeConflicts.length > 0 && (
               <div className="mb-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Active Conflicts</h3>
+                <h3 className="text-lg font-black text-dark-teal mb-3">Active Conflicts</h3>
                 <div className="space-y-3">
                   {activeConflicts.map((conflict) => (
-                    <div key={conflict.id} className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg overflow-hidden">
+                    <div key={conflict.id} className="p-4 bg-lime-chartreuse border-3 border-black overflow-hidden">
                       <div className="flex items-center justify-between">
                         <div className="min-w-0 flex-1 pr-4">
-                          <h4 className="font-medium text-gray-900 break-words">{conflict.title}</h4>
-                          <p className="text-sm text-gray-600">
+                          <h4 className="font-black text-dark-teal break-words">{conflict.title}</h4>
+                          <p className="text-sm text-dark-teal font-bold">
                             Status: {conflict.status} • {formatTimeAgo(conflict.created_at)}
                           </p>
                         </div>
                         <button
                           onClick={() => navigate(`/conflict/${conflict.id}`)}
-                          className="text-coral-500 hover:text-coral-600 font-medium text-sm flex-shrink-0"
+                          className="text-vivid-orange hover:text-orange-600 font-black text-sm flex-shrink-0"
                         >
                           View →
                         </button>
@@ -314,21 +314,21 @@ const OtherUserProfilePage: React.FC = () => {
             {/* Resolved Conflicts */}
             {totalClosedConflicts > 0 && (
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Closed Conflicts</h3>
+                <h3 className="text-lg font-black text-dark-teal mb-3">Closed Conflicts</h3>
                 <div className="space-y-3">
                   {[...resolvedConflicts, ...finalJudgmentConflicts].slice(0, 5).map((conflict) => (
-                    <div key={conflict.id} className="p-4 bg-green-50 border border-green-200 rounded-lg overflow-hidden">
+                    <div key={conflict.id} className="p-4 bg-green-teal border-3 border-black overflow-hidden">
                       <div className="flex items-center justify-between">
                         <div className="min-w-0 flex-1 pr-4">
-                          <h4 className="font-medium text-gray-900 break-words">{conflict.title}</h4>
-                          <p className="text-sm text-gray-600">
+                          <h4 className="font-black text-white break-words">{conflict.title}</h4>
+                          <p className="text-sm text-white font-bold">
                             {conflict.status === 'final_judgment' ? '⚖️' : <CheckCircle className="inline h-4 w-4 mr-1" />}
                             {conflict.status === 'final_judgment' ? 'Final judgment' : 'Resolved'} {conflict.resolved_at ? formatTimeAgo(conflict.resolved_at) : formatTimeAgo(conflict.created_at)}
                           </p>
                         </div>
                         <button
                           onClick={() => navigate(`/conflict/${conflict.id}`)}
-                          className="text-teal-500 hover:text-teal-600 font-medium text-sm flex-shrink-0"
+                          className="text-lime-chartreuse hover:text-green-300 font-black text-sm flex-shrink-0"
                         >
                           View →
                         </button>
@@ -336,7 +336,7 @@ const OtherUserProfilePage: React.FC = () => {
                     </div>
                   ))}
                   {totalClosedConflicts > 5 && (
-                    <p className="text-sm text-gray-500 text-center">
+                    <p className="text-sm text-dark-teal text-center font-bold">
                       And {totalClosedConflicts - 5} more closed conflicts...
                     </p>
                   )}
@@ -350,8 +350,8 @@ const OtherUserProfilePage: React.FC = () => {
 
 
       {/* Conflict Resolution Philosophy */}
-      <div className="mt-6 bg-white/70 backdrop-blur-sm p-4 sm:p-6 rounded-lg border border-gray-200 shadow-lg overflow-hidden">
-        <h3 className="text-lg font-semibold text-gray-900 mb-3">
+      <div className="mt-6 bg-white/70 backdrop-blur-sm p-4 sm:p-6 border-3 border-black shadow-brutal overflow-hidden">
+        <h3 className="text-lg font-black text-dark-teal mb-3">
           <UserDisplayName 
             username={profile.username}
             archetypeEmoji={profile.archetype_emoji}
@@ -359,7 +359,7 @@ const OtherUserProfilePage: React.FC = () => {
             showEmoji={false}
           />'s Conflict Resolution Journey
         </h3>
-        <div className="text-sm text-gray-700 leading-relaxed">
+        <div className="text-sm text-dark-teal leading-relaxed font-bold">
           {sharedConflicts.length > 0 ? (
             <p>
               You and <UserDisplayName 

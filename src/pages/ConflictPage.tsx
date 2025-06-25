@@ -1,35 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Send, ThumbsUp, ThumbsDown, Heart, Laugh, Angry, Trash2 } from 'lucide-react';
+import { ArrowLeft, Clock, User, MessageSquare, ThumbsUp, ThumbsDown, Send, AlertTriangle, CheckCircle, X, Trash2 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { conflictService, Conflict } from '../utils/conflicts';
 import { profileService } from '../utils/profiles';
-import { archetypeService } from '../utils/archetypes';
+import { generalAchievementsService } from '../utils/generalAchievements';
+import { squashCredService } from '../utils/squashcred';
 import MoodIndicator from '../components/MoodIndicator';
 import UserDisplayName from '../components/UserDisplayName';
 import Toast from '../components/Toast';
-import { Profile } from '../types';
-import { aiJudgmentFeedService, VoteCount, VOTE_OPTIONS } from '../utils/aiJudgmentFeed';
+import { MoodLevel, Profile } from '../types';
 
 const ConflictPage: React.FC = () => {
-  const { conflictId } = useParams();
+  const { conflictId } = useParams<{ conflictId: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
   const [conflict, setConflict] = useState<Conflict | null>(null);
   const [otherUserProfile, setOtherUserProfile] = useState<Profile | null>(null);
-  const [userMessage, setUserMessage] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [initialLoading, setInitialLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const [responseText, setResponseText] = useState('');
+  const [coreIssueText, setCoreIssueText] = useState('');
+  const [submitting, setSubmitting] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
-  const [publicVotes, setPublicVotes] = useState<VoteCount[]>([]);
-  const [publicVotesLoading, setPublicVotesLoading] = useState(false);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [deleteLoading, setDeleteLoading] = useState(false);
 
   // Load conflict data
   useEffect(() => {
     const loadConflict = async () => {
       if (!conflictId) {
+        setToast({ message: 'Invalid conflict ID', type: 'error' });
         navigate('/dashboard');
         return;
       }
@@ -43,306 +41,187 @@ const ConflictPage: React.FC = () => {
         }
 
         setConflict(conflictData);
-        
-        // Load other user's profile if available
-        const otherUserId = user?.id === conflictData.user1_id ? conflictData.user2_id : conflictData.user1_id;
-        if (otherUserId) {
-          try {
-            const profile = await profileService.getProfileById(otherUserId);
-            setOtherUserProfile(profile);
-          } catch (error) {
-            console.error('Error loading other user profile:', error);
+
+        // Load other user's profile
+        if (user?.id) {
+          const otherUserId = user.id === conflictData.user1_id ? conflictData.user2_id : conflictData.user1_id;
+          if (otherUserId) {
+            try {
+              const profile = await profileService.getProfileById(otherUserId);
+              setOtherUserProfile(profile);
+            } catch (error) {
+              console.error('Error loading other user profile:', error);
+            }
           }
         }
       } catch (error) {
         console.error('Error loading conflict:', error);
         setToast({ message: 'Failed to load conflict', type: 'error' });
       } finally {
-        setInitialLoading(false);
+        setLoading(false);
       }
     };
 
     loadConflict();
   }, [conflictId, navigate, user?.id]);
 
-  // Load public votes for final judgment conflicts
-  useEffect(() => {
-    const loadPublicVotes = async () => {
-      if (conflict?.final_ai_ruling && conflict?.ai_final_summary) {
-        setPublicVotesLoading(true);
-        try {
-          const votes = await aiJudgmentFeedService.getConflictVoteCounts(conflict.id);
-          setPublicVotes(votes);
-        } catch (error) {
-          console.error('Error loading public votes:', error);
-        } finally {
-          setPublicVotesLoading(false);
-        }
-      }
-    };
+  const handleResponse = async () => {
+    if (!conflict || !user?.id || !responseText.trim()) return;
 
-    loadPublicVotes();
-  }, [conflict?.final_ai_ruling, conflict?.ai_final_summary, conflict?.id]);
-
-  const isUser1 = user?.id === conflict?.user1_id;
-  const isUser2 = user?.id === conflict?.user2_id;
-  const canRespond = conflict?.status === 'pending' && (user?.email === conflict?.user2_email || isUser2);
-  const isResolved = conflict?.status === 'resolved' || conflict?.status === 'final_judgment';
-  
-  // Check if core issues step should be available
-  const canSubmitCoreIssue = conflict?.rehash_attempted_at && 
-    (conflict?.user1_satisfaction === false || conflict?.user2_satisfaction === false) &&
-    !conflict?.core_issues_attempted_at;
-  
-  const needsCoreIssueFromUser = canSubmitCoreIssue && 
-    ((isUser1 && !conflict?.user1_core_issue) || (isUser2 && !conflict?.user2_core_issue));
-  
-  const hasCoreReflection = conflict?.ai_core_reflection && conflict?.ai_core_suggestion;
-  
-  // Check if final ruling should be available
-  const canIssueFinalRuling = conflict?.core_issues_attempted_at && 
-    conflict?.ai_core_reflection && 
-    conflict?.ai_core_suggestion &&
-    (conflict?.user1_satisfaction === false || conflict?.user2_satisfaction === false) &&
-    !conflict?.final_ai_ruling;
-  
-  const hasFinalRuling = conflict?.final_ai_ruling && conflict?.final_ruling_issued_at;
-  
-  const getPhase = (): 'input' | 'waiting' | 'mediation' | 'reactions' | 'core-issues' | 'core-reflection' | 'final-ruling' => {
-    if (!conflict) return 'input';
-    
-    // Final ruling phase - when AI has issued the final dramatic ruling
-    if (hasFinalRuling) {
-      return 'final-ruling';
-    }
-    
-    if (conflict.status === 'pending' && !conflict.user2_raw_message) {
-      return canRespond ? 'input' : 'waiting';
-    }
-    
-    // Core issues phase - after rehash when users need to clarify core issues OR when waiting for other user
-    if (canSubmitCoreIssue) {
-      return 'core-issues';
-    }
-    
-    // Core reflection phase - when AI has generated reflection on core issues
-    if (hasCoreReflection) {
-      return 'core-reflection';
-    }
-    
-    if ((conflict.status === 'active' || conflict.status === 'resolved') && conflict.ai_summary && conflict.ai_suggestion) {
-      return 'reactions';
-    }
-    
-    return 'mediation';
-  };
-
-  const phase = getPhase();
-
-  const [coreIssueMessage, setCoreIssueMessage] = useState('');
-
-  const getOtherUserDisplay = (conflict: Conflict) => {
-    if (user?.id === conflict.user1_id) {
-      // Current user is user1, so show user2's info
-      if (conflict.user2_id && otherUserProfile) {
-        const displayName = otherUserProfile.username || conflict.user2_email;
-        
-        return (
-          <button
-            onClick={() => navigate(`/user-profile/${conflict.user2_id}`)}
-            className="text-coral-500 hover:text-coral-600 font-medium underline"
-          >
-            <UserDisplayName 
-              username={otherUserProfile.username}
-              archetypeEmoji={otherUserProfile.archetype_emoji}
-              supporterEmoji={otherUserProfile.supporter_emoji}
-              fallback={conflict.user2_email}
-            />
-          </button>
-        );
-      } else {
-        // User2 hasn't registered yet, just show email
-        return (
-          <span className="text-gray-600">
-            <UserDisplayName 
-              username={undefined}
-              archetypeEmoji={undefined}
-              fallback={conflict.user2_email}
-              showEmoji={false}
-            />
-          </span>
-        );
-      }
-    } else {
-      // Current user is user2, so show user1's info
-      if (otherUserProfile) {
-        return (
-          <button
-            onClick={() => navigate(`/user-profile/${conflict.user1_id}`)}
-            className="text-coral-500 hover:text-coral-600 font-medium underline"
-          >
-            <UserDisplayName 
-              username={otherUserProfile.username}
-              archetypeEmoji={otherUserProfile.archetype_emoji}
-              supporterEmoji={otherUserProfile.supporter_emoji}
-              fallback="User 1"
-            />
-          </button>
-        );
-      } else {
-        return (
-          <span className="text-gray-600">
-            <UserDisplayName 
-              username={undefined}
-              archetypeEmoji={undefined}
-              fallback="You were invited"
-              showEmoji={false}
-            />
-          </span>
-        );
-      }
-    }
-  };
-
-  const handleSubmitMessage = async () => {
-    if (!userMessage.trim()) return;
-    
-    if (!conflictId || !user?.id) return;
-
-    setLoading(true);
+    setSubmitting(true);
     try {
-      await conflictService.respondToConflict(conflictId, userMessage, user.id);
-      setToast({ message: 'Response submitted! Generating AI mediation...', type: 'success' });
-      
-      // Update user's archetype after responding to a conflict
-      try {
-        await archetypeService.assignArchetype(user.id);
-      } catch (error) {
-        console.error('Error updating archetype after conflict response:', error);
-        // Don't fail the response if archetype update fails
-      }
+      await conflictService.respondToConflict(conflict.id, responseText, user.id);
+      setToast({ message: 'Response submitted! AI is processing...', type: 'success' });
       
       // Reload conflict data
-      const updatedConflict = await conflictService.getConflictById(conflictId);
-      setConflict(updatedConflict);
-      setUserMessage('');
+      const updatedConflict = await conflictService.getConflictById(conflict.id);
+      if (updatedConflict) {
+        setConflict(updatedConflict);
+      }
+      setResponseText('');
     } catch (error) {
       console.error('Error submitting response:', error);
-      setToast({ message: 'Failed to submit response. Try again?', type: 'error' });
+      setToast({ message: 'Failed to submit response', type: 'error' });
     } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSubmitCoreIssue = async () => {
-    if (!coreIssueMessage.trim()) return;
-    
-    if (!conflictId || !user?.id) return;
-
-    setLoading(true);
-    try {
-      await conflictService.submitCoreIssue(conflictId, coreIssueMessage, user.id);
-      setToast({ message: 'Core issue submitted! Waiting for the other person...', type: 'success' });
-      
-      // Update user's archetype after submitting core issue
-      try {
-        await archetypeService.assignArchetype(user.id);
-      } catch (error) {
-        console.error('Error updating archetype after core issue submission:', error);
-        // Don't fail the submission if archetype update fails
-      }
-      
-      // Reload conflict data
-      const updatedConflict = await conflictService.getConflictById(conflictId);
-      setConflict(updatedConflict);
-      setCoreIssueMessage('');
-    } catch (error) {
-      console.error('Error submitting core issue:', error);
-      setToast({ message: 'Failed to submit core issue. Try again?', type: 'error' });
-    } finally {
-      setLoading(false);
+      setSubmitting(false);
     }
   };
 
   const handleSatisfactionVote = async (satisfied: boolean) => {
-    if (!conflictId || !user?.id) return;
+    if (!conflict || !user?.id) return;
 
-    setLoading(true);
     try {
-      await conflictService.updateSatisfaction(conflictId, satisfied, user.id);
+      await conflictService.updateSatisfaction(conflict.id, satisfied, user.id);
       setToast({ 
-        message: satisfied ? 'Marked as resolved!' : 'Feedback recorded. Maybe try talking it out more?', 
+        message: satisfied ? 'Marked as satisfied!' : 'Requesting better solution...', 
         type: 'success' 
       });
       
-      // Update user's archetype after voting on satisfaction
-      try {
-        await archetypeService.assignArchetype(user.id);
-      } catch (error) {
-        console.error('Error updating archetype after satisfaction vote:', error);
-        // Don't fail the vote if archetype update fails
-      }
-      
       // Reload conflict data
-      const updatedConflict = await conflictService.getConflictById(conflictId);
-      setConflict(updatedConflict);
+      const updatedConflict = await conflictService.getConflictById(conflict.id);
+      if (updatedConflict) {
+        setConflict(updatedConflict);
+      }
     } catch (error) {
       console.error('Error updating satisfaction:', error);
-      setToast({ message: 'Failed to update. Try again?', type: 'error' });
-    } finally {
-      setLoading(false);
+      setToast({ message: 'Failed to update satisfaction', type: 'error' });
     }
   };
 
-  const handleIssueFinalRuling = async () => {
-    if (!conflictId) return;
+  const handleCoreIssueSubmit = async () => {
+    if (!conflict || !user?.id || !coreIssueText.trim()) return;
 
-    setLoading(true);
+    setSubmitting(true);
     try {
-      await conflictService.generateFinalRuling(conflictId);
-      setToast({ 
-        message: '⚖️ The AI has issued its final ruling! This conflict is now closed.', 
-        type: 'success' 
-      });
+      await conflictService.submitCoreIssue(conflict.id, coreIssueText, user.id);
+      setToast({ message: 'Core issue submitted!', type: 'success' });
       
       // Reload conflict data
-      const updatedConflict = await conflictService.getConflictById(conflictId);
-      setConflict(updatedConflict);
+      const updatedConflict = await conflictService.getConflictById(conflict.id);
+      if (updatedConflict) {
+        setConflict(updatedConflict);
+      }
+      setCoreIssueText('');
     } catch (error) {
-      console.error('Error issuing final ruling:', error);
-      setToast({ message: 'Failed to issue final ruling. Try again?', type: 'error' });
+      console.error('Error submitting core issue:', error);
+      setToast({ message: 'Failed to submit core issue', type: 'error' });
     } finally {
-      setLoading(false);
+      setSubmitting(false);
+    }
+  };
+
+  const handleFinalRuling = async () => {
+    if (!conflict) return;
+
+    try {
+      await conflictService.generateFinalRuling(conflict.id);
+      setToast({ message: 'Final AI ruling generated!', type: 'info' });
+      
+      // Reload conflict data
+      const updatedConflict = await conflictService.getConflictById(conflict.id);
+      if (updatedConflict) {
+        setConflict(updatedConflict);
+      }
+    } catch (error) {
+      console.error('Error generating final ruling:', error);
+      setToast({ message: 'Failed to generate final ruling', type: 'error' });
     }
   };
 
   const handleDeleteConflict = async () => {
-    if (!conflictId || !user?.id) return;
+    if (!conflict || !user?.id) return;
 
-    setDeleteLoading(true);
-    try {
-      await conflictService.deleteConflict(conflictId, user.id);
-      setToast({ message: 'Conflict deleted successfully', type: 'success' });
-      setTimeout(() => {
-        navigate('/dashboard');
-      }, 1500);
-    } catch (error) {
-      console.error('Error deleting conflict:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Failed to delete conflict';
-      setToast({ message: errorMessage, type: 'error' });
-    } finally {
-      setDeleteLoading(false);
-      setShowDeleteConfirm(false);
+    if (window.confirm('Are you sure you want to delete this conflict? This action cannot be undone.')) {
+      try {
+        await conflictService.deleteConflict(conflict.id, user.id);
+        setToast({ message: 'Conflict deleted successfully', type: 'success' });
+        setTimeout(() => navigate('/dashboard'), 1500);
+      } catch (error) {
+        console.error('Error deleting conflict:', error);
+        setToast({ message: 'Failed to delete conflict', type: 'error' });
+      }
     }
   };
 
-  if (initialLoading) {
+  const formatTimeAgo = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
+    
+    if (diffInHours < 1) return 'Just now';
+    if (diffInHours < 24) return `${diffInHours} hours ago`;
+    const diffInDays = Math.floor(diffInHours / 24);
+    if (diffInDays < 7) return `${diffInDays} days ago`;
+    return `${Math.floor(diffInDays / 7)} weeks ago`;
+  };
+
+  const getOtherUserDisplay = () => {
+    if (!conflict || !user?.id) return 'Other User';
+    
+    if (user.id === conflict.user1_id) {
+      // Current user is user1, show user2's info
+      if (otherUserProfile) {
+        return (
+          <UserDisplayName 
+            username={otherUserProfile.username}
+            archetypeEmoji={otherUserProfile.archetype_emoji}
+            supporterEmoji={otherUserProfile.supporter_emoji}
+            fallback={conflict.user2_email}
+          />
+        );
+      }
+      return conflict.user2_email;
+    } else {
+      // Current user is user2, show user1's info
+      if (otherUserProfile) {
+        return (
+          <UserDisplayName 
+            username={otherUserProfile.username}
+            archetypeEmoji={otherUserProfile.archetype_emoji}
+            supporterEmoji={otherUserProfile.supporter_emoji}
+            fallback="User 1"
+          />
+        );
+      }
+      return 'User 1';
+    }
+  };
+
+  const isUser1 = user?.id === conflict?.user1_id;
+  const isUser2 = user?.id === conflict?.user2_id;
+  const canRespond = isUser2 && conflict?.status === 'pending' && !conflict?.user2_raw_message;
+  const canVote = conflict?.ai_summary && conflict?.ai_suggestion;
+  const needsCoreIssue = conflict?.rehash_attempted_at && 
+    ((isUser1 && !conflict?.user1_core_issue) || (isUser2 && !conflict?.user2_core_issue));
+  const canVoteOnCoreReflection = conflict?.ai_core_reflection && conflict?.ai_core_suggestion;
+
+  if (loading) {
     return (
       <div className="max-w-4xl mx-auto p-6 text-center">
         <div className="animate-pulse-slow mb-4">
-          <div className="text-6xl">🤖</div>
+          <div className="text-6xl">⏳</div>
         </div>
-        <p className="text-gray-600">Loading conflict details...</p>
+        <p className="text-dark-teal font-bold">Loading conflict details...</p>
       </div>
     );
   }
@@ -351,22 +230,14 @@ const ConflictPage: React.FC = () => {
     return (
       <div className="max-w-4xl mx-auto p-6 text-center">
         <div className="text-6xl mb-4">🤷</div>
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Conflict Not Found</h1>
-        <p className="text-gray-600">This conflict doesn't exist or you don't have access to it.</p>
+        <h1 className="text-2xl font-black text-dark-teal mb-2">CONFLICT NOT FOUND</h1>
+        <p className="text-dark-teal font-bold">This conflict doesn't exist or you don't have access to it.</p>
       </div>
     );
   }
 
-  const reactions = [
-    { icon: ThumbsUp, label: 'This hits', color: 'text-green-500' },
-    { icon: ThumbsDown, label: 'Nah fam', color: 'text-red-500' },
-    { icon: Heart, label: 'Feels', color: 'text-pink-500' },
-    { icon: Laugh, label: 'Lol true', color: 'text-yellow-500' },
-    { icon: Angry, label: 'Still mad', color: 'text-orange-500' },
-  ];
-
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <div className="max-w-4xl mx-auto p-4 sm:p-6">
       {toast && (
         <Toast
           message={toast.message}
@@ -377,787 +248,346 @@ const ConflictPage: React.FC = () => {
 
       {/* Header */}
       <div className="mb-8">
-        <div className="flex items-start justify-between mb-2">
-          <h1 className="text-3xl font-bold text-gray-900 flex-1">
-            {conflict.title}
-          </h1>
+        <button
+          onClick={() => navigate('/dashboard')}
+          className="flex items-center space-x-2 text-dark-teal hover:text-vivid-orange mb-6 transition-colors font-black"
+        >
+          <ArrowLeft size={20} />
+          <span>BACK TO DASHBOARD</span>
+        </button>
+        
+        <div className="flex items-start justify-between">
+          <div className="flex-1 min-w-0 pr-4">
+            <h1 className="text-4xl font-black text-dark-teal mb-4 border-b-3 border-black pb-2 break-words">
+              {conflict.title}
+            </h1>
+            <div className="flex flex-wrap items-center gap-4 text-sm text-dark-teal font-bold">
+              <div className="flex items-center space-x-2">
+                <User size={16} />
+                <span>vs. {getOtherUserDisplay()}</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Clock size={16} />
+                <span>{formatTimeAgo(conflict.created_at)}</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <MessageSquare size={16} />
+                <span className={`px-3 py-1 text-xs font-black border-2 border-black ${
+                  conflict.status === 'resolved' ? 'bg-green-teal text-white' :
+                  conflict.status === 'final_judgment' ? 'bg-dark-teal text-white' :
+                  conflict.status === 'active' ? 'bg-vivid-orange text-white' :
+                  'bg-lime-chartreuse text-dark-teal'
+                }`}>
+                  {conflict.status.toUpperCase().replace('_', ' ')}
+                </span>
+              </div>
+            </div>
+          </div>
           
-          {/* Delete button - only show for active conflicts and only for the creator (user1) */}
-          {isUser1 && (conflict.status === 'pending' || conflict.status === 'active') && (
+          {/* Delete button for conflict creator */}
+          {isUser1 && conflict.status === 'pending' && (
             <button
-              onClick={() => setShowDeleteConfirm(true)}
-              className="ml-4 flex items-center space-x-2 text-red-600 hover:text-red-700 hover:bg-red-50 px-3 py-2 rounded-lg transition-colors"
-              title="Delete conflict"
+              onClick={handleDeleteConflict}
+              className="bg-vivid-orange hover:bg-orange-600 text-white px-4 py-2 font-black border-3 border-black shadow-brutal hover:shadow-brutal-sm transition-all transform hover:translate-x-1 hover:translate-y-1 flex items-center space-x-2 flex-shrink-0"
             >
-              <Trash2 size={18} />
-              <span className="text-sm font-medium">Delete</span>
+              <Trash2 size={16} />
+              <span className="hidden sm:inline">DELETE</span>
             </button>
           )}
         </div>
-        
-        <p className="text-gray-600">
-          <span className="flex items-center space-x-2">
-            <span>vs. {getOtherUserDisplay(conflict)}</span>
-            <span>•</span>
-            <span>Status: {conflict.status}</span>
-          </span>
-        </p>
       </div>
 
-      {/* Progress Indicator */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-medium text-gray-700">Progress</span>
-          <span className="text-sm text-gray-500">
-            {phase === 'input' && '1/3 - Tell Your Side'}
-            {phase === 'waiting' && '2/3 - Waiting for Response'}
-            {phase === 'mediation' && '2/3 - AI Processing'}
-            {phase === 'reactions' && '3/3 - Reactions & Next Steps'}
-            {phase === 'core-issues' && '4/4 - Clarify Core Issues'}
-            {phase === 'core-reflection' && '4/4 - Final Reflection'}
-            {phase === 'final-ruling' && '5/5 - Final AI Ruling'}
-          </span>
-        </div>
-        <div className="w-full bg-gray-200 rounded-full h-2">
-          <div 
-            className="bg-coral-500 h-2 rounded-full transition-all duration-500"
-            style={{ 
-              width: phase === 'input' ? '25%' : 
-                     phase === 'waiting' || phase === 'mediation' ? '50%' : 
-                     phase === 'reactions' ? '75%' : 
-                     phase === 'core-issues' || phase === 'core-reflection' ? '90%' : '100%'
-            }}
-          />
-        </div>
-      </div>
-
-      {/* Delete Confirmation Modal */}
-      {showDeleteConfirm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full">
-            <div className="flex items-center space-x-3 mb-4">
-              <div className="text-red-500">
-                <Trash2 size={24} />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900">Delete Conflict</h3>
+      {/* Main Conflict Content */}
+      <div className="bg-white border-3 border-black shadow-brutal mb-6">
+        {/* User 1 Message */}
+        <div className="p-6 border-b-3 border-black">
+          <div className="bg-lime-chartreuse p-4 border-3 border-black mb-4">
+            <div className="flex items-center space-x-3 mb-3">
+              <span className="text-2xl">💬</span>
+              <h3 className="text-lg font-black text-dark-teal">
+                {isUser1 ? 'YOUR MESSAGE' : `${getOtherUserDisplay()}'S MESSAGE`}
+              </h3>
+              <MoodIndicator mood={conflict.user1_mood as MoodLevel} size="sm" />
             </div>
-            
-            <p className="text-gray-600 mb-6">
-              Are you sure you want to delete "{conflict.title}"? This action cannot be undone and will permanently remove the conflict and all associated data.
-            </p>
-            
-            <div className="flex space-x-3">
-              <button
-                onClick={() => setShowDeleteConfirm(false)}
-                disabled={deleteLoading}
-                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors disabled:opacity-50"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleDeleteConflict}
-                disabled={deleteLoading}
-                className="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center space-x-2"
-              >
-                {deleteLoading ? (
-                  <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                    <span>Deleting...</span>
-                  </>
-                ) : (
-                  <>
-                    <Trash2 size={16} />
-                    <span>Delete</span>
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Input Phase */}
-      {phase === 'input' && canRespond && (
-        <div className="space-y-6">
-          <div className="bg-white p-6 rounded-lg border border-gray-200">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
-              {isUser1 ? 'Your Side of the Story' : 'Your Response'}
-            </h2>
-            <p className="text-gray-600 mb-4">
-              {isUser1 
-                ? "Spill the tea. What happened? How did it make you feel? Don't hold back – this is your safe space to vent."
-                : "Time to share your perspective. What's your side of this situation? How did it affect you?"
-              }
-            </p>
-            
-            {!isUser1 && conflict.user1_translated_message && (
-              <div className="bg-blue-50 p-4 rounded-lg mb-4">
-                <h3 className="font-medium text-blue-900 mb-2">Their Perspective:</h3>
-                <p className="text-sm text-blue-800 italic">"{conflict.user1_translated_message}"</p>
-              </div>
-            )}
-            
-            <textarea
-              value={userMessage}
-              onChange={(e) => setUserMessage(e.target.value)}
-              disabled={isResolved}
-              placeholder={isUser1 
-                ? "Start with how you're feeling right now. Then tell us what went down. The AI needs context to help mediate effectively..."
-                : "Share your side of the story. How did this situation affect you? What would you like them to understand?"
-              }
-              className={`w-full h-40 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-coral-500 focus:border-coral-500 resize-none ${
-                isResolved ? 'bg-gray-100 cursor-not-allowed opacity-60' : ''
-              }`}
-            />
-            
-            <div className="flex justify-between items-center mt-4">
-              <span className="text-sm text-gray-500">
-                {userMessage.length}/1000 characters
-              </span>
-              <button
-                onClick={handleSubmitMessage}
-                disabled={!userMessage.trim() || loading || isResolved}
-                className="flex items-center space-x-2 bg-coral-500 hover:bg-coral-600 text-white px-6 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {loading ? (
-                  <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                    <span>Submitting...</span>
-                  </>
-                ) : (
-                  <>
-                    <Send size={18} />
-                    <span>{isUser1 ? 'Submit My Side' : 'Submit Response'}</span>
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Waiting Phase */}
-      {phase === 'waiting' && (
-        <div className="text-center py-12">
-          <div className="animate-pulse-slow mb-4">
-            <div className="text-6xl">⏳</div>
-          </div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">
-            {isUser1 ? 'Waiting for Their Response' : 'Waiting for AI Processing'}
-          </h2>
-          <p className="text-gray-600">
-            {isUser1 
-              ? 'Your message has been sent. Waiting for them to share their perspective...'
-              : 'Both perspectives are in. Our AI is working on a resolution...'
-            }
-          </p>
-          <div className="mt-6 bg-coral-50 p-4 rounded-lg">
-            <p className="text-sm text-coral-700">
-              💡 Pro tip: Step away, take a breath, maybe hydrate. This process works better when you're not stress-refreshing.
+            <p className="text-dark-teal font-bold leading-relaxed break-words">
+              {conflict.user1_translated_message || conflict.user1_raw_message}
             </p>
           </div>
         </div>
-      )}
 
-      {/* Mediation Phase */}
-      {phase === 'mediation' && conflict.user1_translated_message && conflict.user2_translated_message && (
-        <div className="space-y-6">
-          <div className="bg-white p-6 rounded-lg border border-gray-200">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
-              AI Processing Both Perspectives
-            </h2>
-            
-            <div className="space-y-4 mb-6">
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <h3 className="font-medium text-blue-900 mb-2">First Perspective:</h3>
-                <p className="text-sm text-blue-800 italic">"{conflict.user1_translated_message.substring(0, 120)}..."</p>
-              </div>
-              
-              <div className="bg-green-50 p-4 rounded-lg">
-                <h3 className="font-medium text-green-900 mb-2">Second Perspective:</h3>
-                <p className="text-sm text-green-800 italic">"{conflict.user2_translated_message.substring(0, 120)}..."</p>
-              </div>
-            </div>
-
-            <div className="text-center">
-              <div className="animate-pulse-slow mb-4">
-                <div className="text-4xl">🤖</div>
-              </div>
-              <p className="text-gray-600">AI is analyzing both perspectives and generating a resolution...</p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Core Issues Phase */}
-      {phase === 'core-issues' && (
-        <div className="space-y-6">
-          {/* Check if current user has already submitted their core issue */}
-          {((isUser1 && conflict?.user1_core_issue) || (isUser2 && conflict?.user2_core_issue)) ? (
-            /* Show waiting state if user has submitted but other hasn't */
-            <div className="bg-yellow-50 p-6 rounded-lg border border-yellow-200">
-              <div className="text-center">
-                <div className="text-4xl mb-2">⏳</div>
-                <h3 className="font-semibold text-yellow-900 mb-2">Waiting for Their Core Issue</h3>
-                <p className="text-sm text-yellow-700">
-                  You've shared what you most want them to understand. Waiting for them to do the same...
-                </p>
-              </div>
-            </div>
-          ) : (
-            /* Show core issue input form if user hasn't submitted yet */
-            <div className="bg-white p-6 rounded-lg border border-gray-200">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                🎯 Clarify Your Core Issue
-              </h2>
-              
-              <div className="bg-orange-50 p-4 rounded-lg mb-6 border border-orange-200">
-                <p className="text-orange-800 text-sm">
-                  <strong>We're trying a different approach.</strong> Previous solutions haven't fully resolved this conflict. 
-                  Let's get to the heart of what you most want the other person to understand.
-                </p>
-              </div>
-              
-              <p className="text-gray-600 mb-4">
-                Answer this question as clearly and specifically as possible:
-              </p>
-              
-              <div className="bg-blue-50 p-4 rounded-lg mb-6 border border-blue-200">
-                <h3 className="font-semibold text-blue-900 mb-2">
-                  "What is the one thing you most want the other person to understand about your perspective?"
+        {/* User 2 Response */}
+        {conflict.user2_raw_message ? (
+          <div className="p-6 border-b-3 border-black">
+            <div className="bg-vivid-orange p-4 border-3 border-black mb-4">
+              <div className="flex items-center space-x-3 mb-3">
+                <span className="text-2xl">💭</span>
+                <h3 className="text-lg font-black text-white">
+                  {isUser2 ? 'YOUR RESPONSE' : `${getOtherUserDisplay()}'S RESPONSE`}
                 </h3>
-                <p className="text-sm text-blue-700">
-                  Focus on what you want them to truly "get" about how you see this situation or how it affects you.
-                </p>
               </div>
-              
+              <p className="text-white font-bold leading-relaxed break-words">
+                {conflict.user2_translated_message || conflict.user2_raw_message}
+              </p>
+            </div>
+          </div>
+        ) : canRespond ? (
+          <div className="p-6 border-b-3 border-black">
+            <div className="bg-vivid-orange p-4 border-3 border-black mb-4">
+              <div className="flex items-center space-x-3 mb-3">
+                <span className="text-2xl">✍️</span>
+                <h3 className="text-lg font-black text-white">YOUR TURN TO RESPOND</h3>
+              </div>
               <textarea
-                value={coreIssueMessage}
-                onChange={(e) => setCoreIssueMessage(e.target.value)}
-                placeholder="The one thing I most want them to understand is..."
-                className="w-full h-32 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-coral-500 focus:border-coral-500 resize-none"
-                maxLength={500}
+                value={responseText}
+                onChange={(e) => setResponseText(e.target.value)}
+                placeholder="Share your side of the story. Be honest about how you're feeling..."
+                className="w-full h-32 p-3 border-3 border-black font-bold text-dark-teal resize-none focus:outline-none focus:border-lime-chartreuse"
+                maxLength={1000}
               />
-              
-              <div className="flex justify-between items-center mt-4">
-                <span className="text-sm text-gray-500">
-                  {coreIssueMessage.length}/500 characters
+              <div className="flex justify-between items-center mt-3">
+                <span className="text-xs text-white font-bold">
+                  {responseText.length}/1000 characters
                 </span>
                 <button
-                  onClick={handleSubmitCoreIssue}
-                  disabled={!coreIssueMessage.trim() || loading}
-                  className="flex items-center space-x-2 bg-coral-500 hover:bg-coral-600 text-white px-6 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  onClick={handleResponse}
+                  disabled={!responseText.trim() || submitting}
+                  className="bg-lime-chartreuse hover:bg-green-400 text-dark-teal px-6 py-2 font-black border-3 border-black shadow-brutal hover:shadow-brutal-sm transition-all transform hover:translate-x-1 hover:translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center space-x-2"
                 >
-                  {loading ? (
-                    <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                      <span>Submitting...</span>
-                    </>
+                  {submitting ? (
+                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-dark-teal border-t-transparent"></div>
                   ) : (
-                    <>
-                      <Send size={18} />
-                      <span>Submit Core Issue</span>
-                    </>
+                    <Send size={16} />
                   )}
+                  <span>{submitting ? 'SENDING...' : 'SEND RESPONSE'}</span>
                 </button>
               </div>
             </div>
-          )}
-        </div>
-      )}
-
-      {/* Final AI Ruling Phase */}
-      {phase === 'final-ruling' && conflict.final_ai_ruling && (
-        <div className="space-y-6">
-          <div className="bg-gradient-to-r from-purple-900 via-red-900 to-purple-900 p-8 rounded-lg border-4 border-gold text-white relative overflow-hidden">
-            {/* Dramatic background pattern */}
-            <div className="absolute inset-0 opacity-10">
-              <div className="text-9xl font-bold transform rotate-12 absolute -top-4 -right-4">⚖️</div>
-              <div className="text-6xl font-bold transform -rotate-12 absolute -bottom-2 -left-2">🎭</div>
+          </div>
+        ) : conflict.status === 'pending' && (
+          <div className="p-6 border-b-3 border-black">
+            <div className="bg-lime-chartreuse p-4 border-3 border-black text-center">
+              <span className="text-2xl">⏳</span>
+              <h3 className="text-lg font-black text-dark-teal mt-2">
+                WAITING FOR {getOtherUserDisplay().toString().toUpperCase()} TO RESPOND
+              </h3>
             </div>
-            
-            <div className="relative z-10">
-              <div className="text-center mb-6">
-                <h2 className="text-3xl font-bold mb-2 text-yellow-300">
-                  ⚖️ FINAL AI RULING ⚖️
-                </h2>
-                <div className="text-lg text-yellow-200 mb-4">
-                  Judge AI Has Spoken • Case Closed Forever
-                </div>
-                <div className="w-24 h-1 bg-yellow-400 mx-auto rounded-full"></div>
+          </div>
+        )}
+
+        {/* AI Summary & Suggestion */}
+        {conflict.ai_summary && conflict.ai_suggestion && (
+          <div className="p-6 border-b-3 border-black">
+            <div className="bg-dark-teal p-4 border-3 border-black mb-4">
+              <div className="flex items-center space-x-3 mb-3">
+                <span className="text-2xl">🤖</span>
+                <h3 className="text-lg font-black text-lime-chartreuse">AI MEDIATION</h3>
               </div>
-              
-              <div className="bg-black/30 p-6 rounded-lg border border-yellow-400/50 mb-6">
-                <div className="text-lg leading-relaxed text-gray-100 whitespace-pre-wrap">
-                  {conflict.final_ai_ruling}
+              <div className="space-y-4">
+                <div>
+                  <h4 className="font-black text-white mb-2">SUMMARY:</h4>
+                  <p className="text-white font-bold leading-relaxed break-words">
+                    {conflict.ai_summary}
+                  </p>
+                </div>
+                <div>
+                  <h4 className="font-black text-white mb-2">SUGGESTION:</h4>
+                  <p className="text-white font-bold leading-relaxed break-words">
+                    {conflict.ai_suggestion}
+                  </p>
                 </div>
               </div>
-              
-              <div className="text-center">
-                <div className="text-yellow-300 font-semibold mb-2">
-                  Ruling Issued: {new Date(conflict.final_ruling_issued_at!).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                  })}
+            </div>
+
+            {/* Satisfaction Voting */}
+            {canVote && (conflict.user1_satisfaction === null || conflict.user2_satisfaction === null) && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <button
+                  onClick={() => handleSatisfactionVote(true)}
+                  className="bg-green-teal hover:bg-teal-600 text-white p-4 font-black border-3 border-black shadow-brutal hover:shadow-brutal-sm transition-all transform hover:translate-x-1 hover:translate-y-1 flex items-center justify-center space-x-2"
+                >
+                  <ThumbsUp size={20} />
+                  <span>THIS WORKS FOR ME</span>
+                </button>
+                <button
+                  onClick={() => handleSatisfactionVote(false)}
+                  className="bg-vivid-orange hover:bg-orange-600 text-white p-4 font-black border-3 border-black shadow-brutal hover:shadow-brutal-sm transition-all transform hover:translate-x-1 hover:translate-y-1 flex items-center justify-center space-x-2"
+                >
+                  <ThumbsDown size={20} />
+                  <span>NEED BETTER SOLUTION</span>
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Rehash Content */}
+        {conflict.ai_rehash_summary && conflict.ai_rehash_suggestion && (
+          <div className="p-6 border-b-3 border-black">
+            <div className="bg-green-teal p-4 border-3 border-black mb-4">
+              <div className="flex items-center space-x-3 mb-3">
+                <span className="text-2xl">🔄</span>
+                <h3 className="text-lg font-black text-white">AI REHASH - ROUND 2</h3>
+              </div>
+              <div className="space-y-4">
+                <div>
+                  <h4 className="font-black text-white mb-2">NEW PERSPECTIVE:</h4>
+                  <p className="text-white font-bold leading-relaxed break-words">
+                    {conflict.ai_rehash_summary}
+                  </p>
                 </div>
-                <div className="text-red-300 text-sm">
-                  🔒 This conflict is now permanently closed. No further changes can be made. This conflict will reflect poorly on your conflict resolution stats becuase you guys clearly can't figure shit out.
+                <div>
+                  <h4 className="font-black text-white mb-2">FRESH APPROACH:</h4>
+                  <p className="text-white font-bold leading-relaxed break-words">
+                    {conflict.ai_rehash_suggestion}
+                  </p>
                 </div>
+              </div>
+            </div>
+
+            {/* Rehash Satisfaction Voting */}
+            {(conflict.user1_satisfaction === null || conflict.user2_satisfaction === null) && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <button
+                  onClick={() => handleSatisfactionVote(true)}
+                  className="bg-green-teal hover:bg-teal-600 text-white p-4 font-black border-3 border-black shadow-brutal hover:shadow-brutal-sm transition-all transform hover:translate-x-1 hover:translate-y-1 flex items-center justify-center space-x-2"
+                >
+                  <ThumbsUp size={20} />
+                  <span>THIS WORKS NOW</span>
+                </button>
+                <button
+                  onClick={() => handleSatisfactionVote(false)}
+                  className="bg-vivid-orange hover:bg-orange-600 text-white p-4 font-black border-3 border-black shadow-brutal hover:shadow-brutal-sm transition-all transform hover:translate-x-1 hover:translate-y-1 flex items-center justify-center space-x-2"
+                >
+                  <ThumbsDown size={20} />
+                  <span>STILL NOT RIGHT</span>
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Core Issue Input */}
+        {needsCoreIssue && (
+          <div className="p-6 border-b-3 border-black">
+            <div className="bg-lime-chartreuse p-4 border-3 border-black mb-4">
+              <div className="flex items-center space-x-3 mb-3">
+                <span className="text-2xl">🧠</span>
+                <h3 className="text-lg font-black text-dark-teal">CLARIFY YOUR CORE ISSUE</h3>
+              </div>
+              <p className="text-dark-teal font-bold mb-4">
+                What do you most want the other person to understand about this situation?
+              </p>
+              <textarea
+                value={coreIssueText}
+                onChange={(e) => setCoreIssueText(e.target.value)}
+                placeholder="Focus on what you most want them to understand, not what you want them to do..."
+                className="w-full h-24 p-3 border-3 border-black font-bold text-dark-teal resize-none focus:outline-none focus:border-vivid-orange"
+                maxLength={500}
+              />
+              <div className="flex justify-between items-center mt-3">
+                <span className="text-xs text-dark-teal font-bold">
+                  {coreIssueText.length}/500 characters
+                </span>
+                <button
+                  onClick={handleCoreIssueSubmit}
+                  disabled={!coreIssueText.trim() || submitting}
+                  className="bg-vivid-orange hover:bg-orange-600 text-white px-6 py-2 font-black border-3 border-black shadow-brutal hover:shadow-brutal-sm transition-all transform hover:translate-x-1 hover:translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center space-x-2"
+                >
+                  {submitting ? (
+                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                  ) : (
+                    <Send size={16} />
+                  )}
+                  <span>{submitting ? 'SUBMITTING...' : 'SUBMIT'}</span>
+                </button>
               </div>
             </div>
           </div>
-          
-          
-          
-          {/* Public Voting Results for Final Judgment */}
-          {hasFinalRuling && conflict.ai_final_summary && (
-            <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-lg">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                🗳️ This is what the public thinks of you guys
-              </h3>
-              
-              {publicVotesLoading ? (
-                <div className="text-center py-4">
-                  <div className="animate-pulse-slow mb-2">
-                    <div className="text-2xl">📊</div>
-                  </div>
-                  <p className="text-gray-600 text-sm">Loading public votes...</p>
-                </div>
-              ) : publicVotes.length === 0 ? (
-                <div className="text-center py-4">
-                  <div className="text-4xl mb-2">🤷</div>
-                  <p className="text-gray-600 text-sm">No public votes yet</p>
-                  <p className="text-gray-500 text-xs mt-1">
-                    Your conflict is on the public shame wall - people can vote on who was wrong
+        )}
+
+        {/* Core Issues Reflection */}
+        {conflict.ai_core_reflection && conflict.ai_core_suggestion && (
+          <div className="p-6 border-b-3 border-black">
+            <div className="bg-dark-teal p-4 border-3 border-black mb-4">
+              <div className="flex items-center space-x-3 mb-3">
+                <span className="text-2xl">💡</span>
+                <h3 className="text-lg font-black text-lime-chartreuse">CORE ISSUES REFLECTION</h3>
+              </div>
+              <div className="space-y-4">
+                <div>
+                  <h4 className="font-black text-white mb-2">DEEPER UNDERSTANDING:</h4>
+                  <p className="text-white font-bold leading-relaxed break-words">
+                    {conflict.ai_core_reflection}
                   </p>
                 </div>
-              ) : (
-                <div className="space-y-3">
-                  {VOTE_OPTIONS.map((option) => {
-                    const voteData = publicVotes.find(v => v.vote_type === option.type);
-                    const voteCount = voteData ? Number(voteData.vote_count) : 0;
-                    const totalVotes = publicVotes.reduce((sum, v) => sum + Number(v.vote_count), 0);
-                    const percentage = totalVotes > 0 ? Math.round((voteCount / totalVotes) * 100) : 0;
-                    
-                    return (
-                      <div key={option.type} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                        <div className="flex items-center space-x-3">
-                          <span className="text-lg">{option.emoji}</span>
-                          <span className="font-medium text-sm text-gray-700">{option.label}</span>
-                        </div>
-                        <div className="flex items-center space-x-3">
-                          <div className="w-24 bg-gray-200 rounded-full h-2">
-                            <div 
-                              className="bg-coral-500 h-2 rounded-full transition-all duration-500"
-                              style={{ width: `${percentage}%` }}
-                            />
-                          </div>
-                          <span className="text-sm font-semibold text-gray-700 w-12 text-right">
-                            {voteCount} ({percentage}%)
-                          </span>
-                        </div>
-                      </div>
-                    );
-                  })}
-                  
-                  <div className="mt-4 pt-4 border-t border-gray-200">
-                    <div className="flex items-center justify-between text-sm text-gray-600">
-                      <span>Total public votes: {publicVotes.reduce((sum, v) => sum + Number(v.vote_count), 0)}</span>
-                      <a 
-                        href="/public-shame" 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="text-coral-500 hover:text-coral-600 font-medium flex items-center space-x-1"
-                      >
-                       {/*  <span>View on Public Shame Wall</span>
-                        <span>↗</span>*/}
-                      </a>
-                    </div>
-                  </div>
+                <div>
+                  <h4 className="font-black text-white mb-2">FINAL APPROACH:</h4>
+                  <p className="text-white font-bold leading-relaxed break-words">
+                    {conflict.ai_core_suggestion}
+                  </p>
                 </div>
-              )}
+              </div>
             </div>
-          )}
-        </div>
-      )}
 
-      {/* Core Reflection Phase */}
-      {phase === 'core-reflection' && conflict.ai_core_reflection && conflict.ai_core_suggestion && (
-        <div className="space-y-6">
-          <div className="bg-white p-6 rounded-lg border border-gray-200">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-              🎯 AI Mediator's Final Reflection
-            </h2>
-            
-            <div className="mb-4 p-3 bg-purple-50 border border-purple-200 rounded-lg">
-              <p className="text-sm text-purple-800">
-                <strong>Core Issues Addressed:</strong> Based on what each of you most wants to be understood, here's a final perspective.
+            {/* Core Reflection Voting */}
+            {canVoteOnCoreReflection && (conflict.user1_satisfaction === null || conflict.user2_satisfaction === null) && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <button
+                  onClick={() => handleSatisfactionVote(true)}
+                  className="bg-green-teal hover:bg-teal-600 text-white p-4 font-black border-3 border-black shadow-brutal hover:shadow-brutal-sm transition-all transform hover:translate-x-1 hover:translate-y-1 flex items-center justify-center space-x-2"
+                >
+                  <CheckCircle size={20} />
+                  <span>FINALLY RESOLVED</span>
+                </button>
+                <button
+                  onClick={handleFinalRuling}
+                  className="bg-vivid-orange hover:bg-orange-600 text-white p-4 font-black border-3 border-black shadow-brutal hover:shadow-brutal-sm transition-all transform hover:translate-x-1 hover:translate-y-1 flex items-center justify-center space-x-2"
+                >
+                  <AlertTriangle size={20} />
+                  <span>GET AI FINAL RULING</span>
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Final AI Ruling */}
+        {conflict.final_ai_ruling && (
+          <div className="p-6">
+            <div className="bg-dark-teal p-6 border-3 border-black text-center">
+              <div className="text-6xl mb-4">⚖️</div>
+              <h3 className="text-2xl font-black text-lime-chartreuse mb-4 border-b-3 border-lime-chartreuse pb-2">
+                JUDGE AI'S FINAL RULING
+              </h3>
+              <div className="bg-black/30 p-4 border-3 border-lime-chartreuse">
+                <p className="text-white font-bold leading-relaxed break-words text-lg">
+                  {conflict.final_ai_ruling}
+                </p>
+              </div>
+              <div className="mt-4 bg-vivid-orange border-3 border-black p-3">
+                <p className="text-white font-black text-sm">
+                  🎭 CASE CLOSED - THIS CONFLICT IS NOW PUBLIC 🎭
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Resolution Status */}
+        {conflict.status === 'resolved' && (
+          <div className="p-6">
+            <div className="bg-green-teal p-6 border-3 border-black text-center">
+              <div className="text-6xl mb-4">🎉</div>
+              <h3 className="text-2xl font-black text-white mb-2">
+                CONFLICT SQUASHED!
+              </h3>
+              <p className="text-white font-bold">
+                Both parties found a resolution they're happy with. Great job working it out!
               </p>
             </div>
-            
-            <div className="space-y-4">
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="font-medium text-gray-900 mb-2">Final Reflection:</h3>
-                <p className="text-gray-700">
-                  {conflict.ai_core_reflection}
-                </p>
-              </div>
-              
-              <div className="bg-teal-50 p-4 rounded-lg">
-                <h3 className="font-medium text-teal-900 mb-2">Final Approach:</h3>
-                <p className="text-teal-800">
-                  {conflict.ai_core_suggestion}
-                </p>
-              </div>
-            </div>
           </div>
-
-          {/* Final Resolution Tools */}
-          <div className={`bg-white p-6 rounded-lg border border-gray-200 ${isResolved ? 'opacity-75' : ''}`}>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              Does this final reflection help you understand each other?
-            </h3>
-            
-            {/* Show current user's vote status and waiting state */}
-            {!isResolved && (
-              <>
-                {/* Check if current user has already voted AND other user hasn't voted yet */}
-                {((isUser1 && conflict.user1_satisfaction !== null && conflict.user2_satisfaction === null) || 
-                  (isUser2 && conflict.user2_satisfaction !== null && conflict.user1_satisfaction === null)) ? (
-                  <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 mb-4">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <div className="text-2xl">⏳</div>
-                      <h4 className="font-semibold text-blue-900">Waiting for the Other Person</h4>
-                    </div>
-                    <p className="text-sm text-blue-700">
-                      You've voted on this final reflection. Waiting for them to decide if this helps them understand the situation better.
-                    </p>
-                    <div className="mt-3 text-sm text-blue-600">
-                      <p>Your vote: <strong>{(isUser1 ? conflict.user1_satisfaction : conflict.user2_satisfaction) ? 'This helps - Mark Resolved' : 'Still not quite right'}</strong></p>
-                    </div>
-                  </div>
-                ) : ((isUser1 && conflict.user1_satisfaction === null) || (isUser2 && conflict.user2_satisfaction === null)) ? (
-                  /* Show voting buttons if current user hasn't voted yet */
-                  <div className="flex space-x-4 mb-4">
-                    <button 
-                      onClick={() => handleSatisfactionVote(true)}
-                      disabled={loading}
-                      className="flex-1 bg-teal-500 hover:bg-teal-600 text-white py-3 px-4 rounded-lg transition-colors disabled:opacity-50"
-                    >
-                      {loading ? 'Processing...' : 'Yes, This Helps - Mark Resolved'}
-                    </button>
-                    <button 
-                      onClick={() => handleSatisfactionVote(false)}
-                      disabled={loading}
-                      className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 py-3 px-4 rounded-lg transition-colors disabled:opacity-50"
-                    >
-                      {loading ? 'Processing...' : 'Still Not Quite Right'}
-                    </button>
-                  </div>
-                ) : null /* Both users have voted, show neither waiting nor voting buttons */}
-              </>
-            )}
-            
-            {/* Show voting status for both users */}
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-medium text-gray-900 mb-3">Voting Status:</h4>
-              <div className="flex space-x-4">
-                <div className="flex-1 text-center">
-                  <p className="text-sm font-medium text-gray-700 mb-1">
-                    {isUser1 ? 'Your Vote' : 'User 1'}
-                  </p>
-                  <div className="text-2xl mb-1">
-                    {conflict.user1_satisfaction === null 
-                      ? '⏳' 
-                      : conflict.user1_satisfaction 
-                        ? '✅' 
-                        : '❌'
-                    }
-                  </div>
-                  <p className="text-xs text-gray-600">
-                    {conflict.user1_satisfaction === null 
-                      ? 'Pending' 
-                      : conflict.user1_satisfaction 
-                        ? 'Resolved' 
-                        : 'Needs work'
-                    }
-                  </p>
-                </div>
-                
-                <div className="flex-1 text-center">
-                  <p className="text-sm font-medium text-gray-700 mb-1">
-                    {isUser2 ? 'Your Vote' : 'User 2'}
-                  </p>
-                  <div className="text-2xl mb-1">
-                    {conflict.user2_satisfaction === null 
-                      ? '⏳' 
-                      : conflict.user2_satisfaction 
-                        ? '✅' 
-                        : '❌'
-                    }
-                  </div>
-                  <p className="text-xs text-gray-600">
-                    {conflict.user2_satisfaction === null 
-                      ? 'Pending' 
-                      : conflict.user2_satisfaction 
-                        ? 'Resolved' 
-                        : 'Needs work'
-                    }
-                  </p>
-                </div>
-              </div>
-            </div>
-            
-            {isResolved && (
-              <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                <div className="flex items-center space-x-2 mb-2">
-                  <div className="text-2xl">🎉</div>
-                  <h4 className="font-semibold text-green-900">Conflict Successfully Resolved!</h4>
-                </div>
-                <p className="text-sm text-green-700">
-                  This conflict has been marked as resolved through the core issues reflection process.
-                </p>
-              </div>
-            )}
-          </div>
-          
-          {/* Final Ruling Button - Show if both users have voted and at least one is not satisfied */}
-          {canIssueFinalRuling && (
-            <div className="bg-gradient-to-r from-red-50 to-purple-50 p-6 rounded-lg border-2 border-red-200">
-              <div className="text-center mb-4">
-                <div className="text-4xl mb-2">⚖️</div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">
-                  Last Resort: Let the AI Decide Anyway
-                </h3>
-                <p className="text-sm text-gray-700 mb-4">
-                  This conflict has been through multiple resolution attempts. Time for Judge AI to issue a final, dramatic ruling that will close this case forever.
-                </p>
-                <div className="bg-yellow-100 p-3 rounded-lg border border-yellow-300 mb-4">
-                  <p className="text-xs text-yellow-800">
-                    ⚠️ <strong>Warning:</strong> Once the AI issues its final ruling, this conflict will be permanently closed and no further changes can be made.
-                  </p>
-                </div>
-              </div>
-              
-              <button
-                onClick={handleIssueFinalRuling}
-                disabled={loading}
-                className="w-full bg-gradient-to-r from-red-600 to-purple-600 hover:from-red-700 hover:to-purple-700 text-white font-bold py-4 px-6 rounded-lg transition-all transform hover:scale-105 disabled:opacity-50 disabled:transform-none"
-              >
-                {loading ? (
-                  <div className="flex items-center justify-center space-x-2">
-                    <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
-                    <span>Judge AI is deliberating...</span>
-                  </div>
-                ) : (
-                  <div className="flex items-center justify-center space-x-2">
-                    <span className="text-xl">⚖️</span>
-                    <span>Issue Final AI Ruling</span>
-                    <span className="text-xl">🎭</span>
-                  </div>
-                )}
-              </button>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* AI Response & Reactions Phase */}
-      {phase === 'reactions' && conflict.ai_summary && conflict.ai_suggestion && (
-        <div className="space-y-6">
-          <div className="bg-white p-6 rounded-lg border border-gray-200">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-              {conflict.ai_rehash_summary && conflict.ai_rehash_suggestion 
-                ? '🤖 AI Mediator\'s Rehash' 
-                : '🤖 AI Mediator\'s Take'
-              }
-            </h2>
-            
-            {conflict.ai_rehash_summary && conflict.ai_rehash_suggestion && (
-              <div className="mb-4 p-3 bg-orange-50 border border-orange-200 rounded-lg">
-                <p className="text-sm text-orange-800">
-                  <strong>Fresh perspective:</strong> Since the first resolution didn't fully work, here's a new approach to help move things forward.
-                </p>
-              </div>
-            )}
-            
-            <div className="space-y-4">
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="font-medium text-gray-900 mb-2">What I'm Hearing:</h3>
-                <p className="text-gray-700">
-                  {conflict.ai_rehash_summary || conflict.ai_summary}
-                </p>
-              </div>
-              
-              <div className="bg-teal-50 p-4 rounded-lg">
-                <h3 className="font-medium text-teal-900 mb-2">Suggested Next Steps:</h3>
-                <p className="text-teal-800">
-                  {conflict.ai_rehash_suggestion || conflict.ai_suggestion}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Reaction Tools */}
-          <div className={`bg-white p-6 rounded-lg border border-gray-200 ${isResolved ? 'opacity-75' : ''}`}>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              How does this land with you?
-            </h3>
-            
-            <div className={`flex flex-wrap gap-3 mb-6 ${isResolved ? 'pointer-events-none' : ''}`}>
-              {reactions.map((reaction, index) => (
-                <button
-                  key={index}
-                  disabled={isResolved}
-                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg border transition-colors ${reaction.color} ${
-                    isResolved ? 'cursor-not-allowed opacity-60' : 'hover:bg-gray-50'
-                  }`}
-                >
-                  <reaction.icon size={20} />
-                  <span className="text-sm font-medium">{reaction.label}</span>
-                </button>
-              ))}
-            </div>
-
-            {!isResolved && (
-              <div className="flex space-x-4">
-                <button 
-                  onClick={() => handleSatisfactionVote(true)}
-                  disabled={loading}
-                  className="flex-1 bg-teal-500 hover:bg-teal-600 text-white py-3 px-4 rounded-lg transition-colors disabled:opacity-50"
-                >
-                  Mark as Resolved
-                </button>
-                <button 
-                  onClick={() => handleSatisfactionVote(false)}
-                  disabled={loading}
-                  className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 py-3 px-4 rounded-lg transition-colors disabled:opacity-50"
-                >
-                  Need More Help
-                </button>
-              </div>
-            )}
-
-            {isResolved && (
-              <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                <div className="flex items-center space-x-2 mb-2">
-                  <div className="text-2xl">🎉</div>
-                  <h4 className="font-semibold text-green-900">Conflict Successfully Resolved!</h4>
-                </div>
-                <p className="text-sm text-green-700">
-                  This conflict has been marked as resolved. No further changes can be made.
-                </p>
-              </div>
-            )}
-          </div>
-
-          {/* Show satisfaction status */}
-          {(conflict.user1_satisfaction !== null || conflict.user2_satisfaction !== null) && (
-            <div className="bg-white p-6 rounded-lg border border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Resolution Status</h3>
-              <div className="space-y-2">
-                {conflict.user1_satisfaction !== null && (
-                  <p className="text-sm text-gray-600">
-                    User 1: {conflict.user1_satisfaction ? '✅ Satisfied' : '❌ Needs more work'}
-                  </p>
-                )}
-                {conflict.user2_satisfaction !== null && (
-                  <p className="text-sm text-gray-600">
-                    User 2: {conflict.user2_satisfaction ? '✅ Satisfied' : '❌ Needs more work'}
-                  </p>
-                )}
-                {conflict.status === 'resolved' && (
-                  <div className="mt-4 p-4 bg-green-50 rounded-lg">
-                    <p className="text-green-800 font-medium">🎉 Conflict Successfully Resolved!</p>
-                    <p className="text-sm text-green-700 mt-1">Both parties are satisfied with the resolution.</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* Always show current voting status */}
-          <div className="bg-white p-6 rounded-lg border border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Current Voting Status</h3>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                <div>
-                  <p className="font-medium text-gray-900">
-                    {isUser1 ? 'Your vote' : 'User 1'}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    {conflict.user1_satisfaction === null 
-                      ? 'Pending vote on current resolution' 
-                      : conflict.user1_satisfaction 
-                        ? 'Satisfied with resolution' 
-                        : 'Needs more work'
-                    }
-                  </p>
-                </div>
-                <div className="text-2xl">
-                  {conflict.user1_satisfaction === null 
-                    ? '⏳' 
-                    : conflict.user1_satisfaction 
-                      ? '✅' 
-                      : '❌'
-                  }
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                <div>
-                  <p className="font-medium text-gray-900">
-                    {isUser2 ? 'Your vote' : 'User 2'}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    {conflict.user2_satisfaction === null 
-                      ? 'Pending vote on current resolution' 
-                      : conflict.user2_satisfaction 
-                        ? 'Satisfied with resolution' 
-                        : 'Needs more work'
-                    }
-                  </p>
-                </div>
-                <div className="text-2xl">
-                  {conflict.user2_satisfaction === null 
-                    ? '⏳' 
-                    : conflict.user2_satisfaction 
-                      ? '✅' 
-                      : '❌'
-                  }
-                </div>
-              </div>
-
-              {conflict.status === 'resolved' && (
-                <div className="mt-4 p-4 bg-green-50 rounded-lg border border-green-200">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <div className="text-2xl">🎉</div>
-                    <h4 className="font-semibold text-green-900">Conflict Successfully Resolved!</h4>
-                  </div>
-                  <p className="text-sm text-green-700">
-                    Both parties have voted and are satisfied with the resolution.
-                  </p>
-                </div>
-              )}
-
-              {conflict.status === 'active' && conflict.user1_satisfaction !== null && conflict.user2_satisfaction !== null && (
-                <div className="mt-4 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <div className="text-2xl">🔄</div>
-                    <h4 className="font-semibold text-yellow-900">Waiting for Both Parties</h4>
-                  </div>
-                  <p className="text-sm text-yellow-700">
-                    Both parties need to be satisfied for the conflict to be marked as resolved.
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };
