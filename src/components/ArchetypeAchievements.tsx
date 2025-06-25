@@ -123,7 +123,7 @@ const ArchetypeAchievements: React.FC<ArchetypeAchievementsProps> = ({ userId, c
                     Unlocked: {formatUnlockDate(achievement.unlocked_at)}
                   </div>
                   {/* Tooltip arrow */}
-              <p className="text-dark-teal font-bold px-4">
+                  <p className="text-dark-teal font-bold px-4"></p>
                 </div>
               </div>
             </div>
