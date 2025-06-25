@@ -112,7 +112,7 @@ export const conflictService = {
           resolvedConflicts: resolvedConflicts.length,
           archetypeCount: archetypeAchievements.length,
           hasLongMessage: conflictData.description.length > 900,
-          hasIFeelMessage: conflictData.description.toLowerCase().includes('i feel')
+          hasIFeelMessage: conflictData.description.toLowerCase().includes('i feel'),
           // New context fields
           weekendConflicts: isWeekend(now) ? weekendConflicts + 1 : weekendConflicts,
           emojiCount: messageAnalysis.emojiCount,

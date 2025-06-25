@@ -126,7 +126,7 @@ export const ACHIEVEMENTS: Record<string, Achievement> = {
     name: 'Drama-Free Since...',
     emoji: '🕊️',
     description: 'You stayed peaceful for 30+ days.'
-  }
+  },
   // New achievements (50 additional)
   weekend_warrior: {
     code: 'weekend_warrior',
