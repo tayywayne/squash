@@ -36,6 +36,14 @@ Squashie is a chaotic-good web app that helps users resolve conflicts with frien
 - **UI Components:** Custom components with Lucide React icons
 - **Deployment:** Netlify
 
+## ⚖️ Public Shame Board
+
+The **Public Shame Board** is where unresolved conflicts go to die — or be judged.
+
+If two users can't reach a resolution through Squashie's AI-assisted stages (and the rehashes fail too), the conflict is escalated to a **Final AI Judgment**. Once judged, it's posted publicly for the rest of the community to review, laugh at, and vote on.
+
+Conflict is messy. The Public Shame Board keeps it honest, transparent, and just a little bit hilarious — because sometimes you really do need 30 strangers to tell you both were in the wrong.
+
 
 ## 🏆 Achievement System
 
@@ -76,17 +84,3 @@ The leaderboard tracks:
 - User archetypes and achievements
 
 Users can view all-time or weekly stats.
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## 📝 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🙏 Acknowledgements
-
-- Built with [Bolt.new](https://bolt.new)
-- Powered by [Supabase](https://supabase.com)
-- AI by [OpenAI](https://openai.com)
