@@ -429,6 +429,7 @@ const HomePage: React.FC = () => {
             <div className="flex items-center space-x-2 mb-4 md:mb-0">
               <div className="text-2xl">💣</div>
               <span className="text-xl font-bold">Squashie</span>
+              <p className="text-sm mt-1">Making conflict resolution accessible, one squash at a time.</p>
             </div>
             <div className="text-gray-400 text-center md:text-right">
               <p>&copy; 2025 Squashie. Because conflict is inevitable.</p>
