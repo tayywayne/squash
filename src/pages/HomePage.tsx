@@ -433,7 +433,7 @@ const HomePage: React.FC = () => {
             <div className="text-gray-400 text-center md:text-right">
               <p>&copy; 2025 Squashie. Because conflict is inevitable.</p>
               <p className="text-sm mt-1">Making conflict resolution accessible, one squash at a time.</p>
-              <p className="text-sm mt-1">Making conflict resolution accessible, one squash at a time.</p>
+              <p className="text-sm mt-1">Contact us at squashiehelp@gmail.com</p>
               
               {/* Bolt.new Badge */}
               <div className="mt-4 flex justify-center md:justify-end">
