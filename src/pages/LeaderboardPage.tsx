@@ -94,11 +94,17 @@ const LeaderboardPage: React.FC = () => {
   const getRankIcon = (rank: number) => {
     switch (rank) {
       case 1:
-        return <Crown className="h-6 w-6 text-yellow-400" />;
+        return <div className="relative">
+          <div className="absolute -inset-3 bg-yellow-300 rounded-full animate-pulse opacity-50"></div>
+          <Crown className="h-8 w-8 text-yellow-400 drop-shadow-lg relative z-10" />
+        </div>;
       case 2:
-        return <Trophy className="h-6 w-6 text-gray-400" />;
+        return <div className="relative">
+          <div className="absolute -inset-2 bg-gray-300 rounded-full animate-pulse opacity-50"></div>
+          <Trophy className="h-7 w-7 text-gray-400 drop-shadow-lg relative z-10" />
+        </div>;
       case 3:
-        return <Medal className="h-6 w-6 text-amber-600" />;
+        return <Medal className="h-6 w-6 text-amber-600 drop-shadow" />;
       default:
         return <span className="text-lg font-black text-dark-teal">#{rank}</span>;
     }
@@ -107,9 +113,9 @@ const LeaderboardPage: React.FC = () => {
   const getRankBadgeColor = (rank: number) => {
     switch (rank) {
       case 1:
-        return 'bg-gradient-to-br from-yellow-300 via-yellow-400 to-yellow-500 text-yellow-900 border-yellow-600 shadow-lg';
+        return 'bg-gradient-to-br from-yellow-300 via-yellow-400 to-yellow-500 text-yellow-900 border-yellow-600 shadow-lg ring-4 ring-yellow-200 ring-opacity-50';
       case 2:
-        return 'bg-gradient-to-br from-gray-300 via-gray-400 to-gray-500 text-gray-900 border-gray-600 shadow-lg';
+        return 'bg-gradient-to-br from-gray-300 via-gray-400 to-gray-500 text-gray-900 border-gray-600 shadow-lg ring-2 ring-gray-200 ring-opacity-50';
       case 3:
         return 'bg-gradient-to-br from-amber-400 via-amber-500 to-amber-600 text-amber-900 border-amber-700 shadow-lg';
       default:
@@ -264,27 +270,31 @@ const LeaderboardPage: React.FC = () => {
                   return (
                     <tr key={user.user_id} className="hover:bg-lime-chartreuse/10 transition-colors">
                       <td className="px-3 sm:px-6 py-4">
-                        <div className={`inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 border-3 ${rank <= 3 ? 'border-black' : 'border-black'} ${getRankBadgeColor(rank)} ${rank <= 3 ? 'transform rotate-3 hover:rotate-0 transition-transform duration-200' : ''}`}>
+                        <div className={`inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 border-3 border-black ${getRankBadgeColor(rank)} ${rank <= 3 ? 'transform rotate-3 hover:rotate-0 transition-transform duration-200' : ''} ${rank === 1 ? 'animate-pulse-fast' : ''}`}>
                           {getRankIcon(rank)}
                         </div>
                       </td>
                       <td className="px-3 sm:px-6 py-4">
                         <div className="flex items-center space-x-3">
                           {user.avatar_url ? (
-                            <img
-                              src={user.avatar_url}
-                              alt={`${user.username || user.first_name || 'Anonymous User'}'s avatar`}
-                              className="w-8 h-8 sm:w-10 sm:h-10 object-cover border-3 border-black flex-shrink-0"
-                            />
+                            <div className={`relative flex-shrink-0 ${rank === 1 ? 'ring-4 ring-yellow-300' : rank === 2 ? 'ring-2 ring-gray-300' : ''}`}>
+                              <img
+                                src={user.avatar_url}
+                                alt={`${user.username || user.first_name || 'Anonymous User'}'s avatar`}
+                                className={`w-8 h-8 sm:w-10 sm:h-10 object-cover border-3 border-black flex-shrink-0 ${rank === 1 ? 'shadow-winner' : rank === 2 ? 'shadow-runner-up' : ''}`}
+                              />
+                              {rank === 1 && <div className="absolute -top-1 -right-1 text-lg">👑</div>}
+                            </div>
                           ) : (
-                            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-dark-teal border-3 border-black flex items-center justify-center flex-shrink-0">
+                            <div className={`w-8 h-8 sm:w-10 sm:h-10 bg-dark-teal border-3 border-black flex items-center justify-center flex-shrink-0 ${rank === 1 ? 'ring-4 ring-yellow-300 shadow-winner' : rank === 2 ? 'ring-2 ring-gray-300 shadow-runner-up' : ''}`}>
                               <User size={16} className="text-white sm:w-5 sm:h-5" />
+                              {rank === 1 && <div className="absolute -top-1 -right-1 text-lg">👑</div>}
                             </div>
                           )}
                           <div className="min-w-0 flex-1">
                             <button
                               onClick={() => navigate(`/user-profile/${user.user_id}`)}
-                              className="font-black text-dark-teal hover:text-vivid-orange transition-colors text-sm sm:text-base truncate block"
+                              className={`font-black text-sm sm:text-base truncate block ${rank === 1 ? 'text-vivid-orange' : rank === 2 ? 'text-dark-teal' : 'text-dark-teal hover:text-vivid-orange transition-colors'}`}
                             >
                               <UserDisplayName 
                                 username={user.username}

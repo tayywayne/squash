@@ -55,6 +55,7 @@ export default {
       animation: {
         'bounce-gentle': 'bounce 2s infinite',
         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'float': 'float 3s ease-in-out infinite',
         'bump': 'bump 0.3s ease-in-out',
         'slide-in': 'slideIn 0.5s ease-out',
@@ -132,7 +133,9 @@ export default {
       boxShadow: {
         'brutal': '4px 4px 0px 0px #000000',
         'brutal-sm': '2px 2px 0px 0px #000000',
-        'brutal-lg': '8px 8px 0px 0px #000000',
+        'brutal-lg': '8px 8px 0px 0px #000000', 
+        'winner': '0 0 15px 5px rgba(255, 215, 0, 0.6)',
+        'runner-up': '0 0 10px 3px rgba(192, 192, 192, 0.5)',
       },
       borderWidth: {
         '3': '3px',
