@@ -16,24 +16,21 @@ const SupporterCard: React.FC<SupporterCardProps> = ({
 }) => {
   const supporterConfig = {
     tip_1: {
-      title: 'Band-Aid Buyer',
-      gradient: 'bg-gradient-to-r from-blue-400 to-blue-600',
-      borderColor: 'border-blue-300',
-      textColor: 'text-blue-800',
+      title: 'BAND-AID BUYER',
+      bgColor: 'bg-green-teal',
+      textColor: 'text-white',
       blurb: 'Thanks for patching up our server costs! 🩹'
     },
     tip_2: {
-      title: "I'm the Problem",
-      gradient: 'bg-gradient-to-r from-pink-100 to-pink-400',
-      borderColor: 'border-pink-300',
-      textColor: 'text-pink-800',
+      title: "I'M THE PROBLEM",
+      bgColor: 'bg-vivid-orange', 
+      textColor: 'text-white',
       blurb: 'Self-awareness is the first step to recovery! 💅'
     },
     tip_3: {
-      title: 'Chaos Patron',
-      gradient: 'bg-gradient-to-r from-yellow-100 to-red-400',
-      borderColor: 'border-orange-300',
-      textColor: 'text-orange-900',
+      title: 'CHAOS PATRON',
+      bgColor: 'bg-lime-chartreuse',
+      textColor: 'text-dark-teal',
       blurb: 'You create drama, we solve it. Fair trade! 👑'
     }
   };
@@ -49,12 +46,12 @@ const SupporterCard: React.FC<SupporterCardProps> = ({
   };
 
   return (
-    <div className={`${config.gradient} p-6 rounded-xl border-2 ${config.borderColor} shadow-lg relative overflow-hidden ${className}`}>
-      {/* Decorative sparkles */}
-      <div className="absolute top-2 right-2 opacity-30">
+    <div className={`${config.bgColor} p-6 border-3 border-black shadow-brutal relative overflow-hidden ${className}`}>
+      {/* Decorative elements */}
+      <div className="absolute top-2 right-2">
         <Sparkles className="h-6 w-6 text-white" />
       </div>
-      <div className="absolute bottom-2 left-2 opacity-20">
+      <div className="absolute bottom-2 left-2">
         <Heart className="h-4 w-4 text-white" />
       </div>
       
@@ -63,12 +60,12 @@ const SupporterCard: React.FC<SupporterCardProps> = ({
         <div className="flex items-center space-x-3 mb-4">
           <div className="text-4xl">{supporterEmoji}</div>
           <div>
-            <h3 className={`text-xl font-bold ${config.textColor}`}>
+            <h3 className={`text-xl font-black ${config.textColor}`}>
               {config.title}
             </h3>
-            <div className="flex items-center space-x-1 text-sm opacity-80">
+            <div className="flex items-center space-x-1 text-sm">
               <Calendar className="h-3 w-3" />
-              <span className={config.textColor}>
+              <span className={`${config.textColor} font-bold`}>
                 Since {formatDate(supporterSince)}
               </span>
             </div>
@@ -76,15 +73,15 @@ const SupporterCard: React.FC<SupporterCardProps> = ({
         </div>
 
         {/* Blurb */}
-        <div className={`${config.textColor} text-sm font-medium opacity-90 italic`}>
+        <div className={`${config.textColor} text-sm font-bold italic`}>
           {config.blurb}
         </div>
 
         {/* Supporter Badge */}
-        <div className="mt-4 inline-flex items-center space-x-2 bg-white/30 backdrop-blur-sm px-3 py-1 rounded-full">
-          <Sparkles className="h-4 w-4 text-yellow-600" />
-          <span className={`text-sm font-semibold ${config.textColor}`}>
-            Official Supporter
+        <div className="mt-4 inline-flex items-center space-x-2 bg-white border-2 border-black px-3 py-1">
+          <Sparkles className="h-4 w-4 text-vivid-orange" />
+          <span className={`text-sm font-black text-dark-teal`}>
+            OFFICIAL SUPPORTER
           </span>
         </div>
       </div>

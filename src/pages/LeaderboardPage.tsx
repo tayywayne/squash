@@ -61,26 +61,26 @@ const LeaderboardPage: React.FC = () => {
   const getRankIcon = (rank: number) => {
     switch (rank) {
       case 1:
-        return <Trophy className="h-6 w-6 text-yellow-500" />;
+        return <Trophy className="h-6 w-6 text-vivid-orange" />;
       case 2:
-        return <Medal className="h-6 w-6 text-gray-400" />;
+        return <Medal className="h-6 w-6 text-dark-teal" />;
       case 3:
-        return <Award className="h-6 w-6 text-amber-600" />;
+        return <Award className="h-6 w-6 text-lime-chartreuse" />;
       default:
-        return <span className="text-lg font-bold text-gray-600">#{rank}</span>;
+        return <span className="text-lg font-black text-dark-teal">#{rank}</span>;
     }
   };
 
   const getRankBadgeColor = (rank: number) => {
     switch (rank) {
       case 1:
-        return 'bg-gradient-to-r from-yellow-400 to-yellow-600 text-white';
+        return 'bg-vivid-orange text-white';
       case 2:
-        return 'bg-gradient-to-r from-gray-300 to-gray-500 text-white';
+        return 'bg-dark-teal text-white';
       case 3:
-        return 'bg-gradient-to-r from-amber-400 to-amber-600 text-white';
+        return 'bg-lime-chartreuse text-dark-teal';
       default:
-        return 'bg-gray-100 text-gray-700';
+        return 'bg-white text-dark-teal';
     }
   };
 
@@ -96,90 +96,86 @@ const LeaderboardPage: React.FC = () => {
 
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center">
-          <Trophy className="h-8 w-8 text-yellow-500 mr-3" />
-          Conflict Resolution Leaderboard
+        <h1 className="text-4xl font-black text-dark-teal mb-4 border-b-3 border-black pb-2 flex items-center">
+          <Trophy className="h-8 w-8 text-vivid-orange mr-3" />
+          CONFLICT RESOLUTION LEADERBOARD
         </h1>
-        <p className="text-gray-600">
+        <p className="text-dark-teal font-bold text-lg">
           Yay for public shame! See who ranks the least and most problematic!
         </p>
       </div>
 
       {/* Controls */}
-      <div className="bg-white p-4 sm:p-6 rounded-lg border border-gray-200 mb-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+      <div className="bg-white p-6 border-3 border-black shadow-brutal mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {/* Time Frame Selector */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-3">
+            <label className="block text-sm font-black text-dark-teal mb-3 uppercase">
               <Clock className="inline h-4 w-4 mr-1" />
               Time Frame
             </label>
-            <div className="flex bg-gray-100 rounded-lg p-1">
+            <div className="flex bg-gray-100 p-1 border-3 border-black">
               <button
                 onClick={() => setTimeFrame('all-time')}
-                className={`flex-1 py-2 px-4 text-sm font-medium rounded-md transition-colors flex items-center justify-center ${
+                className={`flex-1 py-2 px-4 text-sm font-black transition-colors flex items-center justify-center ${
                   timeFrame === 'all-time'
-                    ? 'bg-white text-gray-900 shadow-sm'
-                    : 'text-gray-600 hover:text-gray-900'
+                    ? 'bg-lime-chartreuse text-dark-teal border-2 border-black'
+                    : 'text-dark-teal hover:text-vivid-orange'
                 }`}
               >
-                <Calendar className="h-4 w-4 mr-1 sm:mr-2" />
-                <span className="hidden sm:inline">All Time</span>
-                <span className="sm:hidden">All</span>
+                <Calendar className="h-4 w-4 mr-2" />
+                ALL TIME
               </button>
               <button
                 onClick={() => setTimeFrame('weekly')}
-                className={`flex-1 py-2 px-4 text-sm font-medium rounded-md transition-colors flex items-center justify-center ${
+                className={`flex-1 py-2 px-4 text-sm font-black transition-colors flex items-center justify-center ${
                   timeFrame === 'weekly'
-                    ? 'bg-white text-gray-900 shadow-sm'
-                    : 'text-gray-600 hover:text-gray-900'
+                    ? 'bg-lime-chartreuse text-dark-teal border-2 border-black'
+                    : 'text-dark-teal hover:text-vivid-orange'
                 }`}
               >
-                <TrendingUp className="h-4 w-4 mr-1 sm:mr-2" />
-                <span className="hidden sm:inline">This Week</span>
-                <span className="sm:hidden">Week</span>
+                <TrendingUp className="h-4 w-4 mr-2" />
+                THIS WEEK
               </button>
             </div>
           </div>
 
           {/* Category Selector */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-3">
+            <label className="block text-sm font-black text-dark-teal mb-3 uppercase">
               <Award className="inline h-4 w-4 mr-1" />
               Category
             </label>
-            <div className="flex bg-gray-100 rounded-lg p-1">
+            <div className="flex bg-gray-100 p-1 border-3 border-black">
               <button
                 onClick={() => setCategory('least-problematic')}
-                className={`flex-1 py-2 px-4 text-sm font-medium rounded-md transition-colors flex items-center justify-center ${
+                className={`flex-1 py-2 px-4 text-sm font-black transition-colors flex items-center justify-center ${
                   category === 'least-problematic'
-                    ? 'bg-white text-gray-900 shadow-sm'
-                    : 'text-gray-600 hover:text-gray-900'
+                    ? 'bg-lime-chartreuse text-dark-teal border-2 border-black'
+                    : 'text-dark-teal hover:text-vivid-orange'
                 }`}
               >
-                <TrendingUp className="h-4 w-4 mr-1 sm:mr-2" />
-                <span className="hidden sm:inline">Least Problematic</span>
-                <span className="sm:hidden">Best</span>
+                <TrendingUp className="h-4 w-4 mr-2" />
+                LEAST PROBLEMATIC
               </button>
               <button
                 onClick={() => setCategory('most-problematic')}
-                className={`flex-1 py-2 px-4 text-sm font-medium rounded-md transition-colors flex items-center justify-center ${
+                className={`flex-1 py-2 px-4 text-sm font-black transition-colors flex items-center justify-center ${
                   category === 'most-problematic'
-                    ? 'bg-white text-gray-900 shadow-sm'
-                    : 'text-gray-600 hover:text-gray-900'
+                    ? 'bg-lime-chartreuse text-dark-teal border-2 border-black'
+                    : 'text-dark-teal hover:text-vivid-orange'
                 }`}
               >
-                <TrendingDown className="h-4 w-4 mr-1 sm:mr-2" />
-                <span className="hidden sm:inline">Most Problematic</span>
-                <span className="sm:hidden">Worst</span>
+                <TrendingDown className="h-4 w-4 mr-2" />
+                MOST PROBLEMATIC
               </button>
             </div>
           </div>
         </div>
 
         {/* Category Description */}
-        <div className="mt-4 p-3 bg-gray-50 rounded-lg overflow-hidden">
-          <p className="text-sm text-gray-600">
+        <div className="mt-4 p-3 bg-dark-teal text-white border-2 border-black">
+          <p className="text-sm font-bold">
             {category === 'least-problematic' 
               ? '🏆 Ranked by highest resolution rate, then by most conflicts resolved. These users are conflict resolution champions!'
               : '🔥 Ranked by lowest resolution rate, then by most conflicts. These users might be problematic....'
@@ -189,19 +185,19 @@ const LeaderboardPage: React.FC = () => {
       </div>
 
       {/* Leaderboard */}
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+      <div className="bg-white border-3 border-black shadow-brutal overflow-hidden">
         {loading ? (
           <div className="text-center py-12">
             <div className="animate-pulse-slow mb-4">
               <Trophy className="h-12 w-12 text-gray-300 mx-auto" />
             </div>
-            <p className="text-gray-600">Loading leaderboard...</p>
+            <p className="text-dark-teal font-bold">Loading leaderboard...</p>
           </div>
         ) : sortedData.length === 0 ? (
           <div className="text-center py-12">
             <div className="text-6xl mb-4">🤷</div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">No Data Available</h3>
-            <p className="text-gray-600">
+            <h3 className="text-xl font-black text-dark-teal mb-2">NO DATA AVAILABLE</h3>
+            <p className="text-dark-teal font-bold">
               {timeFrame === 'weekly' 
                 ? 'No conflicts have been created this week yet.'
                 : 'No users have participated in conflicts yet.'
@@ -211,31 +207,31 @@ const LeaderboardPage: React.FC = () => {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full min-w-[600px]">
-              <thead className="bg-gray-50 border-b border-gray-200">
+              <thead className="bg-lime-chartreuse border-b-3 border-black">
                 <tr>
-                  <th className="px-3 sm:px-6 py-4 text-left text-sm font-medium text-gray-900">Rank</th>
-                  <th className="px-3 sm:px-6 py-4 text-left text-sm font-medium text-gray-900">User</th>
-                  <th className="px-3 sm:px-6 py-4 text-center text-sm font-medium text-gray-900">
-                    <span className="hidden sm:inline">Total Conflicts</span>
-                    <span className="sm:hidden">Total</span>
+                  <th className="px-3 sm:px-6 py-4 text-left text-sm font-black text-dark-teal">RANK</th>
+                  <th className="px-3 sm:px-6 py-4 text-left text-sm font-black text-dark-teal">USER</th>
+                  <th className="px-3 sm:px-6 py-4 text-center text-sm font-black text-dark-teal">
+                    <span className="hidden sm:inline">TOTAL CONFLICTS</span>
+                    <span className="sm:hidden">TOTAL</span>
                   </th>
-                  <th className="px-3 sm:px-6 py-4 text-center text-sm font-medium text-gray-900">
-                    <span className="hidden sm:inline">Resolved</span>
-                    <span className="sm:hidden">Done</span>
+                  <th className="px-3 sm:px-6 py-4 text-center text-sm font-black text-dark-teal">
+                    <span className="hidden sm:inline">RESOLVED</span>
+                    <span className="sm:hidden">DONE</span>
                   </th>
-                  <th className="px-3 sm:px-6 py-4 text-center text-sm font-medium text-gray-900">
-                    <span className="hidden sm:inline">Resolution Rate</span>
-                    <span className="sm:hidden">Rate</span>
+                  <th className="px-3 sm:px-6 py-4 text-center text-sm font-black text-dark-teal">
+                    <span className="hidden sm:inline">RESOLUTION RATE</span>
+                    <span className="sm:hidden">RATE</span>
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200">
+              <tbody className="divide-y-3 divide-black">
                 {sortedData.map((user, index) => {
                   const rank = index + 1;
                   return (
-                    <tr key={user.user_id} className="hover:bg-gray-50 transition-colors">
+                    <tr key={user.user_id} className="hover:bg-lime-chartreuse/10 transition-colors">
                       <td className="px-3 sm:px-6 py-4">
-                        <div className={`inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full ${getRankBadgeColor(rank)}`}>
+                        <div className={`inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 border-3 border-black ${getRankBadgeColor(rank)}`}>
                           {getRankIcon(rank)}
                         </div>
                       </td>
@@ -245,18 +241,17 @@ const LeaderboardPage: React.FC = () => {
                             <img
                               src={user.avatar_url}
                               alt={`${user.username || user.first_name || 'Anonymous User'}'s avatar`}
-                              supporterEmoji={user.supporter_emoji}
-                              className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover border-2 border-gray-200 flex-shrink-0"
+                              className="w-8 h-8 sm:w-10 sm:h-10 object-cover border-3 border-black flex-shrink-0"
                             />
                           ) : (
-                            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-coral-100 rounded-full flex items-center justify-center flex-shrink-0">
-                              <User size={16} className="text-coral-600 sm:w-5 sm:h-5" />
+                            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-dark-teal border-3 border-black flex items-center justify-center flex-shrink-0">
+                              <User size={16} className="text-white sm:w-5 sm:h-5" />
                             </div>
                           )}
                           <div className="min-w-0 flex-1">
                             <button
                               onClick={() => navigate(`/user-profile/${user.user_id}`)}
-                              className="font-medium text-gray-900 hover:text-coral-600 transition-colors text-sm sm:text-base truncate block"
+                              className="font-black text-dark-teal hover:text-vivid-orange transition-colors text-sm sm:text-base truncate block"
                             >
                               <UserDisplayName 
                                 username={user.username}
@@ -268,25 +263,25 @@ const LeaderboardPage: React.FC = () => {
                         </div>
                       </td>
                       <td className="px-3 sm:px-6 py-4 text-center">
-                        <span className="text-base sm:text-lg font-semibold text-gray-900">
+                        <span className="text-base sm:text-lg font-black text-dark-teal">
                           {user.total_conflicts}
                         </span>
                       </td>
                       <td className="px-3 sm:px-6 py-4 text-center">
-                        <span className="text-base sm:text-lg font-semibold text-teal-600">
+                        <span className="text-base sm:text-lg font-black text-green-teal">
                           {user.resolved_conflicts}
                         </span>
                       </td>
                       <td className="px-3 sm:px-6 py-4 text-center">
                         <div className="flex items-center justify-center">
-                          <div className={`px-3 py-1 rounded-full text-sm font-medium ${
+                          <div className={`px-3 py-1 text-sm font-black border-2 border-black ${
                             user.resolution_rate >= 80 
-                              ? 'bg-green-100 text-green-800'
+                              ? 'bg-green-teal text-white'
                               : user.resolution_rate >= 60
-                                ? 'bg-yellow-100 text-yellow-800'
+                                ? 'bg-lime-chartreuse text-dark-teal'
                                 : user.resolution_rate >= 40
-                                  ? 'bg-orange-100 text-orange-800'
-                                  : 'bg-red-100 text-red-800'
+                                  ? 'bg-vivid-orange text-white'
+                                  : 'bg-red-500 text-white'
                           }`}>
                             {user.resolution_rate}%
                           </div>
@@ -303,25 +298,25 @@ const LeaderboardPage: React.FC = () => {
 
       {/* Footer Stats */}
       {sortedData.length > 0 && (
-        <div className="mt-6 bg-gradient-to-r from-coral-50 to-teal-50 p-4 sm:p-6 rounded-lg border border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900 mb-3">
-            {timeFrame === 'all-time' ? 'All-Time' : 'This Week\'s'} Leaderboard Stats
+        <div className="mt-6 bg-dark-teal p-6 border-3 border-black shadow-brutal">
+          <h3 className="text-lg font-black text-white mb-3 border-b-2 border-lime-chartreuse pb-2">
+            {timeFrame === 'all-time' ? 'ALL-TIME' : 'THIS WEEK\'S'} LEADERBOARD STATS
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-            <div>
-              <div className="text-xl sm:text-2xl font-bold text-coral-500">
+            <div className="bg-white border-2 border-black p-4">
+              <div className="text-2xl font-black text-vivid-orange">
                 {sortedData.reduce((sum, user) => sum + user.total_conflicts, 0)}
               </div>
-              <div className="text-sm text-gray-600">Total Conflicts</div>
+              <div className="text-sm text-dark-teal font-bold">TOTAL CONFLICTS</div>
             </div>
-            <div>
-              <div className="text-xl sm:text-2xl font-bold text-teal-500">
+            <div className="bg-white border-2 border-black p-4">
+              <div className="text-2xl font-black text-green-teal">
                 {sortedData.reduce((sum, user) => sum + user.resolved_conflicts, 0)}
               </div>
-              <div className="text-sm text-gray-600">Total Resolved</div>
+              <div className="text-sm text-dark-teal font-bold">TOTAL RESOLVED</div>
             </div>
-            <div>
-              <div className="text-xl sm:text-2xl font-bold text-lavender-500">
+            <div className="bg-white border-2 border-black p-4">
+              <div className="text-2xl font-black text-lime-chartreuse">
                 {sortedData.length > 0 
                   ? Math.round(
                       (sortedData.reduce((sum, user) => sum + user.resolved_conflicts, 0) /
@@ -330,7 +325,7 @@ const LeaderboardPage: React.FC = () => {
                   : 0
                 }%
               </div>
-              <div className="text-sm text-gray-600">Overall Resolution Rate</div>
+              <div className="text-sm text-dark-teal font-bold">OVERALL RESOLUTION RATE</div>
             </div>
           </div>
         </div>

@@ -48,16 +48,16 @@ const GeneralAchievementToast: React.FC<GeneralAchievementToastProps> = ({
           : 'translate-x-full opacity-0 scale-95'
       }`}
     >
-      <div className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-lg shadow-2xl border border-yellow-400 overflow-hidden">
+      <div className="bg-vivid-orange text-white border-3 border-black shadow-brutal overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 pb-2">
+        <div className="flex items-center justify-between p-4 pb-2 border-b-2 border-black">
           <div className="flex items-center space-x-2">
-            <Trophy className="h-5 w-5 text-yellow-200" />
-            <span className="font-bold text-sm">Achievement Unlocked!</span>
+            <Trophy className="h-5 w-5 text-white" />
+            <span className="font-black text-sm">ACHIEVEMENT UNLOCKED!</span>
           </div>
           <button
             onClick={handleClose}
-            className="text-yellow-200 hover:text-white transition-colors"
+            className="text-white hover:text-lime-chartreuse transition-colors"
           >
             <X className="h-4 w-4" />
           </button>
@@ -68,10 +68,10 @@ const GeneralAchievementToast: React.FC<GeneralAchievementToastProps> = ({
           <div className="flex items-start space-x-3">
             <div className="text-3xl">{achievement.emoji}</div>
             <div className="flex-1">
-              <h3 className="font-bold text-lg text-yellow-100 mb-1">
+              <h3 className="font-black text-lg text-white mb-1">
                 {achievement.name}
               </h3>
-              <p className="text-yellow-200 text-sm leading-relaxed">
+              <p className="text-white text-sm leading-relaxed">
                 {achievement.description}
               </p>
             </div>
@@ -79,14 +79,14 @@ const GeneralAchievementToast: React.FC<GeneralAchievementToastProps> = ({
         </div>
 
         {/* Animated border */}
-        <div className="h-1 bg-gradient-to-r from-yellow-300 via-orange-300 to-yellow-300 animate-pulse"></div>
+        <div className="h-2 bg-lime-chartreuse"></div>
       </div>
 
       {/* Sparkle effects */}
-      <div className="absolute -top-2 -right-2 text-yellow-200 animate-bounce">
+      <div className="absolute -top-2 -right-2 text-yellow-300 animate-bounce">
         🏆
       </div>
-      <div className="absolute -top-1 -left-1 text-yellow-200 animate-bounce delay-150">
+      <div className="absolute -top-1 -left-1 text-yellow-300 animate-bounce delay-150">
         ⭐
       </div>
     </div>

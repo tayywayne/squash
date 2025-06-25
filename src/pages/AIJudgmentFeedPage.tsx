@@ -9,7 +9,7 @@ import Toast from '../components/Toast';
 const AIJudgmentFeedPage: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [rulings, setRulings] = useState<PublicAIRulFaiing[]>([]);
+  const [rulings, setRulings] = useState<PublicAIRuling[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedRuling, setExpandedRuling] = useState<string | null>(null);
   const [voteCounts, setVoteCounts] = useState<Record<string, VoteCount[]>>({});
@@ -132,7 +132,7 @@ const AIJudgmentFeedPage: React.FC = () => {
         <div className="animate-pulse-slow mb-4">
           <div className="text-6xl">⚖️</div>
         </div>
-        <p className="text-gray-600">Loading the wall of shame...</p>
+        <p className="text-dark-teal font-bold">Loading the wall of shame...</p>
       </div>
     );
   }
@@ -151,34 +151,34 @@ const AIJudgmentFeedPage: React.FC = () => {
       <div className="mb-8">
         <div className="text-center mb-6">
           <div className="text-6xl mb-4">⚖️</div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            AI Judgment Feed
+          <h1 className="text-4xl font-black text-dark-teal mb-2 border-b-3 border-black pb-2">
+            AI JUDGMENT FEED
           </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-xl text-dark-teal font-bold max-w-2xl mx-auto leading-relaxed">
             The public wall of shame. When people can't figure their shit out, 
             Judge AI steps in with the final word. Vote on who you think was wrong.
           </p>
         </div>
 
         {/* Stats */}
-        <div className="bg-gradient-to-r from-red-50 to-purple-50 p-4 sm:p-6 rounded-lg border border-red-200">
+        <div className="bg-vivid-orange p-6 border-3 border-black shadow-brutal">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-            <div>
-              <div className="text-xl sm:text-2xl font-bold text-red-600">{rulings.length}</div>
-              <div className="text-sm text-gray-600">Total AI Rulings</div>
+            <div className="bg-white border-2 border-black p-3">
+              <div className="text-2xl font-black text-vivid-orange">{rulings.length}</div>
+              <div className="text-sm text-dark-teal font-bold">TOTAL AI RULINGS</div>
             </div>
-            <div>
-              <div className="text-xl sm:text-2xl font-bold text-purple-600">
+            <div className="bg-white border-2 border-black p-3">
+              <div className="text-2xl font-black text-vivid-orange">
                 {rulings.reduce((sum, r) => {
                   const totalVotes = Object.values(r.vote_counts || {}).reduce((voteSum, count) => voteSum + count, 0);
                   return sum + totalVotes;
                 }, 0)}
               </div>
-              <div className="text-sm text-gray-600">Public Votes Cast</div>
+              <div className="text-sm text-dark-teal font-bold">PUBLIC VOTES CAST</div>
             </div>
-            <div>
-              <div className="text-xl sm:text-2xl font-bold text-orange-600">100%</div>
-              <div className="text-sm text-gray-600">Failure Rate</div>
+            <div className="bg-white border-2 border-black p-3">
+              <div className="text-2xl font-black text-vivid-orange">100%</div>
+              <div className="text-sm text-dark-teal font-bold">FAILURE RATE</div>
             </div>
           </div>
         </div>
@@ -186,10 +186,10 @@ const AIJudgmentFeedPage: React.FC = () => {
 
       {/* Rulings List */}
       {rulings.length === 0 ? (
-        <div className="text-center py-12">
+        <div className="text-center py-12 border-3 border-black p-6">
           <div className="text-6xl mb-4">🤷</div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">No AI Rulings Yet</h2>
-          <p className="text-gray-600">
+          <h2 className="text-2xl font-black text-dark-teal mb-2">NO AI RULINGS YET</h2>
+          <p className="text-dark-teal font-bold">
             Surprisingly, people are actually resolving their conflicts! 
             Check back later for some drama.
           </p>
@@ -197,25 +197,25 @@ const AIJudgmentFeedPage: React.FC = () => {
       ) : (
         <div className="space-y-4">
           {rulings.map((ruling) => (
-            <div key={ruling.conflict_id} className="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
+            <div key={ruling.conflict_id} className="bg-white border-3 border-black shadow-brutal hover:shadow-brutal-sm transition-all transform hover:translate-x-1 hover:translate-y-1">
               {/* Ruling Header */}
-              <div className="p-4 sm:p-6">
+              <div className="p-6 border-b-3 border-black">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex-1 min-w-0 pr-4">
-                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 break-words">
+                    <h3 className="text-lg font-black text-dark-teal mb-2 break-words">
                       {ruling.title}
                     </h3>
-                    <p className="text-gray-600 text-sm mb-3 break-words">
+                    <p className="text-dark-teal text-sm mb-3 break-words border-l-3 border-lime-chartreuse pl-3">
                       {ruling.ai_final_summary}
                     </p>
-                    <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500">
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs text-dark-teal font-bold">
                       <div className="flex items-center space-x-2">
                         <Users size={16} />
                         <span className="break-all">
                           {ruling.user1_id ? (
                             <button
                               onClick={() => navigate(`/user-profile/${ruling.user1_id}`)}
-                              className="text-coral-500 hover:text-coral-600 font-medium underline"
+                              className="text-vivid-orange hover:text-orange-600 font-black underline"
                             >
                               <UserDisplayName 
                                 username={ruling.user1_username}
@@ -236,7 +236,7 @@ const AIJudgmentFeedPage: React.FC = () => {
                           {ruling.user2_id ? (
                             <button
                               onClick={() => navigate(`/user-profile/${ruling.user2_id}`)}
-                              className="text-coral-500 hover:text-coral-600 font-medium underline"
+                              className="text-vivid-orange hover:text-orange-600 font-black underline"
                             >
                               <UserDisplayName 
                                 username={ruling.user2_username}
@@ -270,10 +270,10 @@ const AIJudgmentFeedPage: React.FC = () => {
                   
                   <button
                     onClick={() => handleToggleExpand(ruling.conflict_id)}
-                    className="flex items-center space-x-2 bg-red-500 hover:bg-red-600 text-white px-3 sm:px-4 py-2 rounded-lg transition-colors text-sm flex-shrink-0"
+                    className="bg-vivid-orange hover:bg-orange-600 text-white px-4 py-2 font-black border-3 border-black shadow-brutal hover:shadow-brutal-sm transition-all transform hover:translate-x-1 hover:translate-y-1 flex items-center space-x-2 flex-shrink-0"
                   >
-                    <span className="hidden sm:inline">💬 View Ruling</span>
-                    <span className="sm:hidden">💬</span>
+                    <span className="hidden sm:inline">VIEW RULING</span>
+                    <span className="sm:hidden">VIEW</span>
                     {expandedRuling === ruling.conflict_id ? (
                       <ChevronUp size={16} />
                     ) : (
@@ -285,33 +285,33 @@ const AIJudgmentFeedPage: React.FC = () => {
 
               {/* Expanded Ruling Details */}
               {expandedRuling === ruling.conflict_id && (
-                <div className="border-t border-gray-200 p-4 sm:p-6 bg-gray-50">
+                <div className="border-b-3 border-black">
                   {/* Full AI Ruling */}
-                  <div className="bg-gradient-to-r from-purple-900 via-red-900 to-purple-900 p-4 sm:p-6 rounded-lg border-2 border-yellow-400 text-white mb-6">
-                    <div className="text-center mb-4">
-                      <h4 className="text-lg sm:text-xl font-bold text-yellow-300">⚖️ JUDGE AI'S FINAL RULING ⚖️</h4>
+                  <div className="bg-dark-teal p-6 text-white">
+                    <div className="text-center mb-4 border-b-3 border-black pb-2">
+                      <h4 className="text-xl font-black text-lime-chartreuse">⚖️ JUDGE AI'S FINAL RULING ⚖️</h4>
                     </div>
-                    <div className="bg-black/30 p-4 rounded-lg border border-yellow-400/50">
-                      <p className="text-gray-100 whitespace-pre-wrap leading-relaxed text-sm sm:text-base break-words">
+                    <div className="bg-black/30 p-4 border-3 border-black">
+                      <p className="text-white whitespace-pre-wrap leading-relaxed text-sm sm:text-base break-words">
                         {ruling.final_ai_ruling}
                       </p>
                     </div>
                   </div>
 
                   {/* Voting Section */}
-                  <div className="bg-white p-4 sm:p-6 rounded-lg border border-gray-200">
-                    <h4 className="text-lg font-semibold text-gray-900 mb-4">
-                      🗳️ What do you think? Cast your judgment!
+                  <div className="bg-white p-6">
+                    <h4 className="text-lg font-black text-dark-teal mb-4 flex items-center">
+                      <span className="text-2xl mr-2">🗳️</span> WHAT DO YOU THINK? CAST YOUR JUDGMENT!
                     </h4>
                     
                     {!user ? (
-                      <div className="text-center py-4 px-2">
-                        <p className="text-gray-600 mb-4">Log in to cast your vote on this conflict</p>
+                      <div className="text-center py-4 px-2 border-3 border-black bg-lime-chartreuse">
+                        <p className="text-dark-teal font-bold mb-4">Log in to cast your vote on this conflict</p>
                         <button
                           onClick={() => window.location.href = '/login'}
-                          className="bg-coral-500 hover:bg-coral-600 text-white px-6 py-2 rounded-lg transition-colors"
+                          className="bg-vivid-orange hover:bg-orange-600 text-white px-6 py-2 font-black border-3 border-black shadow-brutal hover:shadow-brutal-sm transition-all transform hover:translate-x-1 hover:translate-y-1"
                         >
-                          Log In to Vote
+                          LOG IN TO VOTE
                         </button>
                       </div>
                     ) : (
@@ -326,19 +326,19 @@ const AIJudgmentFeedPage: React.FC = () => {
                               key={option.type}
                               onClick={() => handleVote(ruling.conflict_id, option.type)}
                               disabled={isLoading}
-                              className={`flex items-center justify-between p-3 rounded-lg border-2 transition-all text-sm ${
+                              className={`flex items-center justify-between p-4 border-3 transition-all ${
                                 isSelected
-                                  ? 'border-coral-500 bg-coral-50 text-coral-700'
-                                  : 'border-gray-200 hover:border-coral-300 hover:bg-coral-50'
+                                  ? 'bg-lime-chartreuse border-black shadow-brutal'
+                                  : 'bg-white border-black hover:bg-lime-chartreuse/20'
                               } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                             >
-                              <div className="flex items-center space-x-2">
-                                <span className="text-lg">{option.emoji}</span>
-                                <span className="font-medium text-sm">{option.label}</span>
+                              <div className="flex items-center space-x-3">
+                                <span className="text-2xl">{option.emoji}</span>
+                                <span className="font-black text-dark-teal">{option.label}</span>
                               </div>
                               <div className="flex items-center space-x-2">
-                                {isSelected && <span className="text-xs text-coral-600">✓</span>}
-                                <span className="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs font-medium">
+                                {isSelected && <span className="text-xs text-vivid-orange font-black">✓</span>}
+                                <span className="bg-dark-teal text-white px-3 py-1 text-xs font-black border-2 border-black">
                                   {voteCount}
                                 </span>
                               </div>
@@ -357,11 +357,11 @@ const AIJudgmentFeedPage: React.FC = () => {
 
       {/* Footer */}
       <div className="mt-12 text-center">
-        <div className="bg-yellow-50 p-4 sm:p-6 rounded-lg border border-yellow-200">
-          <h3 className="text-lg font-semibold text-yellow-900 mb-2">
-            📢 Public Service Announcement
+        <div className="bg-lime-chartreuse p-6 border-3 border-black shadow-brutal">
+          <h3 className="text-lg font-black text-dark-teal mb-2 flex items-center justify-center">
+            <span className="text-2xl mr-2">📢</span> PUBLIC SERVICE ANNOUNCEMENT
           </h3>
-          <p className="text-sm text-yellow-800 leading-relaxed">
+          <p className="text-dark-teal font-bold leading-relaxed">
             These conflicts are displayed publicly because the participants couldn't resolve them through normal mediation. 
             Vote responsibly and remember: we're all just trying to figure out how to be decent humans.
           </p>

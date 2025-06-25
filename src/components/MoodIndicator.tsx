@@ -15,11 +15,11 @@ const MoodIndicator: React.FC<MoodIndicatorProps> = ({
   onMoodChange 
 }) => {
   const moods: { level: MoodLevel; emoji: string; label: string; color: string }[] = [
-    { level: 'rage', emoji: '😡', label: 'Rage Mode', color: 'text-red-500' },
-    { level: 'annoyed', emoji: '😤', label: 'Annoyed AF', color: 'text-orange-500' },
-    { level: 'meh', emoji: '😐', label: 'Meh', color: 'text-gray-500' },
-    { level: 'chill', emoji: '😌', label: 'Chill Vibes', color: 'text-teal-500' },
-    { level: 'zen', emoji: '🧘', label: 'Zen Master', color: 'text-green-500' },
+    { level: 'rage', emoji: '😡', label: 'RAGE MODE', color: 'text-vivid-orange' },
+    { level: 'annoyed', emoji: '😤', label: 'ANNOYED AF', color: 'text-vivid-orange' },
+    { level: 'meh', emoji: '😐', label: 'MEH', color: 'text-dark-teal' },
+    { level: 'chill', emoji: '😌', label: 'CHILL VIBES', color: 'text-green-teal' },
+    { level: 'zen', emoji: '🧘', label: 'ZEN MASTER', color: 'text-green-teal' },
   ];
 
   const sizeClasses = {
@@ -37,10 +37,10 @@ const MoodIndicator: React.FC<MoodIndicatorProps> = ({
           <button
             key={moodOption.level}
             onClick={() => onMoodChange?.(moodOption.level)}
-            className={`${sizeClasses[size]} p-2 rounded-lg transition-all hover:scale-110 ${
+            className={`${sizeClasses[size]} p-2 border-3 transition-all hover:scale-110 ${
               mood === moodOption.level 
-                ? 'bg-gray-100 scale-110' 
-                : 'hover:bg-gray-50'
+                ? 'bg-lime-chartreuse border-black scale-110 shadow-brutal-sm' 
+                : 'border-transparent hover:border-black'
             }`}
             title={moodOption.label}
           >
@@ -53,8 +53,8 @@ const MoodIndicator: React.FC<MoodIndicatorProps> = ({
 
   return (
     <div className={`flex items-center space-x-2 ${currentMood?.color}`}>
-      <span className={sizeClasses[size]}>{currentMood?.emoji}</span>
-      <span className="font-medium text-sm">{currentMood?.label}</span>
+      <span className={`${sizeClasses[size]} border-2 border-black bg-white p-1`}>{currentMood?.emoji}</span>
+      <span className="font-black text-sm">{currentMood?.label}</span>
     </div>
   );
 };

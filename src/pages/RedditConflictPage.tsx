@@ -96,7 +96,7 @@ const RedditConflictPage: React.FC = () => {
         <div className="animate-pulse-slow mb-4">
           <div className="text-6xl">🤔</div>
         </div>
-        <p className="text-gray-600">Loading today's Reddit conflict...</p>
+        <p className="text-dark-teal font-bold">Loading today's Reddit conflict...</p>
       </div>
     );
   }
@@ -105,12 +105,12 @@ const RedditConflictPage: React.FC = () => {
     return (
       <div className="max-w-4xl mx-auto p-6 text-center">
         <div className="text-6xl mb-4">📭</div>
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">No Daily Conflict Available</h1>
-        <p className="text-gray-600 mb-6">
+        <h1 className="text-2xl font-black text-dark-teal mb-2">NO DAILY CONFLICT AVAILABLE</h1>
+        <p className="text-dark-teal font-bold mb-6">
           Today's conflict from r/AmItheAsshole hasn't been posted yet. Check back later!
         </p>
-        <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200 max-w-md mx-auto">
-          <p className="text-sm text-yellow-800">
+        <div className="bg-lime-chartreuse p-4 border-3 border-black shadow-brutal max-w-md mx-auto">
+          <p className="text-sm text-dark-teal font-bold">
             💡 New conflicts are automatically posted daily. The system updates once per day with fresh drama from Reddit!
           </p>
         </div>
@@ -132,43 +132,43 @@ const RedditConflictPage: React.FC = () => {
       <div className="mb-8">
         <div className="text-center mb-6">
           <div className="text-6xl mb-4">🤔</div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            Reddit Conflict of the Day
+          <h1 className="text-4xl font-black text-dark-teal mb-2 border-b-3 border-black pb-2">
+            REDDIT CONFLICT OF THE DAY
           </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-xl text-dark-teal font-bold max-w-2xl mx-auto leading-relaxed">
             Fresh drama from r/AmItheAsshole, processed through Squashie's AI for your judgment.
           </p>
         </div>
 
         {/* Stats */}
-        <div className="bg-gradient-to-r from-orange-50 to-red-50 p-4 sm:p-6 rounded-lg border border-orange-200">
+        <div className="bg-vivid-orange p-6 border-3 border-black shadow-brutal">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-            <div>
-              <div className="text-xl sm:text-2xl font-bold text-orange-600">{getTotalVotes()}</div>
-              <div className="text-sm text-gray-600">Total Votes</div>
+            <div className="bg-white border-2 border-black p-3">
+              <div className="text-2xl font-black text-vivid-orange">{getTotalVotes()}</div>
+              <div className="text-sm text-dark-teal font-bold">TOTAL VOTES</div>
             </div>
-            <div>
-              <div className="text-lg sm:text-2xl font-bold text-red-600">r/AmItheAsshole</div>
-              <div className="text-sm text-gray-600">Source Subreddit</div>
+            <div className="bg-white border-2 border-black p-3">
+              <div className="text-lg sm:text-2xl font-black text-vivid-orange">r/AmItheAsshole</div>
+              <div className="text-sm text-dark-teal font-bold">SOURCE SUBREDDIT</div>
             </div>
-            <div>
-              <div className="text-xl sm:text-2xl font-bold text-purple-600">Daily</div>
-              <div className="text-sm text-gray-600">Fresh Content</div>
+            <div className="bg-white border-2 border-black p-3">
+              <div className="text-2xl font-black text-vivid-orange">DAILY</div>
+              <div className="text-sm text-dark-teal font-bold">FRESH CONTENT</div>
             </div>
           </div>
         </div>
       </div>
 
       {/* Main Conflict Card */}
-      <div className="bg-white rounded-lg border border-gray-200 shadow-sm mb-6 overflow-hidden">
+      <div className="bg-white border-3 border-black shadow-brutal mb-6">
         {/* Conflict Header */}
-        <div className="p-4 sm:p-6 border-b border-gray-200">
-          <div className="flex items-start justify-between mb-4">
+        <div className="p-6 border-b-3 border-black">
+          <div className="flex items-start justify-between">
             <div className="flex-1 min-w-0 pr-4">
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3 break-words">
+              <h2 className="text-2xl font-black text-dark-teal mb-3 break-words">
                 {conflict.title}
               </h2>
-              <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500">
+              <div className="flex flex-wrap items-center gap-4 text-sm text-dark-teal font-bold">
                 <div className="flex items-center space-x-2">
                   <User size={16} />
                   <span className="break-all">u/{conflict.author}</span>
@@ -188,51 +188,53 @@ const RedditConflictPage: React.FC = () => {
               href={`https://reddit.com/r/${conflict.subreddit}/comments/${conflict.reddit_post_id}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center space-x-2 bg-orange-500 hover:bg-orange-600 text-white px-3 sm:px-4 py-2 rounded-lg transition-colors text-sm flex-shrink-0"
+              className="bg-vivid-orange hover:bg-orange-600 text-white px-4 py-2 font-black border-3 border-black shadow-brutal hover:shadow-brutal-sm transition-all transform hover:translate-x-1 hover:translate-y-1 flex items-center space-x-2 flex-shrink-0"
             >
-              <span className="hidden sm:inline">View on Reddit</span>
-              <span className="sm:hidden">Reddit</span>
+              <span className="hidden sm:inline">VIEW ON REDDIT</span>
+              <span className="sm:hidden">REDDIT</span>
               <ExternalLink size={16} />
             </a>
           </div>
         </div>
 
         {/* AI Summary */}
-        <div className="p-4 sm:p-6 border-b border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900 mb-3">
-            🤖 Squashie's Summary
+        <div className="p-6 border-b-3 border-black">
+          <h3 className="text-lg font-black text-dark-teal mb-3 flex items-center">
+            <span className="text-2xl mr-2">🤖</span> SQUASHIE'S SUMMARY
           </h3>
-          <p className="text-gray-700 leading-relaxed mb-4 break-words">
+          <p className="text-dark-teal font-bold leading-relaxed mb-4 break-words border-l-3 border-lime-chartreuse pl-3">
             {conflict.ai_summary}
           </p>
           
-          <h4 className="text-md font-semibold text-gray-900 mb-2">
-            💡 Suggested Resolution
+          <h4 className="text-md font-black text-dark-teal mb-2 flex items-center">
+            <span className="text-xl mr-2">💡</span> SUGGESTED RESOLUTION
           </h4>
-          <p className="text-gray-700 leading-relaxed break-words">
+          <p className="text-dark-teal font-bold leading-relaxed break-words border-l-3 border-vivid-orange pl-3">
             {conflict.ai_suggestion}
           </p>
         </div>
 
         {/* Original Text (Expandable) */}
-        <div className="p-4 sm:p-6 border-b border-gray-200">
+        <div className="p-6 border-b-3 border-black">
           <button
             onClick={() => setShowOriginalText(!showOriginalText)}
             className="flex items-center justify-between w-full text-left"
           >
-            <h3 className="text-lg font-semibold text-gray-900">
-              📜 Original Reddit Post
+            <h3 className="text-lg font-black text-dark-teal flex items-center">
+              <span className="text-2xl mr-2">📜</span> ORIGINAL REDDIT POST
             </h3>
-            {showOriginalText ? (
-              <ChevronUp className="h-5 w-5 text-gray-500" />
-            ) : (
-              <ChevronDown className="h-5 w-5 text-gray-500" />
-            )}
+            <div className="bg-lime-chartreuse border-2 border-black p-1">
+              {showOriginalText ? (
+                <ChevronUp className="h-5 w-5 text-dark-teal" />
+              ) : (
+                <ChevronDown className="h-5 w-5 text-dark-teal" />
+              )}
+            </div>
           </button>
           
           {showOriginalText && (
-            <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
-              <p className="text-gray-700 whitespace-pre-wrap leading-relaxed break-words">
+            <div className="mt-4 p-4 bg-gray-100 border-3 border-black">
+              <p className="text-dark-teal whitespace-pre-wrap leading-relaxed break-words">
                 {conflict.original_text}
               </p>
             </div>
@@ -240,19 +242,19 @@ const RedditConflictPage: React.FC = () => {
         </div>
 
         {/* Voting Section */}
-        <div className="p-4 sm:p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
-            🗳️ Cast Your Judgment
+        <div className="p-6">
+          <h3 className="text-lg font-black text-dark-teal mb-4 flex items-center">
+            <span className="text-2xl mr-2">🗳️</span> CAST YOUR JUDGMENT
           </h3>
           
           {!user ? (
-            <div className="text-center py-4 px-2">
-              <p className="text-gray-600 mb-4">Log in to cast your vote and earn SquashCred</p>
+            <div className="text-center py-4 px-2 border-3 border-black bg-lime-chartreuse">
+              <p className="text-dark-teal font-bold mb-4">Log in to cast your vote and earn SquashCred</p>
               <button
                 onClick={() => window.location.href = '/login'}
-                className="bg-coral-500 hover:bg-coral-600 text-white px-6 py-2 rounded-lg transition-colors"
+                className="bg-vivid-orange hover:bg-orange-600 text-white px-6 py-2 font-black border-3 border-black shadow-brutal hover:shadow-brutal-sm transition-all transform hover:translate-x-1 hover:translate-y-1"
               >
-                Log In to Vote
+                LOG IN TO VOTE
               </button>
             </div>
           ) : (
@@ -267,24 +269,24 @@ const RedditConflictPage: React.FC = () => {
                     key={option.type}
                     onClick={() => handleVote(option.type)}
                     disabled={isLoading || userVote !== null}
-                    className={`flex items-center justify-between p-3 sm:p-4 rounded-lg border-2 transition-all text-sm ${
+                    className={`flex items-center justify-between p-4 border-3 transition-all ${
                       isSelected
-                        ? 'border-coral-500 bg-coral-50 text-coral-700'
+                        ? 'bg-lime-chartreuse border-black shadow-brutal'
                         : userVote !== null
-                        ? 'border-gray-200 bg-gray-100 text-gray-500 cursor-not-allowed'
-                        : 'border-gray-200 hover:border-coral-300 hover:bg-coral-50'
+                        ? 'bg-gray-100 border-gray-300 text-gray-500 cursor-not-allowed'
+                        : 'bg-white border-black hover:bg-lime-chartreuse/20'
                     } ${isLoading || userVote !== null ? 'opacity-50 cursor-not-allowed' : ''}`}
                   >
                     <div className="flex items-center space-x-3">
                       <span className="text-2xl">{option.emoji}</span>
                       <div className="text-left min-w-0 flex-1">
-                        <div className="font-bold text-base sm:text-lg">{option.label}</div>
-                        <div className="text-xs sm:text-sm text-gray-600 break-words">{option.description}</div>
+                        <div className="font-black text-lg text-dark-teal">{option.label}</div>
+                        <div className="text-xs text-dark-teal break-words font-bold">{option.description}</div>
                       </div>
                     </div>
                     <div className="flex items-center space-x-2">
-                      {isSelected && <span className="text-xs text-coral-600">✓</span>}
-                      <span className="bg-gray-100 text-gray-700 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium flex-shrink-0">
+                      {isSelected && <span className="text-xs text-vivid-orange font-black">✓</span>}
+                      <span className="bg-dark-teal text-white px-3 py-1 text-xs font-black border-2 border-black flex-shrink-0">
                         {voteCount}
                       </span>
                     </div>
@@ -296,8 +298,8 @@ const RedditConflictPage: React.FC = () => {
           
           {/* Show message if user has already voted */}
           {user && userVote && (
-            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg overflow-hidden">
-              <p className="text-sm text-blue-800">
+            <div className="mt-4 p-3 bg-lime-chartreuse border-3 border-black">
+              <p className="text-dark-teal font-bold">
                 ✅ You've already cast your vote! Votes cannot be changed to maintain fairness.
               </p>
             </div>
@@ -307,11 +309,11 @@ const RedditConflictPage: React.FC = () => {
 
       {/* Footer */}
       <div className="text-center">
-        <div className="bg-blue-50 p-4 sm:p-6 rounded-lg border border-blue-200">
-          <h3 className="text-lg font-semibold text-blue-900 mb-2">
-            📢 About Reddit Conflicts
+        <div className="bg-dark-teal p-6 border-3 border-black shadow-brutal">
+          <h3 className="text-lg font-black text-white mb-2 flex items-center justify-center">
+            <span className="text-2xl mr-2">📢</span> ABOUT REDDIT CONFLICTS
           </h3>
-          <p className="text-sm text-blue-800 leading-relaxed">
+          <p className="text-lime-chartreuse font-bold leading-relaxed">
             These conflicts are sourced from r/AmItheAsshole and processed through Squashie's AI for educational purposes. 
             Vote responsibly and remember: everyone's just trying to figure out how to be a decent human.
           </p>

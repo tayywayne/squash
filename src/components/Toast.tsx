@@ -27,9 +27,9 @@ const Toast: React.FC<ToastProps> = ({ message, type, onClose, duration = 4000 }
   };
 
   const colors = {
-    success: 'bg-teal-50 border-teal-200 text-teal-800',
-    error: 'bg-coral-50 border-coral-200 text-coral-800',
-    info: 'bg-lavender-50 border-lavender-200 text-lavender-800',
+    success: 'bg-green-teal border-black text-white',
+    error: 'bg-vivid-orange border-black text-white',
+    info: 'bg-lime-chartreuse border-black text-dark-teal',
   };
 
   const Icon = icons[type];
@@ -40,17 +40,17 @@ const Toast: React.FC<ToastProps> = ({ message, type, onClose, duration = 4000 }
         isVisible ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'
       }`}
     >
-      <div className={`rounded-lg border p-4 shadow-lg ${colors[type]}`}>
+      <div className={`rounded-none border-3 p-4 shadow-brutal ${colors[type]}`}>
         <div className="flex items-start">
-          <Icon className="h-5 w-5 mr-3 mt-0.5" />
+          <Icon className="h-6 w-6 mr-3 mt-0.5" />
           <div className="flex-1">
-            <p className="text-sm font-medium">{message}</p>
+            <p className="text-base font-bold">{message}</p>
           </div>
           <button
             onClick={onClose}
             className="ml-3 hover:opacity-70 transition-opacity"
           >
-            <X className="h-4 w-4" />
+            <X className="h-5 w-5" />
           </button>
         </div>
       </div>

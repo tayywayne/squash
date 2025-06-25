@@ -18,30 +18,30 @@ const SupportSuccessPage: React.FC = () => {
   const supportTiers = [
     {
       id: 'tip_1',
-      name: 'Buy Us a Band-Aid',
+      name: 'BUY US A BAND-AID',
       emoji: '🩹',
       price: '$1',
-      color: 'from-blue-400 to-blue-600',
-      bgColor: 'bg-blue-50',
-      borderColor: 'border-blue-200'
+      color: 'bg-green-teal',
+      textColor: 'text-white',
+      borderColor: 'border-black'
     },
     {
       id: 'tip_2',
-      name: "I'm the Problem",
+      name: "I'M THE PROBLEM",
       emoji: '💅',
       price: '$5',
-      color: 'from-pink-400 to-pink-600',
-      bgColor: 'bg-pink-50',
-      borderColor: 'border-pink-200'
+      color: 'bg-vivid-orange',
+      textColor: 'text-white',
+      borderColor: 'border-black'
     },
     {
       id: 'tip_3',
-      name: 'Chaos Patron',
+      name: 'CHAOS PATRON',
       emoji: '🔥👑',
       price: '$10',
-      color: 'from-orange-400 to-red-600',
-      bgColor: 'bg-orange-50',
-      borderColor: 'border-orange-200'
+      color: 'bg-lime-chartreuse',
+      textColor: 'text-dark-teal',
+      borderColor: 'border-black'
     }
   ];
 
@@ -102,8 +102,8 @@ const SupportSuccessPage: React.FC = () => {
         <div className="animate-pulse-slow mb-4">
           <div className="text-6xl">💳</div>
         </div>
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Loading...</h1>
-        <p className="text-gray-600">Checking your authentication status...</p>
+        <h1 className="text-2xl font-black text-dark-teal mb-2">LOADING...</h1>
+        <p className="text-dark-teal font-bold">Checking your authentication status...</p>
       </div>
     );
   }
@@ -120,8 +120,8 @@ const SupportSuccessPage: React.FC = () => {
           />
         )}
         <div className="text-6xl mb-4">🔒</div>
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Login Required</h1>
-        <p className="text-gray-600">Please log in to confirm your tip and get your supporter badge.</p>
+        <h1 className="text-2xl font-black text-dark-teal mb-2">LOGIN REQUIRED</h1>
+        <p className="text-dark-teal font-bold">Please log in to confirm your tip and get your supporter badge.</p>
       </div>
     );
   }
@@ -139,20 +139,20 @@ const SupportSuccessPage: React.FC = () => {
 
         <div className="text-center">
           <div className="text-6xl mb-6">🎉</div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">
-            You're Officially a Supporter!
+          <h1 className="text-3xl font-black text-dark-teal mb-4 border-b-3 border-black pb-2">
+            YOU'RE OFFICIALLY A SUPPORTER!
           </h1>
-          <p className="text-xl text-gray-600 mb-8">
+          <p className="text-xl text-dark-teal font-bold mb-8">
             Your supporter badge is now live across the app. Thanks for keeping Squashie running!
           </p>
           
-          <div className="bg-gradient-to-r from-coral-50 to-teal-50 p-6 rounded-lg border border-gray-200 mb-8">
+          <div className="bg-lime-chartreuse p-6 border-3 border-black shadow-brutal mb-8">
             <div className="flex items-center justify-center space-x-3 mb-4">
-              <Sparkles className="h-6 w-6 text-coral-500" />
-              <h2 className="text-lg font-semibold text-gray-900">What's Next?</h2>
-              <Sparkles className="h-6 w-6 text-coral-500" />
+              <Sparkles className="h-6 w-6 text-dark-teal" />
+              <h2 className="text-lg font-black text-dark-teal">WHAT'S NEXT?</h2>
+              <Sparkles className="h-6 w-6 text-dark-teal" />
             </div>
-            <div className="space-y-2 text-sm text-gray-700">
+            <div className="space-y-2 text-dark-teal font-bold">
               <p>✨ Your supporter emoji now appears next to your username</p>
               <p>🏆 Show off your status on the leaderboard</p>
               <p>💬 Other users will see your supporter badge in conflicts</p>
@@ -163,15 +163,15 @@ const SupportSuccessPage: React.FC = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
               onClick={() => navigate('/dashboard')}
-              className="bg-coral-500 hover:bg-coral-600 text-white font-medium py-3 px-6 rounded-lg transition-colors"
+              className="bg-vivid-orange hover:bg-orange-600 text-white font-black py-3 px-6 border-3 border-black shadow-brutal hover:shadow-brutal-sm transition-all transform hover:translate-x-1 hover:translate-y-1"
             >
-              Back to Dashboard
+              BACK TO DASHBOARD
             </button>
             <button
               onClick={() => navigate('/profile')}
-              className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-3 px-6 rounded-lg transition-colors"
+              className="bg-white hover:bg-gray-100 text-dark-teal font-black py-3 px-6 border-3 border-black shadow-brutal hover:shadow-brutal-sm transition-all transform hover:translate-x-1 hover:translate-y-1"
             >
-              View My Profile
+              VIEW MY PROFILE
             </button>
           </div>
         </div>
@@ -193,18 +193,18 @@ const SupportSuccessPage: React.FC = () => {
       <div className="mb-8">
         <button
           onClick={() => navigate('/support-us')}
-          className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 mb-6 transition-colors"
+          className="flex items-center space-x-2 text-dark-teal hover:text-vivid-orange mb-6 transition-colors font-black"
         >
           <ArrowLeft size={20} />
-          <span>Back to Support</span>
+          <span>BACK TO SUPPORT</span>
         </button>
         
         <div className="text-center">
           <div className="text-6xl mb-4">💳</div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">
-            Confirm Your Tip
+          <h1 className="text-3xl font-black text-dark-teal mb-4 border-b-3 border-black pb-2">
+            CONFIRM YOUR TIP
           </h1>
-          <p className="text-lg text-gray-600">
+          <p className="text-lg text-dark-teal font-bold">
             Thanks for supporting Squashie! Which tip did you just complete?
           </p>
         </div>
@@ -212,7 +212,7 @@ const SupportSuccessPage: React.FC = () => {
 
       {/* Confirmation Buttons */}
       <div className="space-y-4 mb-8">
-        <h2 className="text-lg font-semibold text-gray-900 text-center mb-6">
+        <h2 className="text-lg font-black text-dark-teal text-center mb-6">
           {tipIdFromUrl ? 'Confirming your tip...' : 'Select the tip you just completed:'}
         </h2>
         
@@ -221,23 +221,23 @@ const SupportSuccessPage: React.FC = () => {
             key={tier.id}
             onClick={() => handleConfirmTip(tier)}
             disabled={loading}
-            className={`w-full ${tier.bgColor} hover:shadow-md border-2 ${tier.borderColor} p-6 rounded-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none`}
+            className={`w-full ${tier.color} hover:shadow-brutal border-3 ${tier.borderColor} p-6 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none`}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
                 <div className="text-3xl">{tier.emoji}</div>
                 <div className="text-left">
-                  <h3 className="text-lg font-bold text-gray-900">{tier.name}</h3>
-                  <p className={`text-xl font-bold bg-gradient-to-r ${tier.color} bg-clip-text text-transparent`}>
+                  <h3 className={`text-lg font-black ${tier.textColor}`}>{tier.name}</h3>
+                  <p className={`text-xl font-black ${tier.textColor}`}>
                     {tier.price}
                   </p>
                 </div>
               </div>
               <div className="flex items-center space-x-2">
                 {loading ? (
-                  <div className="animate-spin rounded-full h-5 w-5 border-2 border-coral-500 border-t-transparent"></div>
+                  <div className="animate-spin rounded-full h-5 w-5 border-3 border-black border-t-transparent"></div>
                 ) : (
-                  <CheckCircle className="h-6 w-6 text-gray-400" />
+                  <CheckCircle className="h-6 w-6 text-black" />
                 )}
               </div>
             </div>
@@ -247,17 +247,17 @@ const SupportSuccessPage: React.FC = () => {
 
       {/* Help Text - only show if no tipId in URL */}
       {!tipIdFromUrl && (
-        <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
-          <h3 className="font-medium text-yellow-900 mb-2">
-            💡 Payment completed automatically?
+        <div className="bg-lime-chartreuse p-4 border-3 border-black shadow-brutal">
+          <h3 className="font-black text-dark-teal mb-2 flex items-center">
+            <span className="text-2xl mr-2">💡</span> PAYMENT COMPLETED AUTOMATICALLY?
           </h3>
-          <p className="text-sm text-yellow-800">
+          <p className="text-dark-teal font-bold">
             If you used our new integrated checkout, your supporter status should update automatically! 
             If it doesn't appear within a few minutes, you can manually confirm it above.
           </p>
           <button
             onClick={() => navigate('/support-us')}
-            className="mt-2 text-yellow-900 underline hover:text-yellow-700 text-sm flex items-center space-x-1"
+            className="mt-2 text-vivid-orange hover:text-orange-600 underline font-black text-sm flex items-center space-x-1"
           >
             <ExternalLink size={14} />
             <span>Go back to make a tip</span>
@@ -267,11 +267,11 @@ const SupportSuccessPage: React.FC = () => {
       
       {/* Show message if tipId is invalid */}
       {tipIdFromUrl && !selectedTier && (
-        <div className="bg-red-50 p-4 rounded-lg border border-red-200">
-          <h3 className="font-medium text-red-900 mb-2">
-            ⚠️ Invalid Tip Reference
+        <div className="bg-vivid-orange p-4 border-3 border-black shadow-brutal">
+          <h3 className="font-black text-white mb-2 flex items-center">
+            <span className="text-2xl mr-2">⚠️</span> INVALID TIP REFERENCE
           </h3>
-          <p className="text-sm text-red-800">
+          <p className="text-white font-bold">
             The tip reference in the URL is not valid. Please select your tip manually above.
           </p>
         </div>
@@ -279,7 +279,7 @@ const SupportSuccessPage: React.FC = () => {
 
       {/* Footer */}
       <div className="mt-8 text-center">
-        <p className="text-xs text-gray-500">
+        <p className="text-xs text-dark-teal font-bold">
           Your supporter status will be visible to other users and will appear next to your username across the app.
         </p>
       </div>

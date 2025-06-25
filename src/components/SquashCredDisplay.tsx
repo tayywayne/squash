@@ -42,21 +42,21 @@ const SquashCredDisplay: React.FC<SquashCredDisplayProps> = ({
         return {
           container: 'text-xs',
           icon: 'h-3 w-3',
-          points: 'text-sm font-semibold',
+          points: 'text-sm font-black',
           tier: 'text-xs'
         };
       case 'lg':
         return {
           container: 'text-base',
           icon: 'h-5 w-5',
-          points: 'text-xl font-bold',
+          points: 'text-xl font-black',
           tier: 'text-sm'
         };
       default:
         return {
           container: 'text-sm',
           icon: 'h-4 w-4',
-          points: 'text-base font-semibold',
+          points: 'text-base font-black',
           tier: 'text-xs'
         };
     }
@@ -75,9 +75,9 @@ const SquashCredDisplay: React.FC<SquashCredDisplayProps> = ({
 
   if (!pointsData) {
     return (
-      <div className={`flex items-center space-x-1 text-gray-500 ${sizeClasses.container} ${className}`}>
+      <div className={`flex items-center space-x-1 text-white ${sizeClasses.container} ${className}`}>
         <Coins className={sizeClasses.icon} />
-        <span>0 SquashCred</span>
+        <span className="font-bold">0 CRED</span>
       </div>
     );
   }
@@ -88,19 +88,19 @@ const SquashCredDisplay: React.FC<SquashCredDisplayProps> = ({
   return (
     <div className={`flex items-center space-x-2 ${sizeClasses.container} ${className}`}>
       {/* Points Display */}
-      <div className="flex items-center space-x-1">
-        <Coins className={`${sizeClasses.icon} ${pointsColorClass}`} />
-        <span className={`${sizeClasses.points} ${pointsColorClass}`}>
+      <div className="flex items-center space-x-1 bg-dark-teal border-2 border-black px-2 py-1">
+        <Coins className={`${sizeClasses.icon} text-lime-chartreuse`} />
+        <span className={`${sizeClasses.points} text-white`}>
           {squashCredService.formatPoints(squashcred)}
         </span>
-        <span className="text-gray-600">SquashCred</span>
+        <span className="text-lime-chartreuse font-bold">CRED</span>
       </div>
 
       {/* Tier Display */}
       {showTier && (
-        <div className="flex items-center space-x-1">
+        <div className="flex items-center space-x-1 bg-lime-chartreuse border-2 border-black px-2 py-1">
           <span className="text-lg">{tier_emoji}</span>
-          <span className={`${sizeClasses.tier} text-gray-700 font-medium`}>
+          <span className={`${sizeClasses.tier} text-dark-teal font-bold`}>
             {tier_title}
           </span>
         </div>
@@ -109,24 +109,24 @@ const SquashCredDisplay: React.FC<SquashCredDisplayProps> = ({
       {/* Tooltip */}
       {showTooltip && (
         <div className="relative group">
-          <div className="text-gray-400 hover:text-gray-600 transition-colors cursor-help">
+          <div className="text-white hover:text-lime-chartreuse transition-colors cursor-help">
             <Info className={sizeClasses.icon} />
           </div>
           {/* Hover tooltip */}
           <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 z-[9999] opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
-            <div className="bg-gray-900 text-white text-xs rounded-lg p-4 shadow-xl w-80 max-w-sm">
-              <div className="font-semibold mb-1">
+            <div className="bg-dark-teal text-white text-xs rounded-none border-3 border-black p-4 shadow-brutal w-80 max-w-sm">
+              <div className="font-black mb-1 text-lime-chartreuse">
                 {tier_emoji} {tier_title}
               </div>
-              <div className="text-gray-300 mb-3">
+              <div className="text-white mb-3 font-bold">
                 {pointsData.tier_range}
               </div>
-              <div className="text-gray-400 text-xs leading-relaxed">
+              <div className="text-lime-chartreuse text-xs leading-relaxed">
                 Earn SquashCred by resolving conflicts, being helpful, and maintaining good behavior. 
                 Lose points for ghosting, spam, or excessive drama. Stay spicy — but not toxic.
               </div>
               {/* Tooltip arrow pointing up */}
-              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-b-4 border-transparent border-b-gray-900"></div>
+              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-b-8 border-transparent border-b-black"></div>
             </div>
           </div>
         </div>

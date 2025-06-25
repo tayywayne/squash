@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Users, CheckCircle, MessageSquare, Zap, Shield, Heart, Star, HelpCircle } from 'lucide-react';
+import { ArrowRight, Users, CheckCircle, MessageSquare, Zap, Shield, Heart, Star, HelpCircle, Trophy, Sparkles } from 'lucide-react';
 import { conflictService } from '../utils/conflicts';
 
 interface GlobalStats {
@@ -22,7 +22,6 @@ const HomePage: React.FC = () => {
         setStats(globalStats);
       } catch (error) {
         console.error('Error loading global stats:', error);
-        // Use fallback stats if API fails
         setStats({ totalConflicts: 247, resolvedConflicts: 189, resolutionRate: 77 });
       } finally {
         setStatsLoading(false);
@@ -34,24 +33,24 @@ const HomePage: React.FC = () => {
 
   const features = [
     {
-      icon: MessageSquare,
+      icon: '🤖',
       title: 'Emotion Translator 3000',
-      description: 'Our AI takes your spicy thoughts and turns them into something that won’t start World War III.'
+      description: 'Our AI takes your spicy thoughts and turns them into something that won\'t start World War III.'
     },
     {
-      icon: Shield,
+      icon: '🔥',
       title: 'Unfiltered First, Polished Later',
       description: 'Your raw thoughts, reworked into something your therapist would high-five.'
     },
     {
-      icon: Zap,
+      icon: '⚡',
       title: 'Skip the Silent Treatment Phase',
       description: 'Resolve things while it still matters before ghosting kicks in.'
     },
     {
-      icon: Heart,
+      icon: '💝',
       title: 'Less Conflict, More Connection',
-      description: 'Emotions are messy. We make sure they don’t wreck your relationships.'
+      description: 'Emotions are messy. We make sure they don\'t wreck your relationships.'
     }
   ];
 
@@ -59,7 +58,7 @@ const HomePage: React.FC = () => {
     {
       step: 1,
       title: 'Share Your Side',
-      description: 'Tell us what went down — unfiltered. We’ll make it less spicy before sharing.',
+      description: 'Tell us what went down — unfiltered. We\'ll make it less spicy before sharing.',
       emoji: '💬'
     },
     {
@@ -71,58 +70,40 @@ const HomePage: React.FC = () => {
     {
       step: 3,
       title: 'AI Mediation',
-      description: 'We translate emotional chaos into clarity, then deliver a suggested compromise that’s actually useful.',
+      description: 'We translate emotional chaos into clarity, then deliver a suggested compromise that\'s actually useful.',
       emoji: '🤖'
     },
     {
       step: 4,
       title: 'Peace (Hopefully)',
-      description: 'You both review it. You vote. You heal. If it works, great. If not… well, there’s always the rehash button.',
+      description: 'You both review it. You vote. You heal. If it works, great. If not… well, there\'s always the rehash button.',
       emoji: '✨'
     }
   ];
 
-  const testimonials = [
-    {
-      quote: "Honestly didn't think this would work, but the AI actually helped us see each other's point of view. We're good now.",
-      author: "Sarah M.",
-      conflict: "Roommate disagreement"
-    },
-    {
-      quote: "The AI translated my angry rant into something my partner could actually hear. Game changer for our communication.",
-      author: "Mike R.",
-      conflict: "Relationship conflict"
-    },
-    {
-      quote: "Way better than letting workplace drama fester. Got our team back on track in two days.",
-      author: "Jennifer L.",
-      conflict: "Team collaboration issue"
-    }
-  ];
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-coral-50 via-lavender-50 to-teal-50">
+    <div className="min-h-screen bg-white">
       {/* Navigation */}
-      <nav className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
+      <nav className="bg-dark-teal border-b-3 border-black sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-2">
-              <div className="text-2xl">💣</div>
-              <h1 className="text-xl font-bold text-gray-900">Squashie</h1>
+          <div className="flex justify-between items-center h-20">
+            <div className="flex items-center space-x-3">
+              <div className="text-4xl animate-float">💣</div>
+              <h1 className="text-3xl font-black text-white tracking-tight">SQUASHIE</h1>
             </div>
             
             <div className="flex items-center space-x-4">
               <button
                 onClick={() => navigate('/login')}
-                className="text-gray-600 hover:text-gray-900 font-medium transition-colors"
+                className="text-white hover:text-lime-chartreuse font-bold transition-colors text-lg"
               >
-                Sign In
+                SIGN IN
               </button>
               <button
                 onClick={() => navigate('/login')}
-                className="bg-coral-500 hover:bg-coral-600 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+                className="bg-vivid-orange hover:bg-orange-600 text-white px-6 py-3 font-black text-lg border-3 border-black shadow-brutal hover:shadow-brutal-sm transition-all transform hover:translate-x-1 hover:translate-y-1"
               >
-                Get Started
+                GET STARTED
               </button>
             </div>
           </div>
@@ -130,74 +111,77 @@ const HomePage: React.FC = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="text-6xl mb-6 animate-bounce-gentle">💣</div>
-          <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-            Drama doesn’t solve itself.  
-            <br />
-            <span className="text-coral-500">But Squashie might.</span>
+      <section className="relative py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-lime-chartreuse via-green-teal to-dark-teal">
+        <div className="max-w-6xl mx-auto text-center">
+          <div className="text-8xl mb-8 animate-bounce-gentle">💣</div>
+          <h1 className="text-6xl md:text-8xl font-black text-white mb-8 leading-none tracking-tight">
+            DRAMA DOESN'T<br />
+            <span className="text-vivid-orange">SOLVE ITSELF</span>
           </h1>
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
-            We help you catch the tension early, before it spirals into total avoidance. Whether it’s a stolen charger or a tone in a text, Squashie helps patch things up with AI mediation and crowd-backed resolution.
-          </p>
+          <div className="bg-white border-3 border-black p-8 shadow-brutal-lg mb-12 max-w-4xl mx-auto">
+            <p className="text-2xl md:text-3xl text-dark-teal font-bold leading-tight">
+              We help you catch the tension early, before it spirals into total avoidance. Whether it's a stolen charger or a tone in a text, Squashie helps patch things up with AI mediation and crowd-backed resolution.
+            </p>
+          </div>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+          <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
             <button
               onClick={() => navigate('/login')}
-              className="bg-coral-500 hover:bg-coral-600 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors flex items-center justify-center space-x-2"
+              className="bg-vivid-orange hover:bg-orange-600 text-white px-12 py-6 font-black text-2xl border-3 border-black shadow-brutal-lg hover:shadow-brutal transition-all transform hover:translate-x-2 hover:translate-y-2 flex items-center justify-center space-x-3"
             >
-              <span>Start Resolving Conflicts</span>
-              <ArrowRight size={20} />
+              <span>START RESOLVING CONFLICTS</span>
+              <ArrowRight size={28} />
             </button>
             <button
               onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
-              className="border-2 border-gray-300 hover:border-coral-500 text-gray-700 hover:text-coral-600 px-8 py-4 rounded-lg font-semibold text-lg transition-colors"
+              className="bg-white hover:bg-gray-100 text-dark-teal px-12 py-6 font-black text-2xl border-3 border-black shadow-brutal-lg hover:shadow-brutal transition-all transform hover:translate-x-2 hover:translate-y-2"
             >
-              See How It Works
+              SEE HOW IT WORKS
             </button>
           </div>
 
           {/* Global Stats */}
-          <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-8 border border-gray-200 shadow-lg">
-            <h3 className="text-lg font-semibold text-gray-900 mb-6">Real Results from Real People</h3>
+          <div className="bg-white border-3 border-black p-8 shadow-brutal-lg">
+            <h3 className="text-2xl font-black text-dark-teal mb-8 flex items-center justify-center">
+              <Trophy className="mr-3 text-vivid-orange" size={32} />
+              REAL RESULTS FROM REAL PEOPLE
+            </h3>
             {statsLoading ? (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {[1, 2, 3].map((i) => (
                   <div key={i} className="text-center animate-pulse">
-                    <div className="h-12 bg-gray-200 rounded mb-2"></div>
-                    <div className="h-4 bg-gray-200 rounded"></div>
+                    <div className="h-16 bg-gray-200 rounded mb-4"></div>
+                    <div className="h-6 bg-gray-200 rounded"></div>
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="text-center">
-                  <div className="text-4xl font-bold text-coral-500 mb-2">{stats.totalConflicts.toLocaleString()}</div>
-                  <div className="text-gray-600">Conflicts Mediated</div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="text-center bg-lime-chartreuse border-3 border-black p-6 shadow-brutal">
+                  <div className="text-5xl font-black text-dark-teal mb-2">{stats.totalConflicts.toLocaleString()}</div>
+                  <div className="text-dark-teal font-bold text-lg">CONFLICTS MEDIATED</div>
                 </div>
-                <div className="text-center">
-                  <div className="text-4xl font-bold text-teal-500 mb-2">{stats.resolvedConflicts.toLocaleString()}</div>
-                  <div className="text-gray-600">Successfully Resolved</div>
+                <div className="text-center bg-green-teal border-3 border-black p-6 shadow-brutal">
+                  <div className="text-5xl font-black text-white mb-2">{stats.resolvedConflicts.toLocaleString()}</div>
+                  <div className="text-white font-bold text-lg">SUCCESSFULLY RESOLVED</div>
                 </div>
-                <div className="text-center">
-                  <div className="text-4xl font-bold text-lavender-500 mb-2">{stats.resolutionRate}%</div>
-                  <div className="text-gray-600 flex items-center justify-center space-x-1">
-                    <span>Resolution Rate</span>
+                <div className="text-center bg-vivid-orange border-3 border-black p-6 shadow-brutal">
+                  <div className="text-5xl font-black text-white mb-2">{stats.resolutionRate}%</div>
+                  <div className="text-white font-bold text-lg flex items-center justify-center space-x-2">
+                    <span>RESOLUTION RATE</span>
                     <div className="relative">
                       <HelpCircle 
-                        size={16} 
-                        className="text-gray-400 hover:text-gray-600 cursor-help transition-colors"
+                        size={20} 
+                        className="text-white hover:text-lime-chartreuse cursor-help transition-colors"
                         onMouseEnter={() => setShowTooltip(true)}
                         onMouseLeave={() => setShowTooltip(false)}
                       />
                       {showTooltip && (
-                        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 bg-gray-900 text-white text-xs rounded-lg p-3 shadow-lg z-10">
+                        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 bg-dark-teal text-white text-sm font-bold border-3 border-black p-4 shadow-brutal z-10">
                           <div className="text-center">
                             Look, anything over 0% is better than what you were doing before, aka ignoring your problems or spreading passive aggression around
                           </div>
-                          {/* Tooltip arrow */}
-                          <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+                          <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-dark-teal"></div>
                         </div>
                       )}
                     </div>
@@ -210,25 +194,25 @@ const HomePage: React.FC = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white/40">
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Why Squashie Actually Works</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Because conflict is inevitable — but emotional maturity is hard.
-            </p>
+            <h2 className="text-5xl font-black text-dark-teal mb-6">WHY SQUASHIE ACTUALLY WORKS</h2>
+            <div className="bg-lime-chartreuse border-3 border-black p-6 shadow-brutal-lg max-w-3xl mx-auto">
+              <p className="text-2xl font-bold text-dark-teal">
+                Because conflict is inevitable — but emotional maturity is hard.
+              </p>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {features.map((feature, index) => (
-              <div key={index} className="bg-white p-8 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-                <div className="flex items-start space-x-4">
-                  <div className="bg-coral-100 p-3 rounded-lg">
-                    <feature.icon className="h-6 w-6 text-coral-600" />
-                  </div>
+              <div key={index} className="bg-white border-3 border-black p-8 shadow-brutal hover:shadow-brutal-lg transition-all transform hover:-translate-y-1">
+                <div className="flex items-start space-x-6">
+                  <div className="text-5xl">{feature.icon}</div>
                   <div>
-                    <h3 className="text-xl font-semibold text-gray-900 mb-2">{feature.title}</h3>
-                    <p className="text-gray-600 leading-relaxed">{feature.description}</p>
+                    <h3 className="text-2xl font-black text-dark-teal mb-4">{feature.title}</h3>
+                    <p className="text-dark-teal font-medium text-lg leading-relaxed">{feature.description}</p>
                   </div>
                 </div>
               </div>
@@ -238,184 +222,139 @@ const HomePage: React.FC = () => {
       </section>
 
       {/* How It Works Section */}
-      <section id="how-it-works" className="py-20 px-4 sm:px-6 lg:px-8">
+      <section id="how-it-works" className="py-20 px-4 sm:px-6 lg:px-8 bg-dark-teal">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">How It Works</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Four simple steps to go from conflict to resolution. 
-            </p>
+            <h2 className="text-5xl font-black text-white mb-6">HOW IT WORKS</h2>
+            <div className="bg-vivid-orange border-3 border-black p-6 shadow-brutal-lg max-w-3xl mx-auto">
+              <p className="text-2xl font-bold text-white">
+                Four simple steps to go from conflict to resolution.
+              </p>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {howItWorks.map((step, index) => (
               <div key={index} className="text-center">
-                <div className="bg-white rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6 border-4 border-coral-200 shadow-lg">
-                  <span className="text-3xl">{step.emoji}</span>
+                <div className="bg-lime-chartreuse border-3 border-black w-24 h-24 flex items-center justify-center mx-auto mb-6 shadow-brutal">
+                  <span className="text-4xl">{step.emoji}</span>
                 </div>
-                <div className="bg-coral-500 text-white rounded-full w-8 h-8 flex items-center justify-center mx-auto mb-4 text-sm font-bold">
-                  {step.step}
+                <div className="bg-vivid-orange border-3 border-black w-12 h-12 flex items-center justify-center mx-auto mb-6 shadow-brutal">
+                  <span className="text-white font-black text-xl">{step.step}</span>
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">{step.title}</h3>
-                <p className="text-gray-600 leading-relaxed">{step.description}</p>
+                <h3 className="text-2xl font-black text-white mb-4">{step.title}</h3>
+                <p className="text-lime-chartreuse font-medium leading-relaxed">{step.description}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-{/* Additional Features Section */}
-<section className="py-20 px-4 sm:px-6 lg:px-8 bg-white/40">
-  <div className="max-w-6xl mx-auto">
-    <div className="text-center mb-16">
-      <h2 className="text-4xl font-bold text-gray-900 mb-4">But Wait, There's More</h2>
-      <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-        Because conflict resolution should be fun (and slightly competitive).
-      </p>
-    </div>
-
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-      {/* Public Shame Board */}
-      <div className="bg-gradient-to-br from-red-50 to-pink-50 p-8 rounded-xl border-2 border-red-200 shadow-sm hover:shadow-md transition-shadow">
-        <div className="text-center mb-6">
-          <div className="text-5xl mb-4">⚖️</div>
-          <h3 className="text-xl font-bold text-red-900 mb-3">Public Shame Board</h3>
-        </div>
-        <p className="text-red-800 text-sm leading-relaxed mb-4">
-          When people can't figure their shit out after multiple attempts, Judge AI steps in with a final ruling. 
-          These conflicts get posted publicly for everyone to vote on who was wrong.
-        </p>
-        <div className="bg-red-100 p-3 rounded-lg border border-red-300">
-          <p className="text-xs text-red-700 font-medium">
-            💡 Pro tip: Don't end up here. It's embarrassing.
-          </p>
-        </div>
-      </div>
-
-      {/* Leaderboards */}
-      <div className="bg-gradient-to-br from-yellow-50 to-orange-50 p-8 rounded-xl border-2 border-yellow-200 shadow-sm hover:shadow-md transition-shadow">
-        <div className="text-center mb-6">
-          <div className="text-5xl mb-4">🏆</div>
-          <h3 className="text-xl font-bold text-orange-900 mb-3">Leaderboards</h3>
-        </div>
-        <p className="text-orange-800 text-sm leading-relaxed mb-4">
-          See who ranks as the least problematic (high resolution rates) and most problematic (low resolution rates) users. 
-          Because nothing motivates better conflict resolution than public rankings.
-        </p>
-        <div className="space-y-2 text-xs text-orange-700 bg-yellow-100 p-3 rounded-lg border border-orange-300">
-          <div className="flex items-center space-x-2">
-            <span className="text-green-600">🥇</span>
-            <span>Least Problematic: Conflict resolution champions</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <span className="text-red-600">🔥</span>
-            <span>Most Problematic: Maybe work on that...</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Conflict Archetypes */}
-      <div className="bg-gradient-to-br from-purple-50 to-indigo-50 p-8 rounded-xl border-2 border-purple-200 shadow-sm hover:shadow-md transition-shadow">
-        <div className="text-center mb-6">
-          <div className="text-5xl mb-4">🎭</div>
-          <h3 className="text-xl font-bold text-purple-900 mb-3">Conflict Archetypes</h3>
-        </div>
-        <p className="text-purple-800 text-sm leading-relaxed mb-4">
-          Based on your conflict resolution behavior, you'll be assigned a personality archetype. 
-          Are you "The Fixer," "The Drama Generator," or "The Chaos Goblin"?
-        </p>
-        <div className="bg-purple-100 p-3 rounded-lg border border-purple-300">
-          <p className="text-xs text-purple-700">
-            <strong>Examples:</strong> 🛠️ The Fixer, 🎭 The Drama Generator, 💣 The Chaos Goblin, 🧘‍♀️ The Peaceful Observer
-          </p>
-        </div>
-      </div>
-
-      {/* Achievements */}
-      <div className="bg-gradient-to-br from-green-50 to-teal-50 p-8 rounded-xl border-2 border-green-200 shadow-sm hover:shadow-md transition-shadow">
-        <div className="text-center mb-6">
-          <div className="text-5xl mb-4">🎉</div>
-          <h3 className="text-xl font-bold text-green-900 mb-3">Achievements</h3>
-        </div>
-        <p className="text-green-800 text-sm leading-relaxed mb-4">
-          Earn digital trophies for your conflict milestones — from starting your first squash to solving drama in record time. 
-          Your profile becomes a badge wall of your emotional journey.
-        </p>
-        <div className="bg-green-100 p-3 rounded-lg border border-green-300">
-          <p className="text-xs text-green-700">
-            💫 Unlock achievements like “First Conflict Sent,” “Rehash Royalty,” or “Drama-Free for 30 Days.”
-          </p>
-        </div>
-      </div>
-    </div>
-
-          {/* Call to Action
-          <div className="mt-12 text-center">
-            <div className="bg-gradient-to-r from-coral-100 to-teal-100 p-6 rounded-xl border border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Ready to Find Out Your Conflict Style?
-              </h3>
-              <p className="text-gray-700 text-sm mb-4">
-                Start resolving conflicts to unlock your archetype, climb the leaderboards, and hopefully avoid the public shame board.
-              </p>
-              <button
-                onClick={() => navigate('/login')}
-                className="bg-coral-500 hover:bg-coral-600 text-white px-6 py-2 rounded-lg font-medium transition-colors"
-              >
-                Get Started Now
-              </button>
-            </div>
-          </div>  */}
-        </div>
-      </section>
-
-      {/* Testimonials Section */}
-       {/*      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white/40">
+      {/* Additional Features Section */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-lime-chartreuse">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">What People Are Saying</h2>
-            <p className="text-xl text-gray-600">
-              Real feedback from people who've squashed their beef with Squashie.
-            </p>
+            <h2 className="text-5xl font-black text-dark-teal mb-6">BUT WAIT, THERE'S MORE</h2>
+            <div className="bg-white border-3 border-black p-6 shadow-brutal-lg max-w-3xl mx-auto">
+              <p className="text-2xl font-bold text-dark-teal">
+                Because conflict resolution should be fun (and slightly competitive).
+              </p>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <div key={index} className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                <div className="flex items-center mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
-                  ))}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* Public Shame Board */}
+            <div className="bg-white border-3 border-black p-8 shadow-brutal hover:shadow-brutal-lg transition-all transform hover:-translate-y-1">
+              <div className="text-center mb-6">
+                <div className="text-6xl mb-4">⚖️</div>
+                <h3 className="text-2xl font-black text-dark-teal mb-4">PUBLIC SHAME BOARD</h3>
+              </div>
+              <p className="text-dark-teal font-medium text-sm leading-relaxed mb-4">
+                When people can't figure their shit out after multiple attempts, Judge AI steps in with a final ruling. 
+                These conflicts get posted publicly for everyone to vote on who was wrong.
+              </p>
+              <div className="bg-vivid-orange border-2 border-black p-3 shadow-brutal-sm">
+                <p className="text-white font-bold text-xs">
+                  💡 Pro tip: Don't end up here. It's embarrassing.
+                </p>
+              </div>
+            </div>
+
+            {/* Leaderboards */}
+            <div className="bg-white border-3 border-black p-8 shadow-brutal hover:shadow-brutal-lg transition-all transform hover:-translate-y-1">
+              <div className="text-center mb-6">
+                <div className="text-6xl mb-4">🏆</div>
+                <h3 className="text-2xl font-black text-dark-teal mb-4">LEADERBOARDS</h3>
+              </div>
+              <p className="text-dark-teal font-medium text-sm leading-relaxed mb-4">
+                See who ranks as the least problematic (high resolution rates) and most problematic (low resolution rates) users. 
+                Because nothing motivates better conflict resolution than public rankings.
+              </p>
+              <div className="space-y-2 text-xs text-dark-teal bg-green-teal border-2 border-black p-3 shadow-brutal-sm">
+                <div className="flex items-center space-x-2">
+                  <span className="text-lime-chartreuse">🥇</span>
+                  <span className="text-white font-bold">Least Problematic: Conflict resolution champions</span>
                 </div>
-                <blockquote className="text-gray-700 mb-4 italic">
-                  "{testimonial.quote}"
-                </blockquote>
-                <div className="border-t pt-4">
-                  <div className="font-semibold text-gray-900">{testimonial.author}</div>
-                  <div className="text-sm text-gray-600">{testimonial.conflict}</div>
+                <div className="flex items-center space-x-2">
+                  <span className="text-vivid-orange">🔥</span>
+                  <span className="text-white font-bold">Most Problematic: Maybe work on that...</span>
                 </div>
               </div>
-            ))}
+            </div>
+
+            {/* Conflict Archetypes */}
+            <div className="bg-white border-3 border-black p-8 shadow-brutal hover:shadow-brutal-lg transition-all transform hover:-translate-y-1">
+              <div className="text-center mb-6">
+                <div className="text-6xl mb-4">🎭</div>
+                <h3 className="text-2xl font-black text-dark-teal mb-4">CONFLICT ARCHETYPES</h3>
+              </div>
+              <p className="text-dark-teal font-medium text-sm leading-relaxed mb-4">
+                Based on your conflict resolution behavior, you'll be assigned a personality archetype. 
+                Are you "The Fixer," "The Drama Generator," or "The Chaos Goblin"?
+              </p>
+              <div className="bg-lime-chartreuse border-2 border-black p-3 shadow-brutal-sm">
+                <p className="text-dark-teal font-bold text-xs">
+                  <strong>Examples:</strong> 🛠️ The Fixer, 🎭 The Drama Generator, 💣 The Chaos Goblin, 🧘‍♀️ The Peaceful Observer
+                </p>
+              </div>
+            </div>
+
+            {/* Achievements */}
+            <div className="bg-white border-3 border-black p-8 shadow-brutal hover:shadow-brutal-lg transition-all transform hover:-translate-y-1">
+              <div className="text-center mb-6">
+                <div className="text-6xl mb-4">🎉</div>
+                <h3 className="text-2xl font-black text-dark-teal mb-4">ACHIEVEMENTS</h3>
+              </div>
+              <p className="text-dark-teal font-medium text-sm leading-relaxed mb-4">
+                Earn digital trophies for your conflict milestones — from starting your first squash to solving drama in record time. 
+                Your profile becomes a badge wall of your emotional journey.
+              </p>
+              <div className="bg-vivid-orange border-2 border-black p-3 shadow-brutal-sm">
+                <p className="text-white font-bold text-xs">
+                  💫 Unlock achievements like "First Conflict Sent," "Rehash Royalty," or "Drama-Free for 30 Days."
+                </p>
+              </div>
+            </div>
           </div>
         </div>
-      </section> */}
+      </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="bg-gradient-to-r from-coral-500 to-teal-500 rounded-2xl p-12 text-white">
-            <h2 className="text-4xl font-bold mb-4">Ready to Squash Some Beef?</h2>
-            <p className="text-xl mb-8 opacity-90">
+          <div className="bg-dark-teal border-3 border-black p-12 shadow-brutal-lg">
+            <h2 className="text-5xl font-black mb-6 text-white">READY TO SQUASH SOME BEEF?</h2>
+            <p className="text-2xl mb-8 text-lime-chartreuse font-bold">
               Join a community of people who've learned that conflict doesn't have to mean the end of relationships.
             </p>
             <button
               onClick={() => navigate('/login')}
-              className="bg-white text-coral-600 hover:bg-gray-100 px-8 py-4 rounded-lg font-semibold text-lg transition-colors inline-flex items-center space-x-2"
+              className="bg-vivid-orange hover:bg-orange-600 text-white px-12 py-6 font-black text-2xl border-3 border-black shadow-brutal-lg hover:shadow-brutal transition-all transform hover:translate-x-2 hover:translate-y-2 inline-flex items-center space-x-3"
             >
-              <span>Get Started for Free</span>
-              <ArrowRight size={20} />
+              <span>GET STARTED FOR FREE</span>
+              <ArrowRight size={28} />
             </button>
-            <p className="text-sm mt-4 opacity-75">
+            <p className="text-lime-chartreuse font-bold mt-6">
               No credit card ever required. Start resolving conflicts in under 2 minutes.
             </p>
           </div>
@@ -423,15 +362,15 @@ const HomePage: React.FC = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12 px-4 sm:px-6 lg:px-8">
+      <footer className="bg-black text-white py-12 px-4 sm:px-6 lg:px-8 border-t-3 border-black">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="flex items-center space-x-2 mb-4 md:mb-0">
-              <div className="text-2xl">💣</div>
-              <span className="text-xl font-bold">Squashie</span>
+            <div className="flex items-center space-x-3 mb-4 md:mb-0">
+              <div className="text-3xl">💣</div>
+              <span className="text-2xl font-black">SQUASHIE</span>
             </div>
             <div className="text-gray-400 text-center md:text-right">
-              <p>&copy; 2025 Squashie. Because conflict is inevitable.</p>
+              <p className="font-bold">&copy; 2025 Squashie. Because conflict is inevitable.</p>
               <p className="text-sm mt-1">Making conflict resolution accessible, one squash at a time.</p>
               <p className="text-sm mt-1">Contact us at squashiehelp@gmail.com</p>
               

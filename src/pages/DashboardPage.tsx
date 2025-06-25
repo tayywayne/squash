@@ -131,7 +131,7 @@ const DashboardPage: React.FC = () => {
           return (
             <button
               onClick={() => navigate(`/user-profile/${conflict.user2_id}`)}
-              className="text-coral-500 hover:text-coral-600 font-medium underline transition-colors"
+              className="text-vivid-orange hover:text-orange-600 font-black underline transition-colors"
             >
               <UserDisplayName 
                 username={otherProfile.username}
@@ -144,7 +144,7 @@ const DashboardPage: React.FC = () => {
         } else {
           // Profile not loaded yet or user doesn't have a profile
           return (
-            <span className="text-gray-600">
+            <span className="text-dark-teal font-bold">
               {conflict.user2_email}
             </span>
           );
@@ -152,7 +152,7 @@ const DashboardPage: React.FC = () => {
       } else {
         // User2 hasn't joined yet
         return (
-          <span className="text-gray-600">
+          <span className="text-dark-teal font-bold">
             {conflict.user2_email} <span className="text-xs text-gray-500">(invited)</span>
           </span>
         );
@@ -164,7 +164,7 @@ const DashboardPage: React.FC = () => {
         return (
           <button
             onClick={() => navigate(`/user-profile/${conflict.user1_id}`)}
-            className="text-coral-500 hover:text-coral-600 font-medium underline transition-colors"
+            className="text-vivid-orange hover:text-orange-600 font-black underline transition-colors"
           >
             <UserDisplayName 
               username={otherProfile.username}
@@ -176,7 +176,7 @@ const DashboardPage: React.FC = () => {
         );
       } else {
         return (
-          <span className="text-gray-600">
+          <span className="text-dark-teal font-bold">
             You were invited
           </span>
         );
@@ -184,11 +184,10 @@ const DashboardPage: React.FC = () => {
     }
   };
 
-
   const getConflictStatus = (conflict: Conflict) => {
     // Check for final ruling phase
     if (conflict.final_ai_ruling) {
-      return { label: 'Final AI judgment issued', color: 'bg-purple-100 text-purple-800' };
+      return { label: 'FINAL AI JUDGMENT ISSUED', color: 'bg-dark-teal text-white border-black' };
     }
     
     // Check for core issues phase
@@ -199,13 +198,13 @@ const DashboardPage: React.FC = () => {
       // Check if current user needs to submit core issue
       if ((user?.id === conflict.user1_id && !conflict.user1_core_issue) ||
           (user?.id === conflict.user2_id && !conflict.user2_core_issue)) {
-        return { label: 'Your turn: clarify core issue', color: 'bg-orange-100 text-orange-800' };
+        return { label: 'YOUR TURN: CLARIFY CORE ISSUE', color: 'bg-vivid-orange text-white border-black' };
       }
       
       // Check if waiting for other user's core issue
       if ((user?.id === conflict.user1_id && conflict.user1_core_issue && !conflict.user2_core_issue) ||
           (user?.id === conflict.user2_id && conflict.user2_core_issue && !conflict.user1_core_issue)) {
-        return { label: 'Waiting for their core issue', color: 'bg-yellow-100 text-yellow-800' };
+        return { label: 'WAITING FOR THEIR CORE ISSUE', color: 'bg-lime-chartreuse text-dark-teal border-black' };
       }
     }
     
@@ -214,18 +213,18 @@ const DashboardPage: React.FC = () => {
       // Check if current user needs to vote on core reflection
       if ((user?.id === conflict.user1_id && conflict.user1_satisfaction === null) ||
           (user?.id === conflict.user2_id && conflict.user2_satisfaction === null)) {
-        return { label: 'Vote on final reflection', color: 'bg-indigo-100 text-indigo-800' };
+        return { label: 'VOTE ON FINAL REFLECTION', color: 'bg-dark-teal text-white border-black' };
       }
       
       // Check if waiting for other user's vote on core reflection
       if ((user?.id === conflict.user1_id && conflict.user1_satisfaction !== null && conflict.user2_satisfaction === null) ||
           (user?.id === conflict.user2_id && conflict.user2_satisfaction !== null && conflict.user1_satisfaction === null)) {
-        return { label: 'Waiting for their vote', color: 'bg-yellow-100 text-yellow-800' };
+        return { label: 'WAITING FOR THEIR VOTE', color: 'bg-lime-chartreuse text-dark-teal border-black' };
       }
       
       // Both voted but not satisfied - ready for final ruling
       if (conflict.user1_satisfaction === false || conflict.user2_satisfaction === false) {
-        return { label: 'Ready for AI final ruling', color: 'bg-red-100 text-red-800' };
+        return { label: 'READY FOR AI FINAL RULING', color: 'bg-vivid-orange text-white border-black' };
       }
     }
     
@@ -234,13 +233,13 @@ const DashboardPage: React.FC = () => {
       // Check if current user needs to vote on rehash
       if ((user?.id === conflict.user1_id && conflict.user1_satisfaction === null) ||
           (user?.id === conflict.user2_id && conflict.user2_satisfaction === null)) {
-        return { label: 'Vote on new approach', color: 'bg-blue-100 text-blue-800' };
+        return { label: 'VOTE ON NEW APPROACH', color: 'bg-green-teal text-white border-black' };
       }
       
       // Check if waiting for other user's vote on rehash
       if ((user?.id === conflict.user1_id && conflict.user1_satisfaction !== null && conflict.user2_satisfaction === null) ||
           (user?.id === conflict.user2_id && conflict.user2_satisfaction !== null && conflict.user1_satisfaction === null)) {
-        return { label: 'Waiting for their vote', color: 'bg-yellow-100 text-yellow-800' };
+        return { label: 'WAITING FOR THEIR VOTE', color: 'bg-lime-chartreuse text-dark-teal border-black' };
       }
     }
     
@@ -249,34 +248,34 @@ const DashboardPage: React.FC = () => {
       // Check if current user needs to vote on initial mediation
       if ((user?.id === conflict.user1_id && conflict.user1_satisfaction === null) ||
           (user?.id === conflict.user2_id && conflict.user2_satisfaction === null)) {
-        return { label: 'Vote on AI mediation', color: 'bg-green-100 text-green-800' };
+        return { label: 'VOTE ON AI MEDIATION', color: 'bg-green-teal text-white border-black' };
       }
       
       // Check if waiting for other user's vote on initial mediation
       if ((user?.id === conflict.user1_id && conflict.user1_satisfaction !== null && conflict.user2_satisfaction === null) ||
           (user?.id === conflict.user2_id && conflict.user2_satisfaction !== null && conflict.user1_satisfaction === null)) {
-        return { label: 'Waiting for their vote', color: 'bg-yellow-100 text-yellow-800' };
+        return { label: 'WAITING FOR THEIR VOTE', color: 'bg-lime-chartreuse text-dark-teal border-black' };
       }
     }
     
     // Original status logic for basic states
     if (conflict.status === 'pending') {
       if (user?.id === conflict.user1_id) {
-        return { label: 'Waiting for them', color: 'bg-yellow-100 text-yellow-800' };
+        return { label: 'WAITING FOR THEM', color: 'bg-lime-chartreuse text-dark-teal border-black' };
       } else {
-        return { label: 'Your turn to respond', color: 'bg-blue-100 text-blue-800' };
+        return { label: 'YOUR TURN TO RESPOND', color: 'bg-vivid-orange text-white border-black' };
       }
     }
     
     if (conflict.status === 'active') {
-      return { label: 'AI processing...', color: 'bg-purple-100 text-purple-800' };
+      return { label: 'AI PROCESSING...', color: 'bg-dark-teal text-white border-black' };
     }
     
-    return { label: 'Resolved', color: 'bg-gray-100 text-gray-800' };
+    return { label: 'RESOLVED', color: 'bg-green-teal text-white border-black' };
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <div className="max-w-4xl mx-auto p-4 sm:p-6">
       {toast && (
         <Toast
           message={toast.message}
@@ -287,54 +286,42 @@ const DashboardPage: React.FC = () => {
 
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          Dashboard
+        <h1 className="text-4xl font-black text-dark-teal mb-4 border-b-3 border-black pb-2">
+          DASHBOARD
         </h1>
-        <p className="text-gray-600">
+        <p className="text-dark-teal font-bold text-lg">
           Time to face the music. How's your conflict resolution game today?
         </p>
-        
-        {/* Mood Selector
-        <div className="mt-4 p-4 bg-white rounded-lg border border-gray-200">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Current Mood Check-in:
-          </label>
-          <MoodIndicator 
-            mood={currentMood} 
-            interactive 
-            onMoodChange={setCurrentMood}
-          />
-        </div> */}
       </div>
       
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <div className="bg-white p-6 rounded-lg border border-gray-200">
+        <div className="bg-lime-chartreuse p-6 border-3 border-black shadow-brutal">
           <div className="flex items-center">
-            <MessageSquare className="h-8 w-8 text-coral-500" />
+            <MessageSquare className="h-8 w-8 text-dark-teal" />
             <div className="ml-4">
-              <p className="text-2xl font-bold text-gray-900">{activeConflicts.length}</p>
-              <p className="text-gray-600">Active Conflicts</p>
+              <p className="text-3xl font-black text-dark-teal">{activeConflicts.length}</p>
+              <p className="text-dark-teal font-bold">ACTIVE CONFLICTS</p>
             </div>
           </div>
         </div>
         
-        <div className="bg-white p-6 rounded-lg border border-gray-200">
+        <div className="bg-green-teal p-6 border-3 border-black shadow-brutal">
           <div className="flex items-center">
-            <CheckCircle className="h-8 w-8 text-teal-500" />
+            <CheckCircle className="h-8 w-8 text-white" />
             <div className="ml-4">
-              <p className="text-2xl font-bold text-gray-900">{resolvedConflicts.length}</p>
-              <p className="text-gray-600">Squashes Resolved</p>
+              <p className="text-3xl font-black text-white">{resolvedConflicts.length}</p>
+              <p className="text-white font-bold">SQUASHES RESOLVED</p>
             </div>
           </div>
         </div>
         
-        <div className="bg-white p-6 rounded-lg border border-gray-200">
+        <div className="bg-vivid-orange p-6 border-3 border-black shadow-brutal">
           <div className="flex items-center">
-            <Users className="h-8 w-8 text-lavender-500" />
+            <Users className="h-8 w-8 text-white" />
             <div className="ml-4">
-              <p className="text-2xl font-bold text-gray-900">{uniqueConnectedAccounts}</p>
-              <p className="text-gray-600">People Tolerate You</p>
+              <p className="text-3xl font-black text-white">{uniqueConnectedAccounts}</p>
+              <p className="text-white font-bold">PEOPLE TOLERATE YOU</p>
             </div>
           </div>
         </div>
@@ -342,27 +329,27 @@ const DashboardPage: React.FC = () => {
 
       {/* Tabs */}
       <div className="mb-6">
-        <div className="border-b border-gray-200">
+        <div className="border-b-3 border-black">
           <nav className="flex space-x-8">
             <button
               onClick={() => setActiveTab('active')}
-              className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
+              className={`py-2 px-4 border-3 font-black text-lg transition-colors ${
                 activeTab === 'active'
-                  ? 'border-coral-500 text-coral-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  ? 'border-black bg-lime-chartreuse text-dark-teal -mb-[3px]'
+                  : 'border-transparent text-dark-teal hover:text-vivid-orange'
               }`}
             >
-              Active Conflicts ({activeConflicts.length})
+              ACTIVE CONFLICTS ({activeConflicts.length})
             </button>
             <button
               onClick={() => setActiveTab('history')}
-              className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
+              className={`py-2 px-4 border-3 font-black text-lg transition-colors ${
                 activeTab === 'history'
-                  ? 'border-coral-500 text-coral-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  ? 'border-black bg-lime-chartreuse text-dark-teal -mb-[3px]'
+                  : 'border-transparent text-dark-teal hover:text-vivid-orange'
               }`}
             >
-              My Squashes ({resolvedConflicts.length})
+              MY SQUASHES ({resolvedConflicts.length})
             </button>
           </nav>
         </div>
@@ -374,21 +361,20 @@ const DashboardPage: React.FC = () => {
           {/* New Conflict Button */}
           <button 
             onClick={() => navigate('/new-conflict')}
-            className="w-full p-6 border-2 border-dashed border-gray-300 rounded-lg hover:border-coral-400 hover:bg-coral-50 transition-colors group"
+            className="w-full p-6 border-3 border-black bg-vivid-orange hover:bg-orange-600 text-white shadow-brutal hover:shadow-brutal-sm transition-all transform hover:translate-x-1 hover:translate-y-1"
           >
             <div className="flex items-center justify-center">
-              <Plus className="h-8 w-8 text-gray-400 group-hover:text-coral-500" />
-              <div className="ml-4">
-                <p className="text-lg font-medium text-gray-900 group-hover:text-coral-600">
-                  Start New Conflict Resolution
+              <Plus className="h-8 w-8 text-white" />
+              <div className="ml-4 text-left">
+                <p className="text-xl font-black">
+                  START NEW CONFLICT RESOLUTION
                 </p>
-                <p className="text-gray-600">
+                <p className="text-white">
                   Got beef? Let's squash it. Invite someone to hash it out.
                 </p>
               </div>
             </div>
           </button>
-
 
           {/* Active Conflicts */}
           {loading ? (
@@ -396,43 +382,43 @@ const DashboardPage: React.FC = () => {
               <div className="animate-pulse-slow mb-4">
                 <div className="text-4xl">⏳</div>
               </div>
-              <p className="text-gray-600">Loading your conflicts...</p>
+              <p className="text-dark-teal font-bold">Loading your conflicts...</p>
             </div>
           ) : activeConflicts.length === 0 ? (
-            <div className="text-center py-8">
+            <div className="text-center py-8 border-3 border-black p-6">
               <div className="text-4xl mb-4">😌</div>
-              <p className="text-gray-600">No active conflicts. Living your best drama-free life!</p>
+              <p className="text-dark-teal font-bold">No active conflicts. Living your best drama-free life!</p>
             </div>
           ) : (
             activeConflicts.map((conflict) => {
               const status = getConflictStatus(conflict);
               return (
-                <div key={conflict.id} className="bg-white p-6 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
+                <div key={conflict.id} className="bg-white p-6 border-3 border-black shadow-brutal hover:shadow-brutal-sm transition-all transform hover:translate-x-1 hover:translate-y-1">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center space-x-3 mb-2">
-                        <h3 className="text-lg font-semibold text-gray-900">{conflict.title}</h3>
+                        <h3 className="text-xl font-black text-dark-teal">{conflict.title}</h3>
                         <MoodIndicator mood={conflict.user1_mood as MoodLevel} size="sm" />
                       </div>
-                      <div className="text-gray-600 mb-2 flex items-center space-x-1">
+                      <div className="text-dark-teal mb-2 flex items-center space-x-1 font-bold">
                         <span>vs.</span>
                         <div>{getOtherUserDisplay(conflict)}</div>
                       </div>
-                      <div className="flex items-center space-x-4 text-sm text-gray-500">
+                      <div className="flex items-center space-x-4 text-sm text-dark-teal">
                         <span className="flex items-center">
                           <Clock className="h-4 w-4 mr-1" />
                           {formatTimeAgo(conflict.created_at)}
                         </span>
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${status.color}`}>
+                        <span className={`px-3 py-1 text-xs font-black border-2 ${status.color}`}>
                           {status.label}
                         </span>
                       </div>
                     </div>
                     <button 
                       onClick={() => navigate(`/conflict/${conflict.id}`)}
-                      className="text-coral-500 hover:text-coral-600 font-medium"
+                      className="text-vivid-orange hover:text-orange-600 font-black"
                     >
-                      Continue →
+                      CONTINUE →
                     </button>
                   </div>
                 </div>
@@ -448,41 +434,41 @@ const DashboardPage: React.FC = () => {
               <div className="animate-pulse-slow mb-4">
                 <div className="text-4xl">⏳</div>
               </div>
-              <p className="text-gray-600">Loading your history...</p>
+              <p className="text-dark-teal font-bold">Loading your history...</p>
             </div>
           ) : resolvedConflicts.length === 0 ? (
-            <div className="text-center py-8">
+            <div className="text-center py-8 border-3 border-black p-6">
               <div className="text-4xl mb-4">📚</div>
-              <p className="text-gray-600">No resolved conflicts yet. Start squashing some beef!</p>
+              <p className="text-dark-teal font-bold">No resolved conflicts yet. Start squashing some beef!</p>
             </div>
           ) : (
             resolvedConflicts.map((conflict) => (
-              <div key={conflict.id} className="bg-white p-6 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
+              <div key={conflict.id} className="bg-white p-6 border-3 border-black shadow-brutal hover:shadow-brutal-sm transition-all transform hover:translate-x-1 hover:translate-y-1">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">{conflict.title}</h3>
-                    <div className="text-gray-600 mb-2 flex items-center space-x-1">
+                    <h3 className="text-xl font-black text-dark-teal mb-2">{conflict.title}</h3>
+                    <div className="text-dark-teal mb-2 flex items-center space-x-1 font-bold">
                       <span>vs.</span>
                       <div>{getOtherUserDisplay(conflict)}</div>
                     </div>
                     {conflict.ai_summary && (
-                      <p className="text-sm text-gray-700 mb-3 italic">"{conflict.ai_summary}"</p>
+                      <p className="text-sm text-dark-teal mb-3 italic border-l-3 border-lime-chartreuse pl-3">"{conflict.ai_summary}"</p>
                     )}
-                    <div className="flex items-center space-x-4 text-sm text-gray-500">
+                    <div className="flex items-center space-x-4 text-sm text-dark-teal">
                       <span className="flex items-center">
                         <Clock className="h-4 w-4 mr-1" />
                         {conflict.resolved_at ? formatTimeAgo(conflict.resolved_at) : formatTimeAgo(conflict.created_at)}
                       </span>
-                      <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                        {conflict.status === 'final_judgment' ? '⚖️ Final Judgment' : '✅ Resolved'}
+                      <span className="px-3 py-1 text-xs font-black border-2 bg-green-teal text-white border-black">
+                        {conflict.status === 'final_judgment' ? '⚖️ FINAL JUDGMENT' : '✅ RESOLVED'}
                       </span>
                     </div>
                   </div>
                   <button 
                     onClick={() => navigate(`/conflict/${conflict.id}`)}
-                    className="text-coral-500 hover:text-coral-600 font-medium"
+                    className="text-vivid-orange hover:text-orange-600 font-black"
                   >
-                    View Details →
+                    VIEW DETAILS →
                   </button>
                   </div>
                 </div>

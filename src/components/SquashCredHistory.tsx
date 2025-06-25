@@ -45,10 +45,10 @@ const SquashCredHistory: React.FC<SquashCredHistoryProps> = ({
 
   if (loading) {
     return (
-      <div className={`bg-white p-6 rounded-lg border border-gray-200 ${className}`}>
+      <div className={`bg-white p-6 border-3 border-black shadow-brutal ${className}`}>
         <div className="flex items-center space-x-2 mb-4">
-          <Coins className="h-5 w-5 text-yellow-600" />
-          <h3 className="text-lg font-semibold text-gray-900">SquashCred History</h3>
+          <Coins className="h-5 w-5 text-vivid-orange" />
+          <h3 className="text-lg font-black text-dark-teal">SQUASHCRED HISTORY</h3>
         </div>
         <div className="animate-pulse space-y-3">
           {[1, 2, 3, 4, 5].map((i) => (
@@ -67,28 +67,28 @@ const SquashCredHistory: React.FC<SquashCredHistoryProps> = ({
   }
 
   return (
-    <div className={`bg-white p-6 rounded-lg border border-gray-200 ${className}`}>
+    <div className={`bg-white p-6 border-3 border-black shadow-brutal ${className}`}>
       <div className="flex items-center space-x-2 mb-4">
-        <Coins className="h-5 w-5 text-yellow-600" />
-        <h3 className="text-lg font-semibold text-gray-900">SquashCred History</h3>
+        <Coins className="h-5 w-5 text-vivid-orange" />
+        <h3 className="text-lg font-black text-dark-teal">SQUASHCRED HISTORY</h3>
       </div>
 
       {events.length === 0 ? (
         <div className="text-center py-8">
           <div className="text-4xl mb-3">📊</div>
-          <p className="text-gray-600 text-sm">
+          <p className="text-dark-teal font-bold">
             No SquashCred activity yet. Start resolving conflicts to earn points!
           </p>
         </div>
       ) : (
         <div className="space-y-3 max-h-96 overflow-y-auto">
           {events.map((event) => (
-            <div key={event.id} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+            <div key={event.id} className="flex items-center space-x-3 p-3 border-2 border-black">
               {/* Icon */}
-              <div className={`flex-shrink-0 p-2 rounded-full ${
+              <div className={`flex-shrink-0 p-2 border-2 border-black ${
                 event.amount > 0 
-                  ? 'bg-green-100 text-green-600' 
-                  : 'bg-red-100 text-red-600'
+                  ? 'bg-lime-chartreuse text-dark-teal' 
+                  : 'bg-vivid-orange text-white'
               }`}>
                 {event.amount > 0 ? (
                   <TrendingUp className="h-4 w-4" />
@@ -99,18 +99,18 @@ const SquashCredHistory: React.FC<SquashCredHistoryProps> = ({
 
               {/* Content */}
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900 truncate">
+                <p className="text-sm font-bold text-dark-teal truncate">
                   {event.reason}
                 </p>
-                <div className="flex items-center space-x-2 text-xs text-gray-500">
+                <div className="flex items-center space-x-2 text-xs text-dark-teal">
                   <Clock className="h-3 w-3" />
                   <span>{formatTimeAgo(event.created_at)}</span>
                 </div>
               </div>
 
               {/* Points */}
-              <div className={`flex-shrink-0 text-sm font-semibold ${
-                event.amount > 0 ? 'text-green-600' : 'text-red-600'
+              <div className={`flex-shrink-0 text-sm font-black ${
+                event.amount > 0 ? 'text-green-teal' : 'text-vivid-orange'
               }`}>
                 {event.amount > 0 ? '+' : ''}{event.amount}
               </div>
@@ -121,7 +121,7 @@ const SquashCredHistory: React.FC<SquashCredHistoryProps> = ({
 
       {events.length >= limit && (
         <div className="mt-4 text-center">
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-dark-teal font-bold">
             Showing last {limit} events
           </p>
         </div>

@@ -1,3 +1,55 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-sans;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-black tracking-tight;
+  }
+  
+  button {
+    @apply font-bold;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply font-black border-3 border-black shadow-brutal hover:shadow-brutal-sm transition-all transform hover:translate-x-1 hover:translate-y-1;
+  }
+  
+  .btn-primary {
+    @apply bg-vivid-orange hover:bg-orange-600 text-white;
+  }
+  
+  .btn-secondary {
+    @apply bg-lime-chartreuse hover:bg-green-400 text-dark-teal;
+  }
+  
+  .btn-outline {
+    @apply bg-white hover:bg-gray-100 text-dark-teal;
+  }
+  
+  .card {
+    @apply bg-white border-3 border-black shadow-brutal;
+  }
+  
+  .card-header {
+    @apply font-black text-dark-teal border-b-3 border-black p-4;
+  }
+  
+  .card-body {
+    @apply p-4;
+  }
+  
+  .input {
+    @apply bg-white border-3 border-black p-3 font-bold text-dark-teal focus:outline-none focus:ring-0 focus:border-vivid-orange;
+  }
+  
+  .label {
+    @apply font-black text-dark-teal mb-2 block;
+  }
+}
