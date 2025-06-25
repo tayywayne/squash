@@ -6,6 +6,8 @@ import AuthPage from './pages/AuthPage';
 import HomePage from './pages/HomePage';
 import DashboardPage from './pages/DashboardPage';
 import NewConflictPage from './pages/NewConflictPage';
+import QuestsPage from './pages/QuestsPage';
+import QuestDetailPage from './pages/QuestDetailPage';
 import ConflictPage from './pages/ConflictPage';
 import ProfilePage from './pages/ProfilePage';
 import OtherUserProfilePage from './pages/OtherUserProfilePage';
@@ -91,6 +93,8 @@ function App() {
                     <Route path="/quest/:questId" element={<QuestDetailPage />} />
                     <Route path="/user-profile/:userId" element={<OtherUserProfilePage />} />
                     <Route path="/leaderboard" element={<LeaderboardPage />} />
+                    <Route path="/quests" element={<QuestsPage />} />
+                    <Route path="/quest/:questId" element={<QuestDetailPage />} />
                     <Route path="/support-us" element={<SupportUsPage />} />
                     <Route path="/quests" element={<QuestsPage />} />
                     <Route path="/quest/:questId" element={<QuestDetailPage />} />

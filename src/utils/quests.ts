@@ -22,11 +22,16 @@ export interface QuestStep {
   title: string;
   instruction: string;
   step_type: 'quiz' | 'rewrite' | 'choice';
-  options?: Array<{ id: string; text: string }>;
-  user_response?: string;
-  is_correct?: boolean;
-  completed_at?: string;
+  options: QuestStepOption[] | null;
+  user_response: string | null;
+  is_correct: boolean | null;
+  completed_at: string | null;
   is_completed: boolean;
+}
+
+export interface QuestStepOption {
+  id: string;
+  text: string;
 }
 
 export interface QuestDetails {
@@ -62,7 +67,7 @@ export const questsService = {
   getAvailableQuests: async (): Promise<Quest[]> => {
     try {
       const { data, error } = await supabase.rpc('get_available_quests', {
-        p_user_id: supabase.auth.getUser().then(res => res.data.user?.id)
+        p_user_id: supabase.auth.getUser().then(({ data }) => data.user?.id)
       });
 
       if (error) {
@@ -72,16 +77,16 @@ export const questsService = {
 
       return data || [];
     } catch (error) {
-      console.error('Error in getAvailableQuests:', error);
-      return [];
+      console.error('Error fetching available quests:', error);
+      throw error;
     }
   },
 
-  getQuestDetails: async (questId: string): Promise<QuestDetails | null> => {
+  getQuestDetails: async (questId: string): Promise<QuestDetails> => {
     try {
       const { data, error } = await supabase.rpc('get_quest_details', {
         p_quest_id: questId,
-        p_user_id: supabase.auth.getUser().then(res => res.data.user?.id)
+        p_user_id: supabase.auth.getUser().then(({ data }) => data.user?.id)
       });
 
       if (error) {
@@ -89,20 +94,39 @@ export const questsService = {
         throw error;
       }
 
-      return data || null;
+      return data || {
+        quest: {
+          id: '',
+          title: '',
+          description: '',
+          emoji: '',
+          reward_cred: 0,
+          unlocks_tool: null,
+          difficulty: 'easy',
+          theme: ''
+        },
+        user_progress: {
+          is_started: false,
+          is_completed: false,
+          current_step: 1,
+          started_at: null,
+          completed_at: null
+        },
+        steps: []
+      };
     } catch (error) {
-      console.error('Error in getQuestDetails:', error);
-      return null;
+      console.error('Error fetching quest details:', error);
+      throw error;
     }
   },
 
-  startQuest: async (questId: string): Promise<string | null> => {
+  startQuest: async (questId: string): Promise<string> => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('User not authenticated');
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) throw new Error('User not authenticated');
 
       const { data, error } = await supabase.rpc('start_quest', {
-        p_user_id: user.id,
+        p_user_id: userData.user.id,
         p_quest_id: questId
       });
 
@@ -111,10 +135,10 @@ export const questsService = {
         throw error;
       }
 
-      return data || null;
+      return data;
     } catch (error) {
-      console.error('Error in startQuest:', error);
-      return null;
+      console.error('Error starting quest:', error);
+      throw error;
     }
   },
 
@@ -122,7 +146,7 @@ export const questsService = {
     userQuestId: string,
     stepId: string,
     userResponse: string
-  ): Promise<StepSubmissionResult | null> => {
+  ): Promise<StepSubmissionResult> => {
     try {
       const { data, error } = await supabase.rpc('submit_quest_step', {
         p_user_quest_id: userQuestId,
@@ -135,10 +159,10 @@ export const questsService = {
         throw error;
       }
 
-      return data || null;
+      return data;
     } catch (error) {
-      console.error('Error in submitQuestStep:', error);
-      return null;
+      console.error('Error submitting quest step:', error);
+      throw error;
     }
   }
 };
