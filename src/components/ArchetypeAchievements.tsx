@@ -112,7 +112,7 @@ const ArchetypeAchievements: React.FC<ArchetypeAchievementsProps> = ({ userId, c
 
               {/* Tooltip on Hover */}
               <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
-                <div className="bg-dark-teal text-white text-xs border-3 border-black p-3 shadow-brutal max-w-48">
+                <div className="bg-dark-teal text-white text-xs border-3 border-black p-3 shadow-brutal max-w-sm">
                   <div className="font-black mb-1 text-lime-chartreuse">
                     {archetypeInfo?.title || achievement.archetype_name}
                   </div>
