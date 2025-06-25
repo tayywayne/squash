@@ -17,6 +17,7 @@ interface AuthUser {
   supporter_level?: string;
   supporter_emoji?: string;
   supporter_since?: string;
+  onboarding_complete?: boolean;
 }
 
 export const useAuth = () => {
@@ -102,6 +103,7 @@ export const useAuth = () => {
         supporter_level: profile?.supporter_level,
         supporter_emoji: profile?.supporter_emoji,
         supporter_since: profile?.supporter_since,
+        onboarding_complete: profile?.onboarding_complete,
       });
     //  console.log('👤 setUserWithProfile: User state updated successfully');
     } catch (error) {

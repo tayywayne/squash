@@ -14,6 +14,7 @@ import SupportUsPage from './pages/SupportUsPage';
 import SupportSuccessPage from './pages/SupportSuccessPage';
 import AIJudgmentFeedPage from './pages/AIJudgmentFeedPage';
 import RedditConflictPage from './pages/RedditConflictPage';
+import OnboardingFlow from './components/OnboardingFlow';
 import { achievementTracker } from './utils/achievementTracker';
 
 function App() {
@@ -73,6 +74,7 @@ function App() {
               path="/*"
               element={
                 <Layout>
+                  <OnboardingFlow />
                   <Routes>
                     <Route path="/dashboard" element={<DashboardPage />} />
                     <Route path="/new-conflict" element={<NewConflictPage />} />
