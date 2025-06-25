@@ -88,7 +88,7 @@ const SquashCredDisplay: React.FC<SquashCredDisplayProps> = ({
   return (
     <div className={`flex items-center space-x-2 ${sizeClasses.container} ${className}`}>
       {/* Points Display */}
-      <div className="flex items-center space-x-1 bg-dark-teal border-2 border-black px-2 py-1">
+      <div className="flex items-center space-x-1 bg-dark-teal px-2 py-1">
         <Coins className={`${sizeClasses.icon} text-lime-chartreuse`} />
         <span className={`${sizeClasses.points} text-white`}>
           {squashCredService.formatPoints(squashcred)}
