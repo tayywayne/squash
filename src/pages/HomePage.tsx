@@ -86,13 +86,13 @@ const HomePage: React.FC = () => {
       step: 3,
       title: 'AI Mediation',
       description: 'We translate emotional chaos into clarity, then deliver a suggested compromise that\'s actually useful.',
-      emoji: '🤖'
+      emoji: '🧠'
     },
     {
       step: 4,
       title: 'Peace (Hopefully)',
       description: 'You both review it. You vote. You heal. If it works, great. If not… well, there\'s always the rehash button.',
-      emoji: '✨'
+      emoji: '🙏'
     }
   ];
 
