@@ -88,19 +88,19 @@ const SquashCredDisplay: React.FC<SquashCredDisplayProps> = ({
   return (
     <div className={`flex items-center space-x-2 ${sizeClasses.container} ${className}`}>
       {/* Points Display */}
-      <div className="flex items-center space-x-1 bg-dark border-3 border-black px-2 py-1">
-        <Coins className={`${sizeClasses.icon} text-warning`} />
-        <span className={`${sizeClasses.points} text-text`}>
+      <div className="flex items-center space-x-1 bg-dark-teal px-2 py-1">
+        <Coins className={`${sizeClasses.icon} text-lime-chartreuse`} />
+        <span className={`${sizeClasses.points} text-white`}>
           {squashCredService.formatPoints(squashcred)}
         </span>
-        <span className="text-warning font-bold">CRED</span>
+        <span className="text-lime-chartreuse font-bold">CRED</span>
       </div>
 
       {/* Tier Display */}
       {showTier && (
-        <div className="flex items-center space-x-1 bg-warning border-3 border-black px-2 py-1">
+        <div className="flex items-center space-x-1 bg-lime-chartreuse px-2 py-1">
           <span className="text-lg">{tier_emoji}</span>
-          <span className={`${sizeClasses.tier} text-dark font-bold`}>
+          <span className={`${sizeClasses.tier} text-dark-teal font-bold`}>
             {tier_title}
           </span>
         </div>
@@ -109,19 +109,19 @@ const SquashCredDisplay: React.FC<SquashCredDisplayProps> = ({
       {/* Tooltip */}
       {showTooltip && (
         <div className="relative group">
-          <div className="text-text hover:text-warning transition-colors cursor-help">
+          <div className="text-white hover:text-lime-chartreuse transition-colors cursor-help">
             <Info className={sizeClasses.icon} />
           </div>
           {/* Hover tooltip */}
           <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 z-[9999] opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
-            <div className="bg-dark text-text text-xs rounded-none border-3 border-black p-4 shadow-brutal w-80 max-w-sm">
-              <div className="font-black mb-1 text-warning">
+            <div className="bg-dark-teal text-white text-xs rounded-none border-3 border-black p-4 shadow-brutal w-80 max-w-sm">
+              <div className="font-black mb-1 text-lime-chartreuse">
                 {tier_emoji} {tier_title}
               </div>
-              <div className="text-text mb-3 font-bold">
+              <div className="text-white mb-3 font-bold">
                 {pointsData.tier_range}
               </div>
-              <div className="text-warning text-xs leading-relaxed">
+              <div className="text-lime-chartreuse text-xs leading-relaxed">
                 Earn SquashCred by resolving conflicts, being helpful, and maintaining good behavior. 
                 Lose points for ghosting, spam, or excessive drama. Stay spicy — but not toxic.
               </div>

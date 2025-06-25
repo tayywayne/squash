@@ -100,7 +100,7 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-dark flex items-center justify-center p-4">
+    <div className="min-h-screen bg-dark-teal flex items-center justify-center p-4">
       {toast && (
         <Toast
           message={toast.message}
@@ -114,18 +114,18 @@ const LoginPage: React.FC = () => {
         <div className="text-center mb-8">
           <button
             onClick={() => navigate('/')}
-            className="flex items-center space-x-2 text-text hover:text-warning mb-6 transition-colors mx-auto font-black"
+            className="flex items-center space-x-2 text-white hover:text-lime-chartreuse mb-6 transition-colors mx-auto font-black"
           >
             <ArrowLeft size={20} />
             <span>BACK TO HOME</span>
           </button>
           
           <div className="text-6xl mb-4">💣</div>
-          <h1 className="text-3xl font-black text-fun mb-2">SQUASHIE</h1>
-          <p className="text-warning text-lg font-bold leading-relaxed">
+          <h1 className="text-3xl font-black text-white mb-2">SQUASHIE</h1>
+          <p className="text-lime-chartreuse text-lg font-bold leading-relaxed">
             Welcome to Squashie – because not everyone can afford a therapist.
           </p>
-          <p className="text-text text-sm mt-2 font-bold">
+          <p className="text-white text-sm mt-2 font-bold">
             Settle your beef with AI-powered mediation. It's like couples therapy, but sassier.
           </p>
         </div>
@@ -139,8 +139,8 @@ const LoginPage: React.FC = () => {
                 onClick={() => setIsLogin(true)}
                 className={`flex-1 py-2 text-sm font-black transition-colors ${
                   isLogin
-                    ? 'bg-warning text-dark border-2 border-black'
-                    : 'text-dark hover:text-accent'
+                    ? 'bg-lime-chartreuse text-dark-teal border-2 border-black'
+                    : 'text-dark-teal hover:text-vivid-orange'
                 }`}
               >
                 SIGN IN
@@ -150,8 +150,8 @@ const LoginPage: React.FC = () => {
                 onClick={() => setIsLogin(false)}
                 className={`flex-1 py-2 text-sm font-black transition-colors ${
                   !isLogin
-                    ? 'bg-warning text-dark border-2 border-black'
-                    : 'text-dark hover:text-accent'
+                    ? 'bg-lime-chartreuse text-dark-teal border-2 border-black'
+                    : 'text-dark-teal hover:text-vivid-orange'
                 }`}
               >
                 SIGN UP
@@ -201,18 +201,17 @@ const LoginPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="lastName" className="block text-sm font-black text-dark mb-2">
-                  <label htmlFor="firstName" className="block text-sm font-black text-dark mb-2">
+                  <label htmlFor="username" className="block text-sm font-black text-dark-teal mb-2">
                     USERNAME
                   </label>
                   <div className="relative">
-                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-dark" />
+                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-dark-teal" />
                     <input
                       id="username"
                       type="text"
                       value={username}
                       onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
-                      className="w-full pl-10 pr-4 py-3 border-3 border-black focus:border-accent transition-colors font-bold text-dark"
+                      className="w-full pl-10 pr-4 py-3 border-3 border-black focus:border-vivid-orange transition-colors font-bold text-dark-teal"
                       placeholder="johndoe"
                       required={!isLogin}
                       minLength={3}
@@ -226,17 +225,17 @@ const LoginPage: React.FC = () => {
             )}
 
             <div>
-              <label htmlFor="email" className="block text-sm font-black text-dark mb-2">
+              <label htmlFor="email" className="block text-sm font-black text-dark-teal mb-2">
                 EMAIL ADDRESS
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-dark" />
+                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-dark-teal" />
                 <input
                   id="email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border-3 border-black focus:border-accent transition-colors font-bold text-dark"
+                  className="w-full pl-10 pr-4 py-3 border-3 border-black focus:border-vivid-orange transition-colors font-bold text-dark-teal"
                   placeholder="your.email@example.com"
                   required
                 />
@@ -246,36 +245,36 @@ const LoginPage: React.FC = () => {
             {/* Confirm Email for Sign Up */}
             {!isLogin && (
               <div>
-               <label htmlFor="confirmEmail" className="block text-sm font-black text-dark mb-2">
+                <label htmlFor="confirmEmail" className="block text-sm font-black text-dark-teal mb-2">
                   CONFIRM EMAIL
                 </label>
                 <div className="relative">
-                 <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-dark" />
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-dark-teal" />
                   <input
                     id="confirmEmail"
                     type="email"
                     value={confirmEmail}
                     onChange={(e) => setConfirmEmail(e.target.value)}
-                   className="w-full pl-10 pr-4 py-3 border-3 border-black focus:border-accent transition-colors font-bold text-dark"
+                    className="w-full pl-10 pr-4 py-3 border-3 border-black focus:border-vivid-orange transition-colors font-bold text-dark-teal"
                     placeholder="your.email@example.com"
                     required={!isLogin}
                   />
                 </div>
-                <p className="text-xs text-dark mt-1 font-bold">
+              </div>
             )}
 
             <div>
-              <label htmlFor="password" className="block text-sm font-black text-dark mb-2">
+              <label htmlFor="password" className="block text-sm font-black text-dark-teal mb-2">
                 PASSWORD
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-dark" />
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-dark-teal" />
                 <input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-12 py-3 border-3 border-black focus:border-accent transition-colors font-bold text-dark"
+                  className="w-full pl-10 pr-12 py-3 border-3 border-black focus:border-vivid-orange transition-colors font-bold text-dark-teal"
                   placeholder="••••••••"
                   required
                   minLength={isLogin ? undefined : 6}
@@ -283,7 +282,7 @@ const LoginPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-dark hover:text-accent"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-dark-teal hover:text-vivid-orange"
                 >
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
@@ -293,17 +292,17 @@ const LoginPage: React.FC = () => {
             {/* Confirm Password for Sign Up */}
             {!isLogin && (
               <div>
-               <label htmlFor="confirmPassword" className="block text-sm font-black text-dark mb-2">
+                <label htmlFor="confirmPassword" className="block text-sm font-black text-dark-teal mb-2">
                   CONFIRM PASSWORD
                 </label>
                 <div className="relative">
-                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-dark" />
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-dark-teal" />
                   <input
                     id="confirmPassword"
                     type={showConfirmPassword ? 'text' : 'password'}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                   className="w-full pl-10 pr-12 py-3 border-3 border-black focus:border-accent transition-colors font-bold text-dark"
+                    className="w-full pl-10 pr-12 py-3 border-3 border-black focus:border-vivid-orange transition-colors font-bold text-dark-teal"
                     placeholder="••••••••"
                     required={!isLogin}
                     minLength={6}
@@ -321,7 +320,7 @@ const LoginPage: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-             className="w-full bg-accent hover:bg-orange-600 text-text font-black py-3 px-4 border-3 border-black shadow-brutal hover:shadow-brutal-sm transition-all transform hover:translate-x-1 hover:translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              className="w-full bg-vivid-orange hover:bg-orange-600 text-white font-black py-3 px-4 border-3 border-black shadow-brutal hover:shadow-brutal-sm transition-all transform hover:translate-x-1 hover:translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
               {loading ? 'PROCESSING...' : isLogin ? 'SIGN IN' : 'CREATE ACCOUNT'}
             </button>
@@ -329,12 +328,11 @@ const LoginPage: React.FC = () => {
 
           <div className="mt-6 text-center">
             <p className="text-sm text-dark-teal font-bold">
-            <p className="text-sm text-dark font-bold">
               {isLogin ? "New to conflict resolution?" : "Already have an account?"}{' '}
               <button
                 type="button"
                 onClick={() => setIsLogin(!isLogin)}
-               className="text-accent hover:text-orange-600 font-black"
+                className="text-vivid-orange hover:text-orange-600 font-black"
               >
                 {isLogin ? 'SIGN UP HERE' : 'SIGN IN INSTEAD'}
               </button>
@@ -343,7 +341,7 @@ const LoginPage: React.FC = () => {
         </div>
 
         <div className="text-center mt-6">
-          <p className="text-xs text-warning font-bold">
+          <p className="text-xs text-lime-chartreuse font-bold">
             By signing up, you agree to resolve conflicts like a civilized human being. 
             Mostly.
           </p>

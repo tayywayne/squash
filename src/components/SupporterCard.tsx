@@ -17,20 +17,20 @@ const SupporterCard: React.FC<SupporterCardProps> = ({
   const supporterConfig = {
     tip_1: {
       title: 'BAND-AID BUYER',
-      bgColor: 'bg-primary',
-      textColor: 'text-text',
+      bgColor: 'bg-green-teal',
+      textColor: 'text-white',
       blurb: 'Thanks for patching up our server costs! 🩹'
     },
     tip_2: {
       title: "I'M THE PROBLEM",
-      bgColor: 'bg-accent', 
-      textColor: 'text-text',
+      bgColor: 'bg-vivid-orange', 
+      textColor: 'text-white',
       blurb: 'Self-awareness is the first step to recovery! 💅'
     },
     tip_3: {
       title: 'CHAOS PATRON',
-      bgColor: 'bg-warning',
-      textColor: 'text-dark',
+      bgColor: 'bg-lime-chartreuse',
+      textColor: 'text-dark-teal',
       blurb: 'You create drama, we solve it. Fair trade! 👑'
     }
   };
@@ -49,10 +49,10 @@ const SupporterCard: React.FC<SupporterCardProps> = ({
     <div className={`${config.bgColor} p-6 border-3 border-black shadow-brutal relative overflow-hidden ${className}`}>
       {/* Decorative elements */}
       <div className="absolute top-2 right-2">
-        <Sparkles className="h-6 w-6 text-text" />
+        <Sparkles className="h-6 w-6 text-white" />
       </div>
       <div className="absolute bottom-2 left-2">
-        <Heart className="h-4 w-4 text-text" />
+        <Heart className="h-4 w-4 text-white" />
       </div>
       
       <div className="relative z-10">
@@ -79,9 +79,8 @@ const SupporterCard: React.FC<SupporterCardProps> = ({
 
         {/* Supporter Badge */}
         <div className="mt-4 inline-flex items-center space-x-2 bg-white border-2 border-black px-3 py-1">
-          <Sparkles className="h-4 w-4 text-accent" />
+          <Sparkles className="h-4 w-4 text-vivid-orange" />
           <span className={`text-sm font-black text-dark-teal`}>
-          <span className={`text-sm font-black text-dark`}>
             OFFICIAL SUPPORTER
           </span>
         </div>
@@ -91,5 +90,3 @@ const SupporterCard: React.FC<SupporterCardProps> = ({
 };
 
 export default SupporterCard;
-  )
-}

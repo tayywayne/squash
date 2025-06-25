@@ -27,9 +27,9 @@ const Toast: React.FC<ToastProps> = ({ message, type, onClose, duration = 4000 }
   };
 
   const colors = {
-    success: 'bg-primary border-black text-text',
-    error: 'bg-accent border-black text-text',
-    info: 'bg-warning border-black text-dark',
+    success: 'bg-green-teal border-black text-white',
+    error: 'bg-vivid-orange border-black text-white',
+    info: 'bg-lime-chartreuse border-black text-dark-teal',
   };
 
   const Icon = icons[type];
