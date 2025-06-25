@@ -91,3 +91,5 @@ const SupporterCard: React.FC<SupporterCardProps> = ({
 };
 
 export default SupporterCard;
+  )
+}
