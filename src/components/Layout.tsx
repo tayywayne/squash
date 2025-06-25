@@ -97,17 +97,17 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       )}
 
       {/* Top Navigation */}
-      <nav className="bg-dark-teal border-b-3 border-black">
+      <nav className="bg-dark border-b-3 border-black">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             <div className="flex items-center space-x-3">
               <div className="text-3xl animate-float">💣</div>
-              <h1 className="text-2xl font-black text-white tracking-tight">SQUASHIE</h1>
+              <h1 className="text-2xl font-black text-fun tracking-tight">SQUASHIE</h1>
             </div>
             
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-4">
-                <span className="text-sm text-white font-bold">
+                <span className="text-sm text-text font-bold">
                   HEY, <UserDisplayName 
                     username={user?.username}
                     archetypeEmoji={user?.archetype_emoji}
@@ -126,7 +126,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               </div>
               <button
                 onClick={handleSignOut}
-                className="flex items-center space-x-1 text-white hover:text-vivid-orange transition-colors"
+                className="flex items-center space-x-1 text-text hover:text-accent transition-colors"
               >
                 <LogOut size={18} />
                 <span className="hidden sm:inline font-bold">LOGOUT</span>
@@ -149,8 +149,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                       onClick={() => navigate(item.href)}
                       className={`w-full flex items-center space-x-3 px-4 py-4 text-left transition-colors border-3 ${
                         isActive
-                          ? 'bg-lime-chartreuse text-dark-teal border-black shadow-brutal'
-                          : 'text-dark-teal border-transparent hover:border-black hover:shadow-brutal-sm'
+                          ? 'bg-warning text-dark border-black shadow-brutal'
+                          : 'text-dark border-transparent hover:border-black hover:shadow-brutal-sm'
                       }`}
                     >
                       <span className="text-2xl">{item.emoji}</span>
@@ -164,7 +164,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </aside>
 
         {/* Mobile Bottom Navigation */}
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t-3 border-black md:hidden z-10">
+        <div className="fixed bottom-0 left-0 right-0 bg-light-bg border-t-3 border-black md:hidden z-10">
           <nav className="flex justify-around py-2">
             {navigation.map((item) => {
               const isActive = location.pathname === item.href;
@@ -173,7 +173,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   key={item.name}
                   onClick={() => navigate(item.href)}
                   className={`flex flex-col items-center p-2 rounded-lg transition-colors ${
-                    isActive ? 'text-vivid-orange' : 'text-dark-teal'
+                    isActive ? 'text-accent' : 'text-dark'
                   }`}
                 >
                   <span className="text-2xl">{item.emoji}</span>
@@ -185,7 +185,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </div>
 
         {/* Main Content */}
-        <main className="flex-1 pb-16 md:pb-0 bg-white">
+        <main className="flex-1 pb-16 md:pb-0 bg-light-bg">
           {children}
         </main>
       </div>
