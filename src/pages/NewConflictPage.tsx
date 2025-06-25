@@ -4,7 +4,7 @@ import { Mail, MessageSquare, ArrowLeft, Send, CheckCircle, AlertCircle } from '
 import { useAuth } from '../hooks/useAuth';
 import MoodIndicator from '../components/MoodIndicator';
 import Toast from '../components/Toast';
-import { conflictService } from '../utils/conflicts';
+import { conflictService, CreateConflictData } from '../utils/conflicts';
 import { archetypeService } from '../utils/archetypes';
 import { userLookupService } from '../utils/userLookup';
 import { inviteService } from '../utils/invites';
@@ -12,7 +12,7 @@ import { MoodLevel } from '../types';
 
 const NewConflictPage: React.FC = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user } = useAuth(); 
   const [formData, setFormData] = useState({
     title: '',
     otherUserEmail: '',
@@ -164,7 +164,7 @@ const NewConflictPage: React.FC = () => {
   ];
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
+    <div className="max-w-4xl mx-auto p-4 sm:p-6">
       {toast && (
         <Toast
           message={toast.message}
@@ -175,48 +175,50 @@ const NewConflictPage: React.FC = () => {
 
       {/* Header */}
       <div className="mb-8">
-        <button
-          onClick={() => navigate('/dashboard')}
-          className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 mb-4 transition-colors"
-        >
-          <ArrowLeft size={20} />
-          <span>Back to Dashboard</span>
-        </button>
+        <div className="flex items-center mb-6">
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="flex items-center space-x-2 text-dark-teal hover:text-vivid-orange transition-colors font-black"
+          >
+            <ArrowLeft size={20} />
+            <span>BACK TO DASHBOARD</span>
+          </button>
+        </div>
         
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          Start a New Conflict Resolution
+        <h1 className="text-4xl font-black text-dark-teal mb-4 border-b-3 border-black pb-2">
+          START A NEW CONFLICT
         </h1>
-        <p className="text-gray-600">
-          Got beef? Let's squash it. Fill out the details and we'll help you both work through it.
+        <p className="text-dark-teal font-bold text-lg">
+          Got beef? Let's squash it. Fill out the details and we'll help you resolve it.
         </p>
       </div>
 
       {/* Mood Check-in */}
-      <div className="bg-white p-6 rounded-lg border border-gray-200 mb-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-3">
-          First, how are you feeling right now?
+      <div className="bg-white p-6 border-3 border-black shadow-brutal mb-6">
+        <h2 className="text-xl font-black text-dark-teal mb-4 flex items-center">
+          <span className="text-2xl mr-2">🌡️</span> HOW ARE YOU FEELING RIGHT NOW?
         </h2>
         <MoodIndicator 
           mood={currentMood} 
           interactive 
           onMoodChange={setCurrentMood}
         />
-        <p className="text-sm text-gray-600 mt-2">
-          This helps our AI understand the emotional context of your situation.
+        <p className="text-sm text-dark-teal mt-3 font-bold">
+          This helps our AI understand your emotional state and translate your message appropriately.
         </p>
       </div>
 
       {/* Main Form */}
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="bg-white p-6 rounded-lg border border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">
-            Conflict Details
+        <div className="bg-white p-6 border-3 border-black shadow-brutal">
+          <h2 className="text-xl font-black text-dark-teal mb-4 flex items-center">
+            <span className="text-2xl mr-2">📝</span> CONFLICT DETAILS
           </h2>
           
           {/* Conflict Title */}
           <div className="mb-6">
-            <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
-              What should we call this conflict?
+            <label htmlFor="title" className="block text-sm font-black text-dark-teal mb-2">
+              WHAT SHOULD WE CALL THIS CONFLICT?
             </label>
             <input
               id="title"
@@ -224,19 +226,19 @@ const NewConflictPage: React.FC = () => {
               type="text"
               value={formData.title}
               onChange={handleInputChange}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-coral-500 focus:border-coral-500 transition-colors"
+              className="w-full px-4 py-3 border-3 border-black font-bold text-dark-teal focus:outline-none focus:border-vivid-orange transition-colors"
               placeholder="Give it a memorable name..."
               maxLength={100}
             />
             <div className="mt-2">
-              <p className="text-xs text-gray-500 mb-2">Need inspiration? Try one of these:</p>
-              <div className="flex flex-wrap gap-2">
+              <p className="text-xs text-dark-teal mb-2 font-bold">Need inspiration? Try one of these:</p>
+              <div className="flex flex-wrap gap-2 mt-2">
                 {conflictTitleSuggestions.map((suggestion, index) => (
                   <button
                     key={index}
                     type="button"
                     onClick={() => setFormData(prev => ({ ...prev, title: suggestion }))}
-                    className="text-xs bg-gray-100 hover:bg-coral-100 text-gray-700 hover:text-coral-700 px-2 py-1 rounded transition-colors"
+                    className="text-xs bg-lime-chartreuse hover:bg-lime-chartreuse/80 text-dark-teal px-2 py-1 border-2 border-black transition-colors font-bold"
                   >
                     {suggestion}
                   </button>
@@ -247,18 +249,18 @@ const NewConflictPage: React.FC = () => {
 
           {/* Other User Email */}
           <div className="mb-6">
-            <label htmlFor="otherUserEmail" className="block text-sm font-medium text-gray-700 mb-2">
-              Who's the other party in this conflict?
+            <label htmlFor="otherUserEmail" className="block text-sm font-black text-dark-teal mb-2">
+              WHO'S THE OTHER PARTY IN THIS CONFLICT?
             </label>
             <div className="relative">
-              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-dark-teal" />
               <input
                 id="otherUserEmail"
                 name="otherUserEmail"
                 type="email"
                 value={formData.otherUserEmail}
                 onChange={handleInputChange}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-coral-500 focus:border-coral-500 transition-colors"
+                className="w-full pl-10 pr-4 py-3 border-3 border-black font-bold text-dark-teal focus:outline-none focus:border-vivid-orange transition-colors"
                 placeholder="their.email@example.com"
               />
             </div>
@@ -267,27 +269,27 @@ const NewConflictPage: React.FC = () => {
             {formData.otherUserEmail && (
               <div className="mt-2">
                 {emailCheckLoading ? (
-                  <div className="flex items-center space-x-2 text-sm text-gray-500">
-                    <div className="animate-spin rounded-full h-3 w-3 border-2 border-gray-300 border-t-gray-600"></div>
+                  <div className="flex items-center space-x-2 text-sm text-dark-teal">
+                    <div className="animate-spin rounded-full h-3 w-3 border-2 border-black border-t-vivid-orange"></div>
                     <span>Checking email...</span>
                   </div>
                 ) : emailCheckError ? (
-                  <div className="flex items-center space-x-2 text-sm text-red-600">
+                  <div className="flex items-center space-x-2 text-sm text-vivid-orange">
                     <AlertCircle size={14} />
                     <span>Unable to verify email</span>
                   </div>
                 ) : userExists === true ? (
-                  <div className="flex items-center space-x-2 text-sm text-green-600">
+                  <div className="flex items-center space-x-2 text-sm text-green-teal font-bold">
                     <CheckCircle size={14} />
                     <span>This person has a Squashie account</span>
                   </div>
                 ) : userExists === false ? (
-                  <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                    <div className="flex items-start space-x-2 text-sm text-blue-800">
-                      <Mail size={14} className="mt-0.5 flex-shrink-0" />
+                  <div className="p-3 bg-lime-chartreuse border-2 border-black">
+                    <div className="flex items-start space-x-2 text-sm text-dark-teal">
+                      <Mail size={14} className="mt-0.5 flex-shrink-0 text-dark-teal" />
                       <div>
-                        <p className="font-medium">This person doesn't have an account yet</p>
-                        <p className="text-blue-700 mt-1">
+                        <p className="font-black">This person doesn't have an account yet</p>
+                        <p className="text-dark-teal mt-1 font-bold">
                           Sending this conflict will invite them to join Squashie!
                         </p>
                       </div>
@@ -296,16 +298,16 @@ const NewConflictPage: React.FC = () => {
                 ) : null}
               </div>
             )}
-            
-            <p className="text-xs text-gray-500 mt-1">
-              They'll get an invitation to join this conflict resolution session.
+
+            <p className="text-xs text-dark-teal mt-1 font-bold">
+              They'll get an invitation to join this conflict resolution.
             </p>
           </div>
 
           {/* Conflict Description */}
           <div className="mb-6">
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
-              What's the situation? Give us the context.
+            <label htmlFor="description" className="block text-sm font-black text-dark-teal mb-2">
+              WHAT'S THE SITUATION? GIVE US THE CONTEXT.
             </label>
             <textarea
               id="description"
@@ -313,15 +315,15 @@ const NewConflictPage: React.FC = () => {
               value={formData.description}
               onChange={handleInputChange}
               rows={6}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-coral-500 focus:border-coral-500 transition-colors resize-none"
+              className="w-full px-4 py-3 border-3 border-black font-bold text-dark-teal resize-none focus:outline-none focus:border-vivid-orange transition-colors"
               placeholder="Let it out. The pettiness, the disappointment, the rage-text you didn’t send. The more we know, the better our AI can turn it into something… slightly less petty."
               maxLength={1000}
             />
             <div className="flex justify-between items-center mt-2">
-              <p className="text-xs text-gray-500">
-                They wont see anything you write, so have at it.
+              <p className="text-xs text-dark-teal font-bold">
+                They won't see your raw message - AI will translate it first.
               </p>
-              <span className="text-xs text-gray-500">
+              <span className="text-xs text-dark-teal font-bold">
                 {formData.description.length}/1000
               </span>
             </div>
@@ -329,53 +331,53 @@ const NewConflictPage: React.FC = () => {
         </div>
 
         {/* Guidelines */}
-        <div className="bg-teal-50 p-6 rounded-lg border border-teal-200">
-          <h3 className="text-lg font-semibold text-teal-900 mb-3">
-            💡 Before You Submit
+        <div className="bg-lime-chartreuse p-6 border-3 border-black shadow-brutal">
+          <h3 className="text-lg font-black text-dark-teal mb-3 flex items-center">
+            <span className="text-2xl mr-2">💡</span> BEFORE YOU SUBMIT
           </h3>
-          <ul className="space-y-2 text-sm text-teal-800">
-            <li className="flex items-start">
-              <span className="w-2 h-2 bg-teal-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-              <span>They wont see what you write, but avoid any threats or serious attacks.</span>
+          <ul className="space-y-3 text-sm text-dark-teal font-bold">
+            <li className="flex items-start border-2 border-black bg-white p-2">
+              <span className="text-xl mr-2">⚠️</span>
+              <span>They won't see your raw message, but avoid threats or serious attacks.</span>
             </li>
-            <li className="flex items-start">
-              <span className="w-2 h-2 bg-teal-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-              <span>This is a safe space to rant. But if your entire message is just ‘K’ or ‘lol okay’, please try again.</span>
+            <li className="flex items-start border-2 border-black bg-white p-2">
+              <span className="text-xl mr-2">🎭</span>
+              <span>This is a safe space to rant. But if your message is just 'K' or 'lol okay', please try again.</span>
             </li>
-            <li className="flex items-start">
-              <span className="w-2 h-2 bg-teal-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-              <span>Yes, sarcasm is fun. No, the AI doesn’t pick up on it well. Be mad, not confusing.</span>
+            <li className="flex items-start border-2 border-black bg-white p-2">
+              <span className="text-xl mr-2">🤖</span>
+              <span>Yes, sarcasm is fun. No, the AI doesn't pick up on it well. Be mad, not confusing.</span>
             </li>
-            <li className="flex items-start">
-              <span className="w-2 h-2 bg-teal-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-              <span>This isn’t your diary. If your message is over 1000 characters and includes the phrase ‘like that time in 2019’ — edit.</span>
+            <li className="flex items-start border-2 border-black bg-white p-2">
+              <span className="text-xl mr-2">📝</span>
+              <span>This isn't your diary. If your message includes "like that time in 2019" — edit it down.</span>
             </li>
           </ul>
         </div>
 
         {/* Submit Button */}
-        <div className="flex space-x-4">
+        <div className="flex flex-col sm:flex-row gap-4">
           <button
             type="button"
             onClick={() => navigate('/dashboard')}
-            className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-3 px-4 rounded-lg transition-colors"
+            className="flex-1 bg-white hover:bg-gray-100 text-dark-teal font-black py-3 px-4 border-3 border-black shadow-brutal hover:shadow-brutal-sm transition-all transform hover:translate-x-1 hover:translate-y-1"
           >
-            Cancel
+            CANCEL
           </button>
           <button
             type="submit"
             disabled={loading || !formData.title.trim() || !formData.otherUserEmail.trim() || !formData.description.trim()}
-            className="flex-1 bg-coral-500 hover:bg-coral-600 text-white font-medium py-3 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+            className="flex-1 bg-vivid-orange hover:bg-orange-600 text-white font-black py-3 px-4 border-3 border-black shadow-brutal hover:shadow-brutal-sm transition-all transform hover:translate-x-1 hover:translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
           >
             {loading ? (
               <>
-                <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                <span>Creating Conflict...</span>
+                <div className="animate-spin rounded-full h-4 w-4 border-3 border-white border-t-transparent"></div>
+                <span>CREATING CONFLICT...</span>
               </>
             ) : (
               <>
                 <Send size={18} />
-                <span>Start Resolution Process</span>
+                <span>START RESOLUTION PROCESS</span>
               </>
             )}
           </button>
@@ -383,10 +385,11 @@ const NewConflictPage: React.FC = () => {
       </form>
 
       {/* Footer Note */}
-      <div className="mt-8 text-center">
-        <p className="text-xs text-gray-500">
-          By starting this conflict resolution, you agree to engage constructively and respectfully. 
-          Our AI mediator has zero tolerance for personal attacks or bad faith arguments.
+      <div className="mt-8 text-center bg-dark-teal p-4 border-3 border-black">
+        <p className="text-xs text-white font-bold">
+          By starting this conflict resolution, you agree to engage constructively. 
+          Our AI mediator has zero tolerance for personal attacks or bad faith arguments. 
+          <span className="text-lime-chartreuse">Let's squash this beef! 💪</span>
         </p>
       </div>
     </div>
