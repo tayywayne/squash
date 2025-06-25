@@ -82,22 +82,22 @@ const GeneralAchievements: React.FC<GeneralAchievementsProps> = ({ userId, class
         </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-2">
         {achievements.map((achievement, index) => (
           <div
             key={`${achievement.code}-${index}`}
-            className="group relative bg-vivid-orange border-3 border-black cursor-pointer w-20 h-20"
+            className="group relative bg-vivid-orange border-3 border-black cursor-pointer w-16 h-16"
           >
             {/* Achievement Badge */}
-            <div className="text-center p-2 flex flex-col items-center justify-between h-full overflow-hidden">
+            <div className="text-center p-1 flex flex-col items-center justify-between h-full overflow-hidden">
               <div className="text-xl">{achievement.emoji}</div>
-              <div className="text-xs font-black text-white leading-tight mt-1 line-clamp-2">
+              <div className="text-[10px] font-black text-white leading-tight mt-0.5 line-clamp-1">
                 {achievement.name}
               </div>
 
               {/* Unlock Date */}
-              <div className="flex items-center justify-center mt-auto text-[9px] text-white">
-                <Calendar size={10} className="mr-1" />
+              <div className="flex items-center justify-center mt-auto text-[8px] text-white">
+                <Calendar size={8} className="mr-0.5" />
                 <span className="font-bold">{formatUnlockDate(achievement.unlocked_at)}</span>
               </div>
             </div>
