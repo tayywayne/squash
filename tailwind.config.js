@@ -59,6 +59,15 @@ export default {
         'bump': 'bump 0.3s ease-in-out',
         'slide-in': 'slideIn 0.5s ease-out',
         'confetti': 'confetti 0.8s ease-out',
+        'slide-up': 'slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
+        'slide-in-left': 'slideInLeft 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
+        'slide-in-right': 'slideInRight 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
+        'scale-in': 'scaleIn 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+        'rotate-in': 'rotateIn 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
+        'bounce-in': 'bounceIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+        'wiggle': 'wiggle 0.6s ease-in-out',
+        'shake': 'shake 0.5s ease-in-out',
+        'pop': 'pop 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
       },
       keyframes: {
         float: {
@@ -77,6 +86,47 @@ export default {
         confetti: {
           '0%': { transform: 'scale(0) rotate(0deg)', opacity: '1' },
           '100%': { transform: 'scale(1) rotate(360deg)', opacity: '0' },
+        },
+        slideUp: {
+          '0%': { transform: 'translateY(60px)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
+        slideInLeft: {
+          '0%': { transform: 'translateX(-60px)', opacity: '0' },
+          '100%': { transform: 'translateX(0)', opacity: '1' },
+        },
+        slideInRight: {
+          '0%': { transform: 'translateX(60px)', opacity: '0' },
+          '100%': { transform: 'translateX(0)', opacity: '1' },
+        },
+        scaleIn: {
+          '0%': { transform: 'scale(0.8)', opacity: '0' },
+          '100%': { transform: 'scale(1)', opacity: '1' },
+        },
+        rotateIn: {
+          '0%': { transform: 'rotate(-10deg) scale(0.8)', opacity: '0' },
+          '100%': { transform: 'rotate(0deg) scale(1)', opacity: '1' },
+        },
+        bounceIn: {
+          '0%': { transform: 'scale(0.3)', opacity: '0' },
+          '50%': { transform: 'scale(1.05)', opacity: '0.8' },
+          '70%': { transform: 'scale(0.9)', opacity: '1' },
+          '100%': { transform: 'scale(1)', opacity: '1' },
+        },
+        wiggle: {
+          '0%, 100%': { transform: 'rotate(0deg)' },
+          '25%': { transform: 'rotate(-3deg)' },
+          '75%': { transform: 'rotate(3deg)' },
+        },
+        shake: {
+          '0%, 100%': { transform: 'translateX(0)' },
+          '10%, 30%, 50%, 70%, 90%': { transform: 'translateX(-2px)' },
+          '20%, 40%, 60%, 80%': { transform: 'translateX(2px)' },
+        },
+        pop: {
+          '0%': { transform: 'scale(0.8)' },
+          '50%': { transform: 'scale(1.1)' },
+          '100%': { transform: 'scale(1)' },
         },
       },
       boxShadow: {

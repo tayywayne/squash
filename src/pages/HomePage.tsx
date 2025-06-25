@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Users, CheckCircle, MessageSquare, Zap, Shield, Heart, Star, HelpCircle, Trophy, Sparkles } from 'lucide-react';
 import { conflictService } from '../utils/conflicts';
+import { useScrollAnimation, useStaggeredAnimation } from '../hooks/useScrollAnimation';
 // import StickerCollection from '../components/StickerCollection';
 
 interface GlobalStats {
@@ -15,6 +16,19 @@ const HomePage: React.FC = () => {
   const [stats, setStats] = useState<GlobalStats>({ totalConflicts: 0, resolvedConflicts: 0, resolutionRate: 0 });
   const [statsLoading, setStatsLoading] = useState(true);
   const [showTooltip, setShowTooltip] = useState(false);
+
+  // Scroll animations for different sections
+  const heroAnimation = useScrollAnimation({ threshold: 0.2 });
+  const statsAnimation = useScrollAnimation({ threshold: 0.3 });
+  const featuresAnimation = useScrollAnimation({ threshold: 0.2 });
+  const howItWorksAnimation = useScrollAnimation({ threshold: 0.2 });
+  const additionalFeaturesAnimation = useScrollAnimation({ threshold: 0.2 });
+  const ctaAnimation = useScrollAnimation({ threshold: 0.3 });
+
+  // Staggered animations for feature cards and steps
+  const featureCards = useStaggeredAnimation(4, 150);
+  const howItWorksSteps = useStaggeredAnimation(4, 200);
+  const additionalFeatureCards = useStaggeredAnimation(4, 100);
 
   useEffect(() => {
     const loadGlobalStats = async () => {
@@ -115,43 +129,81 @@ const HomePage: React.FC = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-lime-chartreuse via-green-teal to-dark-teal">
+      <section 
+        ref={heroAnimation.elementRef}
+        className={`relative py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-lime-chartreuse via-green-teal to-dark-teal transition-all duration-1000 ${
+          heroAnimation.isVisible 
+            ? 'animate-slide-up' 
+            : 'opacity-0 translate-y-10'
+        }`}
+      >
         <div className="max-w-6xl mx-auto text-center">
-          <div className="text-8xl mb-8 animate-bounce-gentle">💣</div>
-          <h1 className="text-6xl md:text-8xl font-black text-white mb-8 leading-none tracking-tight">
+          <div className={`text-8xl mb-8 transition-all duration-800 delay-200 ${
+            heroAnimation.isVisible 
+              ? 'animate-bounce-in' 
+              : 'opacity-0 scale-50'
+          }`}>💣</div>
+          <h1 className={`text-6xl md:text-8xl font-black text-white mb-8 leading-none tracking-tight transition-all duration-800 delay-300 ${
+            heroAnimation.isVisible 
+              ? 'animate-slide-up' 
+              : 'opacity-0 translate-y-10'
+          }`}>
             DRAMA DOESN'T<br />
             <span className="text-vivid-orange">SOLVE ITSELF</span>
           </h1>
-          <div className="bg-white border-3 border-black p-8 shadow-brutal-lg mb-12 max-w-4xl mx-auto">
+          <div className={`bg-white border-3 border-black p-8 shadow-brutal-lg mb-12 max-w-4xl mx-auto transition-all duration-800 delay-500 ${
+            heroAnimation.isVisible 
+              ? 'animate-scale-in' 
+              : 'opacity-0 scale-90'
+          }`}>
             <p className="text-2xl md:text-3xl text-dark-teal font-bold leading-tight">
               We help you catch the tension early, before it spirals into total avoidance. Whether it's a stolen charger or a tone in a text, Squashie helps patch things up with AI mediation and crowd-backed resolution.
             </p>
           </div>
           
-          <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
+          <div className={`flex flex-col sm:flex-row gap-6 justify-center mb-16 transition-all duration-800 delay-700 ${
+            heroAnimation.isVisible 
+              ? 'animate-slide-up' 
+              : 'opacity-0 translate-y-10'
+          }`}>
             <button
               onClick={() => navigate('/login')}
-              className="bg-vivid-orange hover:bg-orange-600 text-white px-12 py-6 font-black text-2xl border-3 border-black shadow-brutal-lg hover:shadow-brutal transition-all transform hover:translate-x-2 hover:translate-y-2 flex items-center justify-center space-x-3"
+              className="bg-vivid-orange hover:bg-orange-600 text-white px-12 py-6 font-black text-2xl border-3 border-black shadow-brutal-lg hover:shadow-brutal transition-all transform hover:translate-x-2 hover:translate-y-2 hover:animate-wiggle flex items-center justify-center space-x-3"
             >
               <span>START RESOLVING CONFLICTS</span>
               <ArrowRight size={28} />
             </button>
             <button
               onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
-              className="bg-white hover:bg-gray-100 text-dark-teal px-12 py-6 font-black text-2xl border-3 border-black shadow-brutal-lg hover:shadow-brutal transition-all transform hover:translate-x-2 hover:translate-y-2"
+              className="bg-white hover:bg-gray-100 text-dark-teal px-12 py-6 font-black text-2xl border-3 border-black shadow-brutal-lg hover:shadow-brutal transition-all transform hover:translate-x-2 hover:translate-y-2 hover:animate-shake"
             >
               SEE HOW IT WORKS
             </button>
           </div>
 
           {/* Global Stats */}
-          <div className="bg-white border-3 border-black p-8 shadow-brutal-lg">
-            <h3 className="text-2xl font-black text-dark-teal mb-8 flex items-center justify-center">
+          <div 
+            ref={statsAnimation.elementRef}
+            className={`bg-white border-3 border-black p-8 shadow-brutal-lg transition-all duration-800 ${
+              statsAnimation.isVisible 
+                ? 'animate-rotate-in' 
+                : 'opacity-0 rotate-3 scale-95'
+            }`}
+          >
+            <h3 className={`text-2xl font-black text-dark-teal mb-8 flex items-center justify-center transition-all duration-600 delay-200 ${
+              statsAnimation.isVisible 
+                ? 'animate-slide-up' 
+                : 'opacity-0 translate-y-5'
+            }`}>
               <Trophy className="mr-3 text-vivid-orange" size={32} />
               REAL RESULTS FROM REAL PEOPLE
             </h3>
             {statsLoading ? (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className={`grid grid-cols-1 md:grid-cols-3 gap-8 transition-all duration-600 delay-400 ${
+                statsAnimation.isVisible 
+                  ? 'animate-slide-up' 
+                  : 'opacity-0 translate-y-5'
+              }`}>
                 {[1, 2, 3].map((i) => (
                   <div key={i} className="text-center animate-pulse">
                     <div className="h-16 bg-gray-200 rounded mb-4"></div>
@@ -160,7 +212,11 @@ const HomePage: React.FC = () => {
                 ))}
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className={`grid grid-cols-1 md:grid-cols-3 gap-8 transition-all duration-600 delay-400 ${
+                statsAnimation.isVisible 
+                  ? 'animate-slide-up' 
+                  : 'opacity-0 translate-y-5'
+              }`}>
                 <div className="text-center bg-lime-chartreuse border-3 border-black p-6 shadow-brutal">
                   <div className="text-5xl font-black text-dark-teal mb-2">{stats.totalConflicts.toLocaleString()}</div>
                   <div className="text-dark-teal font-bold text-lg">CONFLICTS MEDIATED</div>
@@ -198,7 +254,13 @@ const HomePage: React.FC = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
+      <section 
+        ref={featuresAnimation.elementRef}
+        className={`py-20 px-4 sm:px-6 lg:px-8 bg-white transition-all duration-800 ${
+          featuresAnimation.isVisible 
+            ? 'animate-slide-up' 
+            : 'opacity-0 translate-y-10'
+        }`}>
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-5xl font-black text-dark-teal mb-6">WHY SQUASHIE ACTUALLY WORKS</h2>
@@ -209,9 +271,18 @@ const HomePage: React.FC = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div 
+            ref={featureCards.containerRef}
+            className="grid grid-cols-1 md:grid-cols-2 gap-8"
+          >
             {features.map((feature, index) => (
-              <div key={index} className="bg-white border-3 border-black p-8 shadow-brutal hover:shadow-brutal-lg transition-all transform hover:-translate-y-1">
+              <div 
+                key={index} 
+                className={`bg-white border-3 border-black p-8 shadow-brutal hover:shadow-brutal-lg transition-all transform hover:-translate-y-1 hover:animate-pop ${
+                  featureCards.visibleItems.has(index) ? 'animate-bounce-in' : 'opacity-0 scale-75'
+                }`}
+                style={{ animationDelay: `${index * 150}ms` }}
+              >
                 <div className="flex items-start space-x-6">
                   <div className="text-5xl">{feature.icon}</div>
                   <div>
@@ -226,7 +297,14 @@ const HomePage: React.FC = () => {
       </section>
 
       {/* How It Works Section */}
-      <section id="how-it-works" className="py-20 px-4 sm:px-6 lg:px-8 bg-dark-teal">
+      <section 
+        id="how-it-works" 
+        ref={howItWorksAnimation.elementRef}
+        className={`py-20 px-4 sm:px-6 lg:px-8 bg-dark-teal transition-all duration-800 ${
+          howItWorksAnimation.isVisible 
+            ? 'animate-slide-up' 
+            : 'opacity-0 translate-y-10'
+        }`}>
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-5xl font-black text-white mb-6">HOW IT WORKS</h2>
@@ -237,9 +315,18 @@ const HomePage: React.FC = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div 
+            ref={howItWorksSteps.containerRef}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+          >
             {howItWorks.map((step, index) => (
-              <div key={index} className="text-center">
+              <div 
+                key={index} 
+                className={`text-center transition-all duration-800 ${
+                  howItWorksSteps.visibleItems.has(index) ? 'animate-slide-up' : 'opacity-0 translate-y-10'
+                }`}
+                style={{ animationDelay: `${index * 200}ms` }}
+              >
                 <div className="bg-lime-chartreuse border-3 border-black w-24 h-24 flex items-center justify-center mx-auto mb-6 shadow-brutal">
                   <span className="text-4xl">{step.emoji}</span>
                 </div>
@@ -255,7 +342,13 @@ const HomePage: React.FC = () => {
       </section>
 
       {/* Additional Features Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-lime-chartreuse">
+      <section 
+        ref={additionalFeaturesAnimation.elementRef}
+        className={`py-20 px-4 sm:px-6 lg:px-8 bg-lime-chartreuse transition-all duration-800 ${
+          additionalFeaturesAnimation.isVisible 
+            ? 'animate-slide-up' 
+            : 'opacity-0 translate-y-10'
+        }`}>
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-5xl font-black text-dark-teal mb-6">BUT WAIT, THERE'S MORE</h2>
@@ -266,9 +359,14 @@ const HomePage: React.FC = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div 
+            ref={additionalFeatureCards.containerRef}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+          >
             {/* Public Shame Board */}
-            <div className="bg-white border-3 border-black p-8 shadow-brutal hover:shadow-brutal-lg transition-all transform hover:-translate-y-1">
+            <div className={`bg-white border-3 border-black p-8 shadow-brutal hover:shadow-brutal-lg transition-all transform hover:-translate-y-1 hover:animate-wiggle ${
+              additionalFeatureCards.visibleItems.has(0) ? 'animate-slide-in-left' : 'opacity-0 -translate-x-10'
+            }`}>
               <div className="text-center mb-6">
                 <div className="text-6xl mb-4">⚖️</div>
                 <h3 className="text-2xl font-black text-dark-teal mb-4">PUBLIC SHAME BOARD</h3>
@@ -285,7 +383,9 @@ const HomePage: React.FC = () => {
             </div>
 
             {/* Leaderboards */}
-            <div className="bg-white border-3 border-black p-8 shadow-brutal hover:shadow-brutal-lg transition-all transform hover:-translate-y-1">
+            <div className={`bg-white border-3 border-black p-8 shadow-brutal hover:shadow-brutal-lg transition-all transform hover:-translate-y-1 hover:animate-shake ${
+              additionalFeatureCards.visibleItems.has(1) ? 'animate-slide-up' : 'opacity-0 translate-y-10'
+            }`} style={{ animationDelay: '100ms' }}>
               <div className="text-center mb-6">
                 <div className="text-6xl mb-4">🏆</div>
                 <h3 className="text-2xl font-black text-dark-teal mb-4">LEADERBOARDS</h3>
@@ -307,7 +407,9 @@ const HomePage: React.FC = () => {
             </div>
 
             {/* Conflict Archetypes */}
-            <div className="bg-white border-3 border-black p-8 shadow-brutal hover:shadow-brutal-lg transition-all transform hover:-translate-y-1">
+            <div className={`bg-white border-3 border-black p-8 shadow-brutal hover:shadow-brutal-lg transition-all transform hover:-translate-y-1 hover:animate-pop ${
+              additionalFeatureCards.visibleItems.has(2) ? 'animate-slide-in-right' : 'opacity-0 translate-x-10'
+            }`} style={{ animationDelay: '200ms' }}>
               <div className="text-center mb-6">
                 <div className="text-6xl mb-4">🎭</div>
                 <h3 className="text-2xl font-black text-dark-teal mb-4">CONFLICT ARCHETYPES</h3>
@@ -324,7 +426,9 @@ const HomePage: React.FC = () => {
             </div>
 
             {/* Achievements */}
-            <div className="bg-white border-3 border-black p-8 shadow-brutal hover:shadow-brutal-lg transition-all transform hover:-translate-y-1">
+            <div className={`bg-white border-3 border-black p-8 shadow-brutal hover:shadow-brutal-lg transition-all transform hover:-translate-y-1 hover:animate-bounce ${
+              additionalFeatureCards.visibleItems.has(3) ? 'animate-bounce-in' : 'opacity-0 scale-75'
+            }`} style={{ animationDelay: '300ms' }}>
               <div className="text-center mb-6">
                 <div className="text-6xl mb-4">🎉</div>
                 <h3 className="text-2xl font-black text-dark-teal mb-4">ACHIEVEMENTS</h3>
@@ -344,7 +448,13 @@ const HomePage: React.FC = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
+      <section 
+        ref={ctaAnimation.elementRef}
+        className={`py-20 px-4 sm:px-6 lg:px-8 bg-white transition-all duration-800 ${
+          ctaAnimation.isVisible 
+            ? 'animate-scale-in' 
+            : 'opacity-0 scale-90'
+        }`}>
         <div className="max-w-4xl mx-auto text-center">
           <div className="bg-dark-teal border-3 border-black p-12 shadow-brutal-lg">
             <h2 className="text-5xl font-black mb-6 text-white">READY TO SQUASH SOME BEEF?</h2>
@@ -353,7 +463,7 @@ const HomePage: React.FC = () => {
             </p>
             <button
               onClick={() => navigate('/login')}
-              className="bg-vivid-orange hover:bg-orange-600 text-white px-12 py-6 font-black text-2xl border-3 border-black shadow-brutal-lg hover:shadow-brutal transition-all transform hover:translate-x-2 hover:translate-y-2 inline-flex items-center space-x-3"
+              className="bg-vivid-orange hover:bg-orange-600 text-white px-12 py-6 font-black text-2xl border-3 border-black shadow-brutal-lg hover:shadow-brutal transition-all transform hover:translate-x-2 hover:translate-y-2 hover:animate-pop inline-flex items-center space-x-3"
             >
               <span>GET STARTED FOR FREE</span>
               <ArrowRight size={28} />
