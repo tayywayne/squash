@@ -77,7 +77,7 @@ const OnboardingFlow: React.FC = () => {
           <div className="bg-vivid-orange p-3 border-2 border-black">
             <p className="text-white text-sm font-bold">
               <span className="text-xl mr-2">🔥</span>
-              Yes, you can write "WTF WERE YOU THINKING???" and we'll translate it to "I'm confused by your decision-making process."
+              Yes, you can write "WTF WERE YOU THINKING???\" and we'll translate it to "I'm confused by your decision-making process."
             </p>
           </div>
           <div className="mt-4 flex items-center justify-center">
@@ -207,7 +207,7 @@ const OnboardingFlow: React.FC = () => {
           <div className="bg-vivid-orange p-4 border-2 border-black mb-4">
             <p className="text-white text-sm font-bold">
               <span className="text-xl mr-2">💡</span>
-              Pro tip: The "Start New Conflict" button is your gateway to either resolution or public humiliation. Choose wisely.
+              Pro tip: The "Start New Conflict\" button is your gateway to either resolution or public humiliation. Choose wisely.
             </p>
           </div>
           <div className="flex justify-center">
