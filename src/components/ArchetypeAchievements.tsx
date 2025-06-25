@@ -94,20 +94,20 @@ const ArchetypeAchievements: React.FC<ArchetypeAchievementsProps> = ({ userId, c
           return (
             <div
               key={`${achievement.archetype_name}-${index}`}
-              className="group relative bg-lime-chartreuse p-4 border-3 border-black hover:shadow-brutal transition-all duration-200 cursor-pointer"
+              className="group relative bg-lime-chartreuse border-3 border-black cursor-pointer aspect-square"
             >
               {/* Achievement Badge */}
-              <div className="text-center">
-                <div className="text-2xl mb-2">{achievement.emoji}</div>
-                <div className="text-xs font-black text-dark-teal leading-tight">
+              <div className="text-center p-3 flex flex-col items-center justify-between h-full">
+                <div className="text-2xl">{achievement.emoji}</div>
+                <div className="text-xs font-black text-dark-teal leading-tight mt-2">
                   {archetypeInfo?.title || achievement.archetype_name}
                 </div>
-              </div>
 
-              {/* Unlock Date */}
-              <div className="flex items-center justify-center mt-2 text-xs text-dark-teal">
-                <Calendar size={10} className="mr-1" />
-                <span className="font-bold">{formatUnlockDate(achievement.unlocked_at)}</span>
+                {/* Unlock Date */}
+                <div className="flex items-center justify-center mt-auto text-xs text-dark-teal">
+                  <Calendar size={10} className="mr-1" />
+                  <span className="font-bold">{formatUnlockDate(achievement.unlocked_at)}</span>
+                </div>
               </div>
 
               {/* Tooltip on Hover */}
@@ -123,7 +123,7 @@ const ArchetypeAchievements: React.FC<ArchetypeAchievementsProps> = ({ userId, c
                     Unlocked: {formatUnlockDate(achievement.unlocked_at)}
                   </div>
                   {/* Tooltip arrow */}
-                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-black"></div>
+              <p className="text-dark-teal font-bold px-4">
                 </div>
               </div>
             </div>

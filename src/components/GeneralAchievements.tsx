@@ -61,7 +61,7 @@ const GeneralAchievements: React.FC<GeneralAchievementsProps> = ({ userId, class
         </div>
         <div className="text-center py-8">
           <div className="text-4xl mb-3">🎯</div>
-          <p className="text-dark-teal font-bold">
+          <p className="text-dark-teal font-bold px-4">
             No achievements unlocked yet. Start resolving conflicts to earn your first badges!
           </p>
         </div>
@@ -74,7 +74,7 @@ const GeneralAchievements: React.FC<GeneralAchievementsProps> = ({ userId, class
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-2">
           <Star className="h-5 w-5 text-vivid-orange" />
-          <h3 className="text-lg font-black text-dark-teal">ACHIEVEMENTS</h3>
+          <h3 className="text-lg font-black text-dark-teal">ACHIEVEMENTS</h3> 
         </div>
         <div className="flex items-center space-x-1 text-sm text-dark-teal">
           <Trophy size={16} />
@@ -86,20 +86,20 @@ const GeneralAchievements: React.FC<GeneralAchievementsProps> = ({ userId, class
         {achievements.map((achievement, index) => (
           <div
             key={`${achievement.code}-${index}`}
-            className="group relative bg-vivid-orange p-4 border-3 border-black hover:shadow-brutal transition-all duration-200 cursor-pointer"
+            className="group relative bg-vivid-orange border-3 border-black cursor-pointer aspect-square"
           >
             {/* Achievement Badge */}
-            <div className="text-center">
-              <div className="text-2xl mb-2">{achievement.emoji}</div>
-              <div className="text-xs font-black text-white leading-tight">
+            <div className="text-center p-3 flex flex-col items-center justify-between h-full">
+              <div className="text-2xl">{achievement.emoji}</div>
+              <div className="text-xs font-black text-white leading-tight mt-2">
                 {achievement.name}
               </div>
-            </div>
 
-            {/* Unlock Date */}
-            <div className="flex items-center justify-center mt-2 text-xs text-white">
-              <Calendar size={10} className="mr-1" />
-              <span className="font-bold">{formatUnlockDate(achievement.unlocked_at)}</span>
+              {/* Unlock Date */}
+              <div className="flex items-center justify-center mt-auto text-xs text-white">
+                <Calendar size={10} className="mr-1" />
+                <span className="font-bold">{formatUnlockDate(achievement.unlocked_at)}</span>
+              </div>
             </div>
 
             {/* Tooltip on Hover */}
