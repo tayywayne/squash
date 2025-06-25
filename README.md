@@ -81,6 +81,7 @@ The leaderboard tracks:
 - Total conflicts
 - Resolved conflicts
 - Resolution rate
-- User archetypes and achievements
 
-Users can view all-time or weekly stats.
+Users can view all-time or weekly stats. Because nothing motivates better conflict resolution than public rankings.
+
+
