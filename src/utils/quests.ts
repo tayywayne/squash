@@ -70,7 +70,7 @@ export const questsService = {
       const userId = userData.user?.id || null;
 
       const { data, error } = await supabase.rpc('get_available_quests', {
-        p_user_id: userId
+        user_id_param: userId
       });
 
       if (error) {
@@ -91,8 +91,8 @@ export const questsService = {
       const userId = userData.user?.id || null;
 
       const { data, error } = await supabase.rpc('get_quest_details', {
-        p_quest_id: questId,
-        p_user_id: userId
+        quest_id_param: questId,
+        user_id_param: userId
       });
 
       if (error) {
@@ -132,8 +132,8 @@ export const questsService = {
       if (!userData.user) throw new Error('User not authenticated');
 
       const { data, error } = await supabase.rpc('start_quest', {
-        p_user_id: userData.user.id,
-        p_quest_id: questId
+        user_id_param: userData.user.id,
+        quest_id_param: questId
       });
 
       if (error) {
@@ -155,9 +155,9 @@ export const questsService = {
   ): Promise<StepSubmissionResult> => {
     try {
       const { data, error } = await supabase.rpc('submit_quest_step', {
-        p_user_quest_id: userQuestId,
-        p_step_id: stepId,
-        p_user_response: userResponse
+        user_quest_id_param: userQuestId,
+        step_id_param: stepId,
+        user_response_param: userResponse
       });
 
       if (error) {
