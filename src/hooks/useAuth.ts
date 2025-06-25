@@ -217,6 +217,15 @@ export const useAuth = () => {
   const signOut = async () => {
     try {
       const { error } = await auth.signOut();
+      
+      // Handle the case where the session doesn't exist on the server
+      // This is not actually an error from the user's perspective
+      if (error && error.message?.includes('session_not_found')) {
+        // Session was already invalid, treat as successful logout
+        setUser(null);
+        return { error: null };
+      }
+      
       // Always clear local user state regardless of API response
       // This handles cases where the session is already invalid on the server
       setUser(null);
