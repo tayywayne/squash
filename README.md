@@ -1,3 +1,4 @@
+![squashie logo](./rdBanner.png)
 # 🧃 Squashie
 
 **Resolve drama. Earn achievements. Avoid total social collapse.**  
