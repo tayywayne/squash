@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, CheckCircle, Clock, HelpCircle, MessageSquare, RefreshCw, Send, Trophy } from 'lucide-react';
+import { ArrowLeft, Award, BookOpen, CheckCircle, ChevronRight, Star, AlertCircle } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { questsService, QuestDetails, QuestStep, StepSubmissionResult } from '../utils/quests';
 import Toast from '../components/Toast';
@@ -13,7 +13,6 @@ const QuestDetailPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [userResponse, setUserResponse] = useState('');
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [stepResult, setStepResult] = useState<StepSubmissionResult | null>(null);
   const [userQuestId, setUserQuestId] = useState<string | null>(null);
@@ -22,27 +21,33 @@ const QuestDetailPage: React.FC = () => {
   // Load quest details
   useEffect(() => {
     const loadQuestDetails = async () => {
-      if (!questId || !user?.id) return;
-      
+      if (!questId) {
+        setToast({ message: 'Invalid quest ID', type: 'error' });
+        navigate('/quests');
+        return;
+      }
+
       try {
-        const details = await questsService.getQuestDetails(questId, user.id);
+        const details = await questsService.getQuestDetails(questId);
         if (!details) {
           setToast({ message: 'Quest not found', type: 'error' });
           navigate('/quests');
           return;
         }
-        
+
         setQuestDetails(details);
         
         // If quest is already started, set current step
-        if (details.user_progress.is_started && !details.user_progress.is_completed) {
+        if (details.user_progress.is_started) {
           setCurrentStepIndex(details.user_progress.current_step - 1);
         }
         
-        // Start quest if not started
+        // Start quest if not already started
         if (!details.user_progress.is_started) {
-          const userQuestId = await questsService.startQuest(questId, user.id);
-          setUserQuestId(userQuestId);
+          const startedQuestId = await questsService.startQuest(questId);
+          if (startedQuestId) {
+            setUserQuestId(startedQuestId);
+          }
         }
       } catch (error) {
         console.error('Error loading quest details:', error);
@@ -53,69 +58,45 @@ const QuestDetailPage: React.FC = () => {
     };
 
     loadQuestDetails();
-  }, [questId, user?.id, navigate]);
-
-  // Set user quest ID when details load
-  useEffect(() => {
-    if (questDetails?.user_progress.is_started) {
-      // Extract user_quest_id from the first step that has user data
-      const stepWithUserData = questDetails.steps.find(step => step.is_completed);
-      if (stepWithUserData && questDetails.steps[0].is_completed) {
-        // This is a bit of a hack - we're assuming the user_quest_id is in the URL of the API call
-        // In a real app, you'd store this properly
-        setUserQuestId(questDetails.quest.id);
-      }
-    }
-  }, [questDetails]);
-
-  // Reset user response when step changes
-  useEffect(() => {
-    setUserResponse('');
-    setSelectedOption(null);
-    setStepResult(null);
-  }, [currentStepIndex]);
+  }, [questId, navigate]);
 
   const handleSubmitStep = async () => {
-    if (!questDetails || !userQuestId) return;
+    if (!questDetails || !questId || submitting || !userResponse.trim()) return;
     
     const currentStep = questDetails.steps[currentStepIndex];
     
-    // Validate response
-    if (currentStep.step_type === 'rewrite' && !userResponse.trim()) {
-      setToast({ message: 'Please enter your response', type: 'error' });
-      return;
-    }
-    
-    if ((currentStep.step_type === 'quiz' || currentStep.step_type === 'choice') && !selectedOption) {
-      setToast({ message: 'Please select an option', type: 'error' });
-      return;
-    }
-    
     setSubmitting(true);
-    
     try {
-      const response = currentStep.step_type === 'rewrite' 
-        ? userResponse 
-        : selectedOption || '';
-      
-      const result = await questsService.submitQuestStep(
-        userQuestId,
-        currentStep.id,
-        response
-      );
-      
-      if (!result) {
-        throw new Error('Failed to submit step');
+      // Get or create user quest ID
+      let questProgressId = userQuestId;
+      if (!questProgressId) {
+        questProgressId = await questsService.startQuest(questId);
+        setUserQuestId(questProgressId);
       }
       
-      setStepResult(result);
+      if (!questProgressId) {
+        throw new Error('Failed to get quest progress ID');
+      }
       
-      // If quest is completed, show success message
-      if (result.quest_completed) {
-        setToast({ 
-          message: `Quest completed! You earned ${questDetails.quest.reward_cred} SquashCred!`, 
-          type: 'success' 
-        });
+      // Submit step
+      const result = await questsService.submitQuestStep(
+        questProgressId,
+        currentStep.id,
+        userResponse
+      );
+      
+      if (result) {
+        setStepResult(result);
+        
+        // If quest completed, show success message
+        if (result.quest_completed) {
+          setToast({ 
+            message: `Quest completed! You earned ${questDetails.quest.reward_cred} SquashCred!`, 
+            type: 'success' 
+          });
+        }
+      } else {
+        setToast({ message: 'Failed to submit step', type: 'error' });
       }
     } catch (error) {
       console.error('Error submitting step:', error);
@@ -126,195 +107,81 @@ const QuestDetailPage: React.FC = () => {
   };
 
   const handleNextStep = () => {
-    if (!questDetails || !stepResult) return;
+    if (!questDetails) return;
     
-    if (stepResult.quest_completed) {
-      // Reload quest details to show completion
-      if (questId && user?.id) {
-        questsService.getQuestDetails(questId, user.id)
-          .then(details => {
-            if (details) {
-              setQuestDetails(details);
-            }
-          })
-          .catch(error => {
-            console.error('Error reloading quest details:', error);
-          });
-      }
+    // Move to next step
+    if (currentStepIndex < questDetails.steps.length - 1) {
+      setCurrentStepIndex(currentStepIndex + 1);
+      setUserResponse('');
+      setStepResult(null);
     } else {
-      // Move to next step
-      setCurrentStepIndex(stepResult.next_step - 1);
+      // Quest completed, navigate back to quests page
+      navigate('/quests');
     }
-    
-    // Clear step result
-    setStepResult(null);
   };
 
-  const getCurrentStep = (): QuestStep | null => {
-    if (!questDetails || questDetails.steps.length === 0) return null;
-    return questDetails.steps[currentStepIndex];
-  };
-
-  const renderStepContent = () => {
-    const currentStep = getCurrentStep();
-    if (!currentStep) return null;
-    
-    // If step result is available, show feedback
-    if (stepResult) {
-      return (
-        <div className={`p-6 border-3 border-black ${stepResult.is_correct ? 'bg-green-teal' : 'bg-vivid-orange'}`}>
-          <div className="flex items-center space-x-3 mb-4">
-            {stepResult.is_correct ? (
-              <>
-                <CheckCircle className="h-6 w-6 text-white" />
-                <h3 className="text-xl font-black text-white">Correct!</h3>
-              </>
-            ) : (
-              <>
-                <RefreshCw className="h-6 w-6 text-white" />
-                <h3 className="text-xl font-black text-white">Not Quite</h3>
-              </>
-            )}
-          </div>
-          
-          <p className="text-white font-bold mb-6">{stepResult.feedback}</p>
-          
-          {stepResult.quest_completed ? (
-            <div className="bg-white p-4 border-3 border-black">
-              <div className="text-center">
-                <div className="text-4xl mb-2">🎉</div>
-                <h3 className="text-xl font-black text-dark-teal mb-2">QUEST COMPLETED!</h3>
-                <p className="text-dark-teal font-bold mb-4">
-                  You've earned {questDetails?.quest.reward_cred} SquashCred and unlocked a new achievement!
-                </p>
-                <button
-                  onClick={() => navigate('/quests')}
-                  className="bg-vivid-orange hover:bg-orange-600 text-white px-6 py-2 font-black border-3 border-black shadow-brutal hover:shadow-brutal-sm transition-all transform hover:translate-x-1 hover:translate-y-1"
-                >
-                  BACK TO QUESTS
-                </button>
-              </div>
-            </div>
-          ) : (
-            <button
-              onClick={handleNextStep}
-              className="bg-white hover:bg-gray-100 text-dark-teal px-6 py-2 font-black border-3 border-black shadow-brutal hover:shadow-brutal-sm transition-all transform hover:translate-x-1 hover:translate-y-1 flex items-center space-x-2"
-            >
-              <span>CONTINUE</span>
-              <ArrowRight size={16} />
-            </button>
-          )}
-        </div>
-      );
-    }
-    
-    // Otherwise, show step content based on type
-    switch (currentStep.step_type) {
+  const renderStepContent = (step: QuestStep) => {
+    switch (step.step_type) {
       case 'quiz':
       case 'choice':
         return (
-          <div>
-            <p className="text-dark-teal font-bold mb-6">{currentStep.instruction}</p>
-            
-            <div className="space-y-3 mb-6">
-              {currentStep.options?.map((option) => (
-                <button
-                  key={option.id}
-                  onClick={() => setSelectedOption(option.id)}
-                  className={`w-full text-left p-4 border-3 transition-all ${
-                    selectedOption === option.id
-                      ? 'bg-lime-chartreuse border-black shadow-brutal'
-                      : 'bg-white border-black hover:bg-lime-chartreuse/20'
-                  }`}
-                >
-                  <div className="flex items-center">
-                    <div className={`w-6 h-6 flex-shrink-0 border-2 border-black rounded-full mr-3 ${
-                      selectedOption === option.id ? 'bg-dark-teal' : 'bg-white'
-                    }`}>
-                      {selectedOption === option.id && (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <div className="w-2 h-2 bg-white rounded-full"></div>
-                        </div>
-                      )}
-                    </div>
-                    <span className="font-bold text-dark-teal">{option.text}</span>
+          <div className="space-y-3">
+            {step.options && JSON.parse(step.options as unknown as string).map((option: { id: string; text: string }) => (
+              <button
+                key={option.id}
+                onClick={() => setUserResponse(option.id)}
+                disabled={!!stepResult}
+                className={`w-full text-left p-4 border-3 transition-all ${
+                  userResponse === option.id
+                    ? 'bg-lime-chartreuse border-black'
+                    : 'bg-white border-black hover:bg-lime-chartreuse/20'
+                } ${stepResult ? 'cursor-not-allowed opacity-70' : ''}`}
+              >
+                <div className="flex items-center">
+                  <div className="w-6 h-6 flex-shrink-0 mr-3 border-2 border-black flex items-center justify-center">
+                    {userResponse === option.id && <CheckCircle className="h-4 w-4 text-dark-teal" />}
                   </div>
-                </button>
-              ))}
-            </div>
-            
-            <button
-              onClick={handleSubmitStep}
-              disabled={!selectedOption || submitting}
-              className="bg-vivid-orange hover:bg-orange-600 text-white px-6 py-2 font-black border-3 border-black shadow-brutal hover:shadow-brutal-sm transition-all transform hover:translate-x-1 hover:translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center space-x-2"
-            >
-              {submitting ? (
-                <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                  <span>SUBMITTING...</span>
-                </>
-              ) : (
-                <>
-                  <Send size={16} />
-                  <span>SUBMIT ANSWER</span>
-                </>
-              )}
-            </button>
+                  <span className="text-dark-teal font-bold">{option.text}</span>
+                </div>
+              </button>
+            ))}
           </div>
         );
       
       case 'rewrite':
         return (
-          <div>
-            <p className="text-dark-teal font-bold mb-6">{currentStep.instruction}</p>
-            
+          <div className="space-y-3">
             <textarea
               value={userResponse}
               onChange={(e) => setUserResponse(e.target.value)}
+              disabled={!!stepResult}
               placeholder="Type your response here..."
-              className="w-full h-32 p-3 border-3 border-black font-bold text-dark-teal resize-none focus:outline-none focus:border-vivid-orange transition-colors mb-6"
-              maxLength={500}
+              className="w-full h-32 p-3 border-3 border-black font-bold text-dark-teal resize-none focus:outline-none focus:border-vivid-orange transition-colors"
+              maxLength={1000}
             />
-            
-            <div className="flex justify-between items-center mb-6">
+            <div className="flex justify-between items-center">
               <span className="text-xs text-dark-teal font-bold">
-                {userResponse.length}/500 characters
+                {userResponse.length}/1000 characters
               </span>
-              
-              <div className="bg-lime-chartreuse px-3 py-1 border-2 border-black">
-                <span className="text-xs font-bold text-dark-teal">
-                  <HelpCircle className="inline h-3 w-3 mr-1" />
-                  Focus on clear, constructive communication
-                </span>
-              </div>
             </div>
-            
-            <button
-              onClick={handleSubmitStep}
-              disabled={!userResponse.trim() || submitting}
-              className="bg-vivid-orange hover:bg-orange-600 text-white px-6 py-2 font-black border-3 border-black shadow-brutal hover:shadow-brutal-sm transition-all transform hover:translate-x-1 hover:translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center space-x-2"
-            >
-              {submitting ? (
-                <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                  <span>SUBMITTING...</span>
-                </>
-              ) : (
-                <>
-                  <Send size={16} />
-                  <span>SUBMIT RESPONSE</span>
-                </>
-              )}
-            </button>
           </div>
         );
       
       default:
-        return (
-          <div className="text-center py-8">
-            <p className="text-dark-teal font-bold">Unknown step type</p>
-          </div>
-        );
+        return <p className="text-dark-teal font-bold">Unknown step type</p>;
+    }
+  };
+
+  const getDifficultyColor = (difficulty: string) => {
+    switch (difficulty) {
+      case 'easy':
+        return 'bg-green-teal text-white';
+      case 'medium':
+        return 'bg-vivid-orange text-white';
+      case 'hard':
+        return 'bg-dark-teal text-white';
+      default:
+        return 'bg-lime-chartreuse text-dark-teal';
     }
   };
 
@@ -324,7 +191,7 @@ const QuestDetailPage: React.FC = () => {
         <div className="animate-pulse-slow mb-4">
           <div className="text-6xl">📚</div>
         </div>
-        <p className="text-dark-teal font-bold">Loading quest...</p>
+        <p className="text-dark-teal font-bold">Loading quest details...</p>
       </div>
     );
   }
@@ -333,14 +200,15 @@ const QuestDetailPage: React.FC = () => {
     return (
       <div className="max-w-4xl mx-auto p-6 text-center">
         <div className="text-6xl mb-4">🤷</div>
-        <h1 className="text-2xl font-bold text-dark-teal mb-2">Quest Not Found</h1>
+        <h1 className="text-2xl font-black text-dark-teal mb-2">QUEST NOT FOUND</h1>
         <p className="text-dark-teal font-bold">This quest doesn't exist or you don't have access to it.</p>
       </div>
     );
   }
 
-  const currentStep = getCurrentStep();
-  const { quest, user_progress } = questDetails;
+  const currentStep = questDetails.steps[currentStepIndex];
+  const totalSteps = questDetails.steps.length;
+  const progressPercentage = Math.round(((currentStepIndex + 1) / totalSteps) * 100);
 
   return (
     <div className="max-w-4xl mx-auto p-4 sm:p-6">
@@ -362,35 +230,40 @@ const QuestDetailPage: React.FC = () => {
           <span>BACK TO QUESTS</span>
         </button>
         
-        <div className="flex items-start space-x-4">
-          <div className={`flex-shrink-0 w-16 h-16 ${questsService.getDifficultyColor(quest.difficulty)} border-3 border-black flex items-center justify-center`}>
-            <span className="text-3xl">{quest.emoji}</span>
-          </div>
-          
-          <div className="flex-1 min-w-0">
-            <h1 className="text-3xl font-black text-dark-teal mb-2">{quest.title}</h1>
-            <p className="text-dark-teal font-bold mb-3">{quest.description}</p>
+        <div className="flex items-start justify-between">
+          <div className="flex items-start space-x-4">
+            <div className="flex-shrink-0">
+              <div className="w-16 h-16 bg-lime-chartreuse border-3 border-black flex items-center justify-center">
+                <span className="text-3xl">{questDetails.quest.emoji}</span>
+              </div>
+            </div>
             
-            <div className="flex flex-wrap items-center gap-2 text-xs">
-              <div className={`px-2 py-1 ${questsService.getDifficultyColor(quest.difficulty)} border-2 border-black font-bold`}>
-                {quest.difficulty.toUpperCase()}
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center space-x-2 mb-1">
+                <h1 className="text-2xl font-black text-dark-teal">{questDetails.quest.title}</h1>
+                <span className={`text-xs font-black px-2 py-0.5 ${getDifficultyColor(questDetails.quest.difficulty)}`}>
+                  {questDetails.quest.difficulty.toUpperCase()}
+                </span>
               </div>
               
-              <div className="px-2 py-1 bg-dark-teal text-white border-2 border-black font-bold flex items-center">
-                <Trophy className="h-3 w-3 mr-1" />
-                <span>{quest.reward_cred} CRED</span>
-              </div>
+              <p className="text-dark-teal text-sm mb-2">{questDetails.quest.description}</p>
               
-              <div className="px-2 py-1 bg-lime-chartreuse text-dark-teal border-2 border-black font-bold">
-                <span>{quest.theme}</span>
-              </div>
-              
-              {user_progress.is_completed && (
-                <div className="px-2 py-1 bg-green-teal text-white border-2 border-black font-bold flex items-center">
-                  <CheckCircle className="h-3 w-3 mr-1" />
-                  <span>COMPLETED</span>
+              <div className="flex flex-wrap items-center gap-2 text-xs">
+                <div className="flex items-center space-x-1 bg-dark-teal text-white px-2 py-1">
+                  <Award size={12} />
+                  <span className="font-bold">{questDetails.quest.reward_cred} CRED</span>
                 </div>
-              )}
+                
+                <div className="flex items-center space-x-1 bg-lime-chartreuse text-dark-teal px-2 py-1">
+                  <BookOpen size={12} />
+                  <span className="font-bold">{totalSteps} STEPS</span>
+                </div>
+                
+                <div className="flex items-center space-x-1 bg-gray-100 text-dark-teal px-2 py-1">
+                  <Star size={12} />
+                  <span className="font-bold">{questDetails.quest.theme}</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -398,102 +271,108 @@ const QuestDetailPage: React.FC = () => {
 
       {/* Progress Bar */}
       <div className="mb-6">
-        <div className="flex justify-between items-center mb-2">
-          <div className="text-sm font-bold text-dark-teal">
-            {user_progress.is_completed 
-              ? 'COMPLETED!' 
-              : `STEP ${currentStepIndex + 1} OF ${questDetails.steps.length}`}
-          </div>
-          <div className="text-sm font-bold text-dark-teal flex items-center">
-            <Clock className="h-4 w-4 mr-1" />
-            <span>
-              {user_progress.started_at && new Date(user_progress.started_at).toLocaleDateString()}
-            </span>
-          </div>
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-sm font-bold text-dark-teal">PROGRESS</span>
+          <span className="text-sm font-bold text-dark-teal">{progressPercentage}%</span>
         </div>
         <div className="h-3 bg-gray-200 border-2 border-black">
           <div 
-            className={`h-full ${user_progress.is_completed ? 'bg-green-teal' : 'bg-vivid-orange'}`}
-            style={{ width: `${((currentStepIndex + 1) / questDetails.steps.length) * 100}%` }}
+            className="h-full bg-lime-chartreuse" 
+            style={{ width: `${progressPercentage}%` }}
           ></div>
         </div>
-      </div>
-
-      {/* Step Navigation */}
-      <div className="flex mb-6 overflow-x-auto pb-2">
-        {questDetails.steps.map((step, index) => (
-          <button
-            key={step.id}
-            onClick={() => {
-              // Only allow navigation to completed steps or current step
-              if (step.is_completed || index <= user_progress.current_step - 1) {
-                setCurrentStepIndex(index);
-              }
-            }}
-            disabled={!step.is_completed && index > user_progress.current_step - 1}
-            className={`flex-shrink-0 w-10 h-10 flex items-center justify-center border-3 mr-2 transition-all ${
-              index === currentStepIndex
-                ? 'bg-vivid-orange text-white border-black'
-                : step.is_completed
-                  ? 'bg-green-teal text-white border-black'
-                  : 'bg-gray-200 text-gray-400 border-gray-300 cursor-not-allowed'
-            }`}
-          >
-            {step.is_completed ? (
-              <CheckCircle className="h-5 w-5" />
-            ) : (
-              <span className="font-black">{index + 1}</span>
-            )}
-          </button>
-        ))}
+        <div className="flex justify-between mt-1">
+          <span className="text-xs font-bold text-dark-teal">Step {currentStepIndex + 1} of {totalSteps}</span>
+          {questDetails.user_progress.is_completed && (
+            <span className="text-xs font-bold text-green-teal flex items-center">
+              <CheckCircle size={12} className="mr-1" />
+              COMPLETED
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Current Step */}
-      {currentStep && (
-        <div className="bg-white border-3 border-black shadow-brutal mb-6">
-          {/* Step Header */}
-          <div className="p-4 border-b-3 border-black bg-lime-chartreuse">
-            <div className="flex items-center space-x-3">
-              <div className="text-2xl">{questsService.getStepTypeIcon(currentStep.step_type)}</div>
-              <h2 className="text-xl font-black text-dark-teal">{currentStep.title}</h2>
+      <div className="bg-white border-3 border-black shadow-brutal mb-6">
+        <div className="p-6 border-b-3 border-black">
+          <h2 className="text-xl font-black text-dark-teal mb-4">
+            {currentStep.title}
+          </h2>
+          <p className="text-dark-teal font-bold mb-6">
+            {currentStep.instruction}
+          </p>
+          
+          {renderStepContent(currentStep)}
+        </div>
+        
+        {/* Step Result Feedback */}
+        {stepResult && (
+          <div className={`p-6 border-b-3 border-black ${
+            stepResult.is_correct ? 'bg-green-teal' : 'bg-vivid-orange'
+          }`}>
+            <div className="flex items-start space-x-3">
+              {stepResult.is_correct ? (
+                <CheckCircle className="h-6 w-6 text-white flex-shrink-0 mt-1" />
+              ) : (
+                <AlertCircle className="h-6 w-6 text-white flex-shrink-0 mt-1" />
+              )}
+              <div>
+                <h3 className="text-lg font-black text-white mb-2">
+                  {stepResult.is_correct ? 'Correct!' : 'Not quite right'}
+                </h3>
+                <p className="text-white font-bold">
+                  {stepResult.feedback}
+                </p>
+              </div>
             </div>
           </div>
+        )}
+        
+        {/* Action Buttons */}
+        <div className="p-6 flex justify-between">
+          <button
+            onClick={() => navigate('/quests')}
+            className="bg-white hover:bg-gray-100 text-dark-teal font-black py-2 px-4 border-3 border-black shadow-brutal hover:shadow-brutal-sm transition-all transform hover:translate-x-1 hover:translate-y-1"
+          >
+            EXIT QUEST
+          </button>
           
-          {/* Step Content */}
-          <div className="p-6">
-            {renderStepContent()}
-          </div>
+          {stepResult ? (
+            <button
+              onClick={handleNextStep}
+              className="bg-vivid-orange hover:bg-orange-600 text-white font-black py-2 px-4 border-3 border-black shadow-brutal hover:shadow-brutal-sm transition-all transform hover:translate-x-1 hover:translate-y-1 flex items-center space-x-2"
+            >
+              <span>{stepResult.quest_completed ? 'FINISH QUEST' : 'NEXT STEP'}</span>
+              <ChevronRight size={16} />
+            </button>
+          ) : (
+            <button
+              onClick={handleSubmitStep}
+              disabled={!userResponse.trim() || submitting}
+              className="bg-vivid-orange hover:bg-orange-600 text-white font-black py-2 px-4 border-3 border-black shadow-brutal hover:shadow-brutal-sm transition-all transform hover:translate-x-1 hover:translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+            >
+              {submitting ? 'SUBMITTING...' : 'SUBMIT ANSWER'}
+            </button>
+          )}
         </div>
-      )}
+      </div>
 
       {/* Quest Info */}
-      <div className="bg-dark-teal p-6 border-3 border-black shadow-brutal">
-        <h3 className="text-lg font-black text-white mb-4 border-b-2 border-lime-chartreuse pb-2">
-          QUEST BENEFITS
+      <div className="bg-lime-chartreuse p-6 border-3 border-black shadow-brutal">
+        <h3 className="text-lg font-black text-dark-teal mb-3 flex items-center">
+          <BookOpen className="h-5 w-5 mr-2" />
+          QUEST TIPS
         </h3>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-          <div className="bg-white border-2 border-black p-4">
-            <div className="text-2xl font-black text-vivid-orange mb-1">{quest.reward_cred}</div>
-            <div className="text-sm text-dark-teal font-bold">SQUASHCRED POINTS</div>
-          </div>
-          
-          <div className="bg-white border-2 border-black p-4">
-            <div className="text-2xl font-black text-vivid-orange mb-1">🏆</div>
-            <div className="text-sm text-dark-teal font-bold">UNIQUE ACHIEVEMENT</div>
-          </div>
-          
-          {quest.unlocks_tool ? (
-            <div className="bg-white border-2 border-black p-4">
-              <div className="text-2xl font-black text-vivid-orange mb-1">🔓</div>
-              <div className="text-sm text-dark-teal font-bold">UNLOCKS: {quest.unlocks_tool}</div>
-            </div>
-          ) : (
-            <div className="bg-white border-2 border-black p-4">
-              <div className="text-2xl font-black text-vivid-orange mb-1">🧠</div>
-              <div className="text-sm text-dark-teal font-bold">CONFLICT SKILLS</div>
-            </div>
-          )}
+        <div className="space-y-3 text-dark-teal font-bold">
+          <p>
+            <strong>Take your time:</strong> These exercises are designed to help you develop real communication skills.
+          </p>
+          <p>
+            <strong>Be honest:</strong> The goal is to learn, not to get every answer "right" the first time.
+          </p>
+          <p>
+            <strong>Apply what you learn:</strong> Try using these techniques in your real-life conflicts!
+          </p>
         </div>
       </div>
     </div>

@@ -1,6 +1,4 @@
 import { supabase } from './supabase';
-import { squashCredService } from './squashcred';
-import { generalAchievementsService } from './generalAchievements';
 
 export interface Quest {
   quest_id: string;
@@ -24,10 +22,7 @@ export interface QuestStep {
   title: string;
   instruction: string;
   step_type: 'quiz' | 'rewrite' | 'choice';
-  options?: Array<{
-    id: string;
-    text: string;
-  }>;
+  options?: Array<{ id: string; text: string }>;
   user_response?: string;
   is_correct?: boolean;
   completed_at?: string;
@@ -49,8 +44,8 @@ export interface QuestDetails {
     is_started: boolean;
     is_completed: boolean;
     current_step: number;
-    started_at?: string;
-    completed_at?: string;
+    started_at: string | null;
+    completed_at: string | null;
   };
   steps: QuestStep[];
 }
@@ -64,14 +59,14 @@ export interface StepSubmissionResult {
 }
 
 export const questsService = {
-  getAvailableQuests: async (userId: string): Promise<Quest[]> => {
+  getAvailableQuests: async (): Promise<Quest[]> => {
     try {
       const { data, error } = await supabase.rpc('get_available_quests', {
-        p_user_id: userId
+        p_user_id: supabase.auth.getUser().then(res => res.data.user?.id)
       });
 
       if (error) {
-        console.error('Error fetching quests:', error);
+        console.error('Error in getAvailableQuests:', error);
         throw error;
       }
 
@@ -82,15 +77,15 @@ export const questsService = {
     }
   },
 
-  getQuestDetails: async (questId: string, userId: string): Promise<QuestDetails | null> => {
+  getQuestDetails: async (questId: string): Promise<QuestDetails | null> => {
     try {
       const { data, error } = await supabase.rpc('get_quest_details', {
         p_quest_id: questId,
-        p_user_id: userId
+        p_user_id: supabase.auth.getUser().then(res => res.data.user?.id)
       });
 
       if (error) {
-        console.error('Error fetching quest details:', error);
+        console.error('Error in getQuestDetails:', error);
         throw error;
       }
 
@@ -101,39 +96,22 @@ export const questsService = {
     }
   },
 
-  startQuest: async (questId: string, userId: string): Promise<string | null> => {
+  startQuest: async (questId: string): Promise<string | null> => {
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('User not authenticated');
+
       const { data, error } = await supabase.rpc('start_quest', {
-        p_user_id: userId,
+        p_user_id: user.id,
         p_quest_id: questId
       });
 
       if (error) {
-        console.error('Error starting quest:', error);
+        console.error('Error in startQuest:', error);
         throw error;
       }
 
-      // Check for first quest achievement
-      try {
-        const { data: userQuests } = await supabase
-          .from('user_quests')
-          .select('id')
-          .eq('user_id', userId);
-        
-        if (userQuests && userQuests.length === 1) {
-          // This is their first quest
-          await generalAchievementsService.checkAndUnlockAchievements(userId, {
-            hasStartedFirstQuest: true
-          });
-          
-          // Award SquashCred for starting first quest
-          await squashCredService.awardForAction(userId, 'FIRST_QUEST_STARTED');
-        }
-      } catch (achievementError) {
-        console.error('Error checking quest achievements:', achievementError);
-      }
-
-      return data;
+      return data || null;
     } catch (error) {
       console.error('Error in startQuest:', error);
       return null;
@@ -153,42 +131,14 @@ export const questsService = {
       });
 
       if (error) {
-        console.error('Error submitting quest step:', error);
+        console.error('Error in submitQuestStep:', error);
         throw error;
       }
 
-      return data;
+      return data || null;
     } catch (error) {
       console.error('Error in submitQuestStep:', error);
       return null;
-    }
-  },
-
-  // Helper function to get difficulty badge color
-  getDifficultyColor: (difficulty: string): string => {
-    switch (difficulty) {
-      case 'easy':
-        return 'bg-green-teal text-white';
-      case 'medium':
-        return 'bg-vivid-orange text-white';
-      case 'hard':
-        return 'bg-dark-teal text-white';
-      default:
-        return 'bg-lime-chartreuse text-dark-teal';
-    }
-  },
-
-  // Helper function to get step type icon
-  getStepTypeIcon: (stepType: string): string => {
-    switch (stepType) {
-      case 'quiz':
-        return '❓';
-      case 'rewrite':
-        return '✍️';
-      case 'choice':
-        return '🔄';
-      default:
-        return '📝';
     }
   }
 };

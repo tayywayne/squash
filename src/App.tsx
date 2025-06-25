@@ -12,6 +12,8 @@ import OtherUserProfilePage from './pages/OtherUserProfilePage';
 import LeaderboardPage from './pages/LeaderboardPage';
 import QuestsPage from './pages/QuestsPage';
 import QuestDetailPage from './pages/QuestDetailPage';
+import QuestsPage from './pages/QuestsPage';
+import QuestDetailPage from './pages/QuestDetailPage';
 import SupportUsPage from './pages/SupportUsPage';
 import SupportSuccessPage from './pages/SupportSuccessPage';
 import AIJudgmentFeedPage from './pages/AIJudgmentFeedPage';
@@ -90,6 +92,8 @@ function App() {
                     <Route path="/user-profile/:userId" element={<OtherUserProfilePage />} />
                     <Route path="/leaderboard" element={<LeaderboardPage />} />
                     <Route path="/support-us" element={<SupportUsPage />} />
+                    <Route path="/quests" element={<QuestsPage />} />
+                    <Route path="/quest/:questId" element={<QuestDetailPage />} />
                     <Route path="/public-shame" element={<AIJudgmentFeedPage />} />
                     <Route path="/reddit-conflict" element={<RedditConflictPage />} />
                   </Routes>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Home, MessageSquare, History, User, LogOut, Trophy } from 'lucide-react';
+import { Home, MessageSquare, History, User, LogOut, Trophy, BookOpen } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import UserDisplayName from './UserDisplayName';
 import SquashCredDisplay from './SquashCredDisplay';
@@ -53,6 +53,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const navigation = [
     { name: 'Dashboard', href: '/dashboard', icon: Home, emoji: '🎛️' },
     { name: 'Public Shame', href: '/public-shame', icon: Trophy, emoji: '🧨' },
+    { name: 'Quests', href: '/quests', icon: BookOpen, emoji: '📚' },
     { name: 'Quests', href: '/quests', icon: Trophy, emoji: '📚' },
     { name: 'Leaderboard',  href: '/leaderboard', icon: Trophy, emoji: '🏆' },
     { name: 'Support Us', href: '/support-us', icon: User, emoji: '🎁' },
