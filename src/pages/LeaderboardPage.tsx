@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Trophy, Medal, Award, User, TrendingUp, TrendingDown, Calendar, Clock } from 'lucide-react';
+import { Trophy, Medal, Award, User, TrendingUp, TrendingDown, Calendar, Clock, Crown, Star } from 'lucide-react';
 import { leaderboardService, LeaderboardUser } from '../utils/leaderboard';
 import { useNavigate } from 'react-router-dom';
 import UserDisplayName from '../components/UserDisplayName';
@@ -61,11 +61,11 @@ const LeaderboardPage: React.FC = () => {
   const getRankIcon = (rank: number) => {
     switch (rank) {
       case 1:
-        return <Trophy className="h-6 w-6 text-vivid-orange" />;
+        return <Crown className="h-6 w-6 text-yellow-400" />;
       case 2:
-        return <Medal className="h-6 w-6 text-dark-teal" />;
+        return <Trophy className="h-6 w-6 text-gray-400" />;
       case 3:
-        return <Award className="h-6 w-6 text-lime-chartreuse" />;
+        return <Medal className="h-6 w-6 text-amber-600" />;
       default:
         return <span className="text-lg font-black text-dark-teal">#{rank}</span>;
     }
@@ -74,11 +74,11 @@ const LeaderboardPage: React.FC = () => {
   const getRankBadgeColor = (rank: number) => {
     switch (rank) {
       case 1:
-        return 'bg-vivid-orange text-white';
+        return 'bg-gradient-to-br from-yellow-300 via-yellow-400 to-yellow-500 text-yellow-900 border-yellow-600 shadow-lg';
       case 2:
-        return 'bg-dark-teal text-white';
+        return 'bg-gradient-to-br from-gray-300 via-gray-400 to-gray-500 text-gray-900 border-gray-600 shadow-lg';
       case 3:
-        return 'bg-lime-chartreuse text-dark-teal';
+        return 'bg-gradient-to-br from-amber-400 via-amber-500 to-amber-600 text-amber-900 border-amber-700 shadow-lg';
       default:
         return 'bg-white text-dark-teal';
     }
@@ -231,7 +231,7 @@ const LeaderboardPage: React.FC = () => {
                   return (
                     <tr key={user.user_id} className="hover:bg-lime-chartreuse/10 transition-colors">
                       <td className="px-3 sm:px-6 py-4">
-                        <div className={`inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 border-3 border-black ${getRankBadgeColor(rank)}`}>
+                        <div className={`inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 border-3 ${rank <= 3 ? 'border-black' : 'border-black'} ${getRankBadgeColor(rank)} ${rank <= 3 ? 'transform rotate-3 hover:rotate-0 transition-transform duration-200' : ''}`}>
                           {getRankIcon(rank)}
                         </div>
                       </td>
