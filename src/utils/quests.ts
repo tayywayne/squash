@@ -66,8 +66,11 @@ export interface StepSubmissionResult {
 export const questsService = {
   getAvailableQuests: async (): Promise<Quest[]> => {
     try {
+      const { data: userData } = await supabase.auth.getUser();
+      const userId = userData.user?.id || null;
+
       const { data, error } = await supabase.rpc('get_available_quests', {
-        p_user_id: supabase.auth.getUser().then(({ data }) => data.user?.id)
+        p_user_id: userId
       });
 
       if (error) {
@@ -84,9 +87,12 @@ export const questsService = {
 
   getQuestDetails: async (questId: string): Promise<QuestDetails> => {
     try {
+      const { data: userData } = await supabase.auth.getUser();
+      const userId = userData.user?.id || null;
+
       const { data, error } = await supabase.rpc('get_quest_details', {
         p_quest_id: questId,
-        p_user_id: supabase.auth.getUser().then(({ data }) => data.user?.id)
+        p_user_id: userId
       });
 
       if (error) {
