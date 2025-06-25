@@ -35,6 +35,16 @@ export const SQUASHCRED_ACTIONS = {
   VOTE_ON_PUBLIC_CONFLICT: { points: 2, reason: 'Voted on a public conflict' },
   VOTE_ON_REDDIT_CONFLICT: { points: 5, reason: 'Voted on daily Reddit conflict' },
   HELPFUL_VOTE: { points: 5, reason: 'Cast a constructive vote' },
+  DAILY_LOGIN: { points: 3, reason: 'Logged in for the day' },
+  REFERRAL_BONUS: { points: 25, reason: 'Referred a new user who signed up' },
+  HIGH_RESOLUTION_RATE: { points: 50, reason: 'Maintained 90%+ resolution rate with 10+ conflicts' },
+  FIRST_PUBLIC_SHAME: { points: 10, reason: 'First conflict reached the public shame board' },
+  SUPPORTER_BONUS: { points: 100, reason: 'Became a Squashie supporter' },
+  FIRST_REDDIT_VOTE: { points: 10, reason: 'Cast your first vote on a Reddit conflict' },
+  FIRST_ARCHETYPE_UNLOCK: { points: 15, reason: 'Unlocked your first conflict archetype' },
+  FIRST_ACHIEVEMENT_UNLOCK: { points: 15, reason: 'Unlocked your first achievement' },
+  WEEKEND_RESOLUTION: { points: 15, reason: 'Resolved a conflict on the weekend' },
+  CONSECUTIVE_LOGINS: { points: 20, reason: 'Logged in 7 days in a row' },
   
   // Losing points
   SPAM_OR_ABUSE: { points: -20, reason: 'Flagged for spammy or abusive language' },
@@ -45,6 +55,14 @@ export const SQUASHCRED_ACTIONS = {
   ESCALATION: { points: -15, reason: 'Escalated conflict instead of resolving' },
   BAD_FAITH_VOTING: { points: -10, reason: 'Voted in bad faith on public conflicts' },
   ABANDONING_CONFLICT: { points: -8, reason: 'Abandoned conflict mid-resolution' },
+  INVITE_IGNORED: { points: -5, reason: 'Invited user never joined after a week' },
+  FINAL_JUDGMENT_ISSUED: { points: -10, reason: 'Conflict reached final AI judgment' },
+  LOW_RESOLUTION_RATE: { points: -25, reason: 'Resolution rate fell below 25%' },
+  REPORTED_BY_OTHER_USER: { points: -15, reason: 'Reported by another user for bad behavior' },
+  MULTIPLE_ABANDONED_CONFLICTS: { points: -20, reason: 'Abandoned 3+ conflicts in a month' },
+  EXCESSIVE_CAPS_USAGE: { points: -5, reason: 'Excessive use of ALL CAPS in messages' },
+  INACTIVE_ACCOUNT: { points: -10, reason: 'No activity for over 30 days' },
+  CONFLICT_SPAM: { points: -30, reason: 'Created 5+ conflicts in a single day' },
 } as const;
 
 export const squashCredService = {
