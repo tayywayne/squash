@@ -1,15 +1,15 @@
 # 🧃 Squashie
 
 **Resolve drama. Earn achievements. Avoid total social collapse.**  
-Squashie is a chaotic-good web app that helps users resolve conflicts with friends, roommates, coworkers, Reddit trolls, and themselves — using AI mediation, public voting, emotional archetypes, and just enough petty sarcasm to stay fun.
+Squashie is a chaotic-good web app that helps users resolve conflicts with friends, roommates, coworkers, Reddit trolls, and themselves — using AI mediation, public voting (and shaming), emotional archetypes, and just enough petty sarcasm to stay fun.
 
 ## 🚀 Features
 
 - 🧠 **AI Conflict Mediation**  
-  Translate angry messages into thoughtful ones (because "you always do this" never ends well).
+  Translate angry vent fueled messages into thoughtful ones (because "you always do this" never ends well).
 
 - ⚖️ **Judge AI Final Rulings**  
-  When resolution fails, the AI lays down the law. Publicly.
+  When multiple resolutions fail, the AI lays down the law. Publicly.
 
 - 🎭 **Conflict Archetypes**  
   Discover your inner Chaos Diplomat or Rehasher and collect them all.
@@ -36,47 +36,6 @@ Squashie is a chaotic-good web app that helps users resolve conflicts with frien
 - **UI Components:** Custom components with Lucide React icons
 - **Deployment:** Netlify
 
-## 🔧 Setup Instructions
-
-### Prerequisites
-- Node.js 18+ and npm
-- Supabase account
-- OpenAI API key
-- SendGrid API key (for emails)
-- Stripe account (for payments)
-
-### Local Development
-
-1. Clone the repository
-   ```bash
-   git clone https://github.com/yourusername/squashie.git
-   cd squashie
-   ```
-
-2. Install dependencies
-   ```bash
-   npm install
-   ```
-
-3. Set up environment variables
-   Create a `.env` file with the following:
-   ```
-   VITE_SUPABASE_URL=your_supabase_url
-   VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-   VITE_OPENAI_API_KEY=your_openai_api_key
-   ```
-
-4. Start the development server
-   ```bash
-   npm run dev
-   ```
-
-### Supabase Setup
-
-1. Create a new Supabase project
-2. Run the migrations in the `supabase/migrations` folder
-3. Set up storage buckets for avatars
-4. Configure Edge Functions for email and payment processing
 
 ## 🏆 Achievement System
 
