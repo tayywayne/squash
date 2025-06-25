@@ -112,7 +112,7 @@ const StickerCollection: React.FC = () => {
   };
 
   return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden">
+    <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
       {/* Stickers positioned around the page */}
       <div className="relative w-full h-full">
         {/* Top left cluster */}

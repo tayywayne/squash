@@ -83,7 +83,7 @@ const HomePage: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white relative">
       {/* Sticker Collection - positioned behind content */}
       <StickerCollection />
       
