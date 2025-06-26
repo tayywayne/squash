@@ -155,9 +155,9 @@ export const questsService = {
   ): Promise<StepSubmissionResult> => {
     try {
       const { data, error } = await supabase.rpc('submit_quest_step', {
-        user_quest_id_param: userQuestId,
-        step_id_param: stepId,
-        user_response_param: userResponse
+        p_user_quest_id: userQuestId,
+        p_step_id: stepId,
+        p_user_response: userResponse
       });
 
       if (error) {
