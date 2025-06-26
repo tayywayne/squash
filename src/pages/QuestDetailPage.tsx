@@ -21,7 +21,11 @@ const QuestDetailPage: React.FC = () => {
   // Load quest details
   useEffect(() => {
     const loadQuestDetails = async () => {
-      if (!questId) return;
+      if (!questId || questId === 'undefined') {
+        setToast({ message: 'Invalid quest ID', type: 'error' });
+        navigate('/quests');
+        return;
+      }
       
       try {
         setLoading(true);
