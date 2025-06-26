@@ -42,6 +42,10 @@ const QuestsPage: React.FC = () => {
   };
 
   const handleStartQuest = (questId: string) => {
+    if (!questId) {
+      setToast({ message: 'Invalid quest ID', type: 'error' });
+      return;
+    }
     navigate(`/quest/${questId}`);
   };
 
@@ -186,7 +190,7 @@ const QuestsPage: React.FC = () => {
                     </div>
                   ) : (
                     <button
-                      onClick={() => handleStartQuest(quest.quest_id)}
+                      onClick={() => handleStartQuest(quest.id)}
                       className="bg-vivid-orange hover:bg-orange-600 text-white px-4 py-2 font-black border-3 border-black shadow-brutal hover:shadow-brutal-sm transition-all transform hover:translate-x-1 hover:translate-y-1 flex items-center space-x-2"
                     >
                       <span>{quest.is_started ? 'CONTINUE' : 'START QUEST'}</span>

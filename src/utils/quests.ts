@@ -1,7 +1,7 @@
 import { supabase } from './supabase';
 
 export interface Quest {
-  quest_id: string;
+  id: string;
   title: string;
   description: string;
   emoji: string;
@@ -132,8 +132,8 @@ export const questsService = {
       if (!userData.user) throw new Error('User not authenticated');
 
       const { data, error } = await supabase.rpc('start_quest', {
-        user_id_param: userData.user.id,
-        quest_id_param: questId
+        p_user_id: userData.user.id,
+        p_quest_id: questId
       });
 
       if (error) {
