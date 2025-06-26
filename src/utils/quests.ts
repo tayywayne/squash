@@ -91,8 +91,8 @@ export const questsService = {
       const userId = userData.user?.id || null;
 
       const { data, error } = await supabase.rpc('get_quest_details', {
-        quest_id_param: questId,
-        user_id_param: userId
+        p_quest_id: questId,
+        p_user_id: userId
       });
 
       if (error) {
