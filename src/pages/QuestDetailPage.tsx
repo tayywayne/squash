@@ -223,7 +223,7 @@ const QuestDetailPage: React.FC = () => {
                 <div className="flex items-start">
                   <Lightbulb className="h-5 w-5 text-white mt-1 mr-2 flex-shrink-0" />
                   <p className="text-white font-bold">
-                    <span className="font-black">Assertive > Aggressive:</span> Assertiveness means owning your feelings and setting expectations without attacking. "Please don't use my shampoo without asking" is assertive. "Touch it again and I'll shave your head" is… something else.
+                    <span className="font-black">Assertive &gt; Aggressive:</span> Assertiveness means owning your feelings and setting expectations without attacking. "Please don't use my shampoo without asking" is assertive. "Touch it again and I'll shave your head" is… something else.
                   </p>
                 </div>
               </div>
