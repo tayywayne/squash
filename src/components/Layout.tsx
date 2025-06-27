@@ -145,7 +145,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             <div className="flex items-center space-x-3">
-              <div className="text-3xl animate-float">🧃</div>
+              <div className="text-3xl animate-float">💣</div>
               <h1 className="text-2xl font-black text-white tracking-tight">SQUASHIE</h1>
             </div>
             
