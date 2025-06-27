@@ -57,9 +57,16 @@ const QuestDetailPage: React.FC = () => {
   // Start quest if not already started
   useEffect(() => {
     const startQuestIfNeeded = async () => {
-      if (!questId || !questDetails || questDetails.user_progress.is_started) return;
+      if (!questId || !questDetails) return;
+      
+      // Skip if quest is already started
+      if (questDetails.user_progress.is_started) {
+        console.log('Quest already started, skipping startQuest call');
+        return;
+      }
       
       try {
+        console.log('Starting quest:', questId);
         const userQuestId = await questsService.startQuest(questId);
         setUserQuestId(userQuestId);
         
@@ -69,26 +76,12 @@ const QuestDetailPage: React.FC = () => {
       } catch (error) {
         console.error('Error starting quest:', error);
         
-        // Check if the error is due to quest already being started
-        if (error && typeof error === 'object' && 'code' in error && error.code === '23505') {
-          // Quest is already started, update the state to reflect this
-          if (questDetails) {
-            setQuestDetails({
-              ...questDetails,
-              user_progress: {
-                ...questDetails.user_progress,
-                is_started: true
-              }
-            });
-          }
-        } else {
-          setToast({ message: 'Failed to start quest', type: 'error' });
-        }
+        setToast({ message: 'Failed to start quest', type: 'error' });
       }
     };
 
     startQuestIfNeeded();
-  }, [questId, questDetails]);
+  }, [questId, questDetails?.user_progress.is_started]);
 
   const handleSubmitStep = async () => {
     if (!questDetails || !questId) return;
