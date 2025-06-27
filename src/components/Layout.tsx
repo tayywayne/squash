@@ -341,8 +341,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 {/* Learn Section */}
                 <div className="mb-2">
                   <button
-                    onClick={() => setShowLearnDropdown(!showLearnDropdown)}
-                    className={`w-full flex items-center justify-between px-4 py-3 text-left border-2 ${
+                    className={`w-full flex items-center justify-between px-4 py-3 text-left border-2 bg-lime-chartreuse text-dark-teal border-black ${
                       learnNavigation.some(item => location.pathname === item.href)
                         ? 'bg-lime-chartreuse text-dark-teal border-black'
                         : 'text-dark-teal border-black'
@@ -352,41 +351,37 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                       <span className="text-xl">📚</span>
                       <span className="font-bold">Learn</span>
                     </div>
-                    {showLearnDropdown ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                   </button>
                   
-                  {showLearnDropdown && (
-                    <div className="pl-4 border-l-2 border-black ml-4 mt-1 mb-2">
-                      {learnNavigation.map((item) => (
-                        <div
-                          key={item.name}
-                          className={`w-full flex items-center space-x-3 px-4 py-2 text-left transition-colors border-2 mb-1 ${
-                            location.pathname === item.href
-                              ? 'bg-lime-chartreuse/50 text-dark-teal border-black'
-                              : 'text-dark-teal border-transparent hover:border-black'
-                          }`}
+                  <div className="pl-4 border-l-2 border-black ml-4 mt-1 mb-2">
+                    {learnNavigation.map((item) => (
+                      <div
+                        key={item.name}
+                        className={`w-full flex items-center space-x-3 px-4 py-2 text-left transition-colors border-2 mb-1 ${
+                          location.pathname === item.href
+                            ? 'bg-lime-chartreuse/50 text-dark-teal border-black'
+                            : 'text-dark-teal border-transparent hover:border-black'
+                        }`}
+                      >
+                        <button
+                          onClick={() => {
+                            navigate(item.href);
+                            setShowMobileMenu(false);
+                          }}
+                          className="w-full flex items-center space-x-3 text-left"
                         >
-                          <button
-                            onClick={() => {
-                              navigate(item.href);
-                              setShowMobileMenu(false);
-                            }}
-                            className="w-full flex items-center space-x-3 text-left"
-                          >
-                            <span className="text-xl">{item.emoji}</span>
-                            <span className="font-bold">{item.name}</span>
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                          <span className="text-xl">{item.emoji}</span>
+                          <span className="font-bold">{item.name}</span>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
                 
                 {/* Drama Section */}
                 <div className="mb-2">
                   <button
-                    onClick={() => setShowDramaDropdown(!showDramaDropdown)}
-                    className={`w-full flex items-center justify-between px-4 py-3 text-left border-2 ${
+                    className={`w-full flex items-center justify-between px-4 py-3 text-left border-2 bg-lime-chartreuse text-dark-teal border-black ${
                       dramaNavigation.some(item => location.pathname === item.href)
                         ? 'bg-lime-chartreuse text-dark-teal border-black'
                         : 'text-dark-teal border-black'
@@ -396,34 +391,31 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                       <span className="text-xl">🔥</span>
                       <span className="font-bold">Drama</span>
                     </div>
-                    {showDramaDropdown ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                   </button>
                   
-                  {showDramaDropdown && (
-                    <div className="pl-4 border-l-2 border-black ml-4 mt-1 mb-2">
-                      {dramaNavigation.map((item) => (
-                        <div
-                          key={item.name}
-                          className={`w-full flex items-center space-x-3 px-4 py-2 text-left transition-colors border-2 mb-1 ${
-                            location.pathname === item.href
-                              ? 'bg-lime-chartreuse/50 text-dark-teal border-black'
-                              : 'text-dark-teal border-transparent hover:border-black'
-                          }`}
+                  <div className="pl-4 border-l-2 border-black ml-4 mt-1 mb-2">
+                    {dramaNavigation.map((item) => (
+                      <div
+                        key={item.name}
+                        className={`w-full flex items-center space-x-3 px-4 py-2 text-left transition-colors border-2 mb-1 ${
+                          location.pathname === item.href
+                            ? 'bg-lime-chartreuse/50 text-dark-teal border-black'
+                            : 'text-dark-teal border-transparent hover:border-black'
+                        }`}
+                      >
+                        <button
+                          onClick={() => {
+                            navigate(item.href);
+                            setShowMobileMenu(false);
+                          }}
+                          className="w-full flex items-center space-x-3 text-left"
                         >
-                          <button
-                            onClick={() => {
-                              navigate(item.href);
-                              setShowMobileMenu(false);
-                            }}
-                            className="w-full flex items-center space-x-3 text-left"
-                          >
-                            <span className="text-xl">{item.emoji}</span>
-                            <span className="font-bold">{item.name}</span>
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                          <span className="text-xl">{item.emoji}</span>
+                          <span className="font-bold">{item.name}</span>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
                 
                 {/* Additional Navigation */}
