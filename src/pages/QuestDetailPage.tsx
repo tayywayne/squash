@@ -68,7 +68,22 @@ const QuestDetailPage: React.FC = () => {
         setQuestDetails(updatedDetails);
       } catch (error) {
         console.error('Error starting quest:', error);
-        setToast({ message: 'Failed to start quest', type: 'error' });
+        
+        // Check if the error is due to quest already being started
+        if (error && typeof error === 'object' && 'code' in error && error.code === '23505') {
+          // Quest is already started, update the state to reflect this
+          if (questDetails) {
+            setQuestDetails({
+              ...questDetails,
+              user_progress: {
+                ...questDetails.user_progress,
+                is_started: true
+              }
+            });
+          }
+        } else {
+          setToast({ message: 'Failed to start quest', type: 'error' });
+        }
       }
     };
 
