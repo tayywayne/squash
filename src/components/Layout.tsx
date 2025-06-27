@@ -317,24 +317,25 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <div className="p-4">
                 {/* Main Navigation */}
                 {mainNavigation.map((item) => (
-                  <button
+                  <div
                     key={item.name}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setTimeout(() => {
-                        navigate(item.href);
-                        setShowMobileMenu(false);
-                      }, 0);
-                    }}
                     className={`w-full flex items-center space-x-3 px-4 py-3 text-left transition-colors border-2 mb-2 ${
                       location.pathname === item.href
                         ? 'bg-lime-chartreuse text-dark-teal border-black'
                         : 'text-dark-teal border-transparent hover:border-black'
                     }`}
                   >
-                    <span className="text-xl">{item.emoji}</span>
-                    <span className="font-bold">{item.name}</span>
-                  </button>
+                    <button
+                      onClick={() => {
+                        navigate(item.href);
+                        setShowMobileMenu(false);
+                      }}
+                      className="w-full flex items-center space-x-3 text-left"
+                    >
+                      <span className="text-xl">{item.emoji}</span>
+                      <span className="font-bold">{item.name}</span>
+                    </button>
+                  </div>
                 ))}
                 
                 {/* Learn Section */}
@@ -357,25 +358,25 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   {showLearnDropdown && (
                     <div className="pl-4 border-l-2 border-black ml-4 mt-1 mb-2">
                       {learnNavigation.map((item) => (
-                        <button
+                        <div
                           key={item.name}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            // Use setTimeout to ensure the click event completes before navigation
-                            setTimeout(() => {
-                              navigate(item.href);
-                              setShowMobileMenu(false);
-                            }, 0);
-                          }}
                           className={`w-full flex items-center space-x-3 px-4 py-2 text-left transition-colors border-2 mb-1 ${
                             location.pathname === item.href
                               ? 'bg-lime-chartreuse/50 text-dark-teal border-black'
                               : 'text-dark-teal border-transparent hover:border-black'
                           }`}
                         >
-                          <span className="text-xl">{item.emoji}</span>
-                          <span className="font-bold">{item.name}</span>
-                        </button>
+                          <button
+                            onClick={() => {
+                              navigate(item.href);
+                              setShowMobileMenu(false);
+                            }}
+                            className="w-full flex items-center space-x-3 text-left"
+                          >
+                            <span className="text-xl">{item.emoji}</span>
+                            <span className="font-bold">{item.name}</span>
+                          </button>
+                        </div>
                       ))}
                     </div>
                   )}
@@ -401,25 +402,25 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   {showDramaDropdown && (
                     <div className="pl-4 border-l-2 border-black ml-4 mt-1 mb-2">
                       {dramaNavigation.map((item) => (
-                        <button
+                        <div
                           key={item.name}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            // Use setTimeout to ensure the click event completes before navigation
-                            setTimeout(() => {
-                              navigate(item.href);
-                              setShowMobileMenu(false);
-                            }, 0);
-                          }}
                           className={`w-full flex items-center space-x-3 px-4 py-2 text-left transition-colors border-2 mb-1 ${
                             location.pathname === item.href
                               ? 'bg-lime-chartreuse/50 text-dark-teal border-black'
                               : 'text-dark-teal border-transparent hover:border-black'
                           }`}
                         >
-                          <span className="text-xl">{item.emoji}</span>
-                          <span className="font-bold">{item.name}</span>
-                        </button>
+                          <button
+                            onClick={() => {
+                              navigate(item.href);
+                              setShowMobileMenu(false);
+                            }}
+                            className="w-full flex items-center space-x-3 text-left"
+                          >
+                            <span className="text-xl">{item.emoji}</span>
+                            <span className="font-bold">{item.name}</span>
+                          </button>
+                        </div>
                       ))}
                     </div>
                   )}
@@ -427,39 +428,41 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 
                 {/* Additional Navigation */}
                 {additionalNavigation.map((item) => (
-                  <button
+                  <div
                     key={item.name}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setTimeout(() => {
-                        navigate(item.href);
-                        setShowMobileMenu(false);
-                      }, 0);
-                    }}
                     className={`w-full flex items-center space-x-3 px-4 py-3 text-left transition-colors border-2 mb-2 ${
                       location.pathname === item.href
                         ? 'bg-lime-chartreuse text-dark-teal border-black'
                         : 'text-dark-teal border-transparent hover:border-black'
                     }`}
                   >
-                    <span className="text-xl">{item.emoji}</span>
-                    <span className="font-bold">{item.name}</span>
-                  </button>
+                    <button
+                      onClick={() => {
+                        navigate(item.href);
+                        setShowMobileMenu(false);
+                      }}
+                      className="w-full flex items-center space-x-3 text-left"
+                    >
+                      <span className="text-xl">{item.emoji}</span>
+                      <span className="font-bold">{item.name}</span>
+                    </button>
+                  </div>
                 ))}
                 
                 {/* Logout Button */}
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setTimeout(() => {
-                      handleSignOut();
-                    }, 0);
-                  }}
+                <div
                   className="w-full flex items-center space-x-3 px-4 py-3 text-left transition-colors border-2 text-vivid-orange hover:bg-vivid-orange/10 border-vivid-orange"
                 >
-                  <LogOut size={18} />
-                  <span className="font-bold">LOGOUT</span>
-                </button>
+                  <button
+                    onClick={() => {
+                      handleSignOut();
+                    }}
+                    className="w-full flex items-center space-x-3 text-left"
+                  >
+                    <LogOut size={18} />
+                    <span className="font-bold">LOGOUT</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
