@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, BookOpen, Award, CheckCircle, X, Send, AlertTriangle, Sparkles } from 'lucide-react';
+import { useAuth } from '../hooks/useAuth';
 import { questsService, QuestDetails, QuestStep, StepSubmissionResult } from '../utils/quests';
 import Toast from '../components/Toast';
 
 const QuestDetailPage: React.FC = () => {
   const { questId } = useParams<{ questId: string }>();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [questDetails, setQuestDetails] = useState<QuestDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [userQuestId, setUserQuestId] = useState<string | null>(null);
@@ -75,6 +77,10 @@ const QuestDetailPage: React.FC = () => {
 
   const handleSubmitStep = async () => {
     if (!questDetails || !questId) return;
+    if (!user?.id) {
+      setToast({ message: 'You must be logged in to submit answers', type: 'error' });
+      return;
+    }
     
     const currentStep = questDetails.steps[currentStepIndex];
     
@@ -104,6 +110,7 @@ const QuestDetailPage: React.FC = () => {
       // Submit step
       const response = currentStep.step_type === 'rewrite' ? userResponse : selectedOption || '';
       const result = await questsService.submitQuestStep(
+        user.id,
         userQuestIdToUse,
         currentStep.id,
         response

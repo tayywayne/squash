@@ -1,4 +1,7 @@
 import { supabase } from './supabase';
+import { generalAchievementsService } from './generalAchievements';
+import { squashCredService } from './squashcred';
+import { useAuth } from '../hooks/useAuth';
 
 export interface Quest {
   id: string;
@@ -61,6 +64,8 @@ export interface StepSubmissionResult {
   quest_completed: boolean;
   next_step: number;
   total_steps: number;
+  quest_title?: string;
+  quest_difficulty?: string;
 }
 
 export const questsService = {
@@ -149,6 +154,7 @@ export const questsService = {
   },
 
   submitQuestStep: async (
+    userId: string,
     userQuestId: string,
     stepId: string,
     userResponse: string
@@ -157,12 +163,58 @@ export const questsService = {
       const { data, error } = await supabase.rpc('submit_quest_step', {
         p_user_quest_id: userQuestId,
         p_step_id: stepId,
-        p_user_response: userResponse
+        p_user_response: userResponse,
       });
 
       if (error) {
         console.error('Error in submitQuestStep:', error);
         throw error;
+      }
+
+      // If quest is completed, trigger achievement
+      if (data.quest_completed) {
+        try {
+          // Award SquashCred for completing the quest
+          await squashCredService.awardForAction(userId, 'QUEST_COMPLETED');
+          
+          // Check if this is the first quest completed
+          const { data: userQuests } = await supabase
+            .from('user_quests')
+            .select('id')
+            .eq('user_id', userId)
+            .eq('is_completed', true);
+            
+          const questsCompleted = userQuests?.length || 0;
+          const isFirstQuest = questsCompleted === 1;
+          
+          // Check for perfect score
+          const { data: questSteps } = await supabase
+            .from('user_quest_steps')
+            .select('is_correct')
+            .eq('user_quest_id', userQuestId);
+            
+          const allCorrect = questSteps?.every(step => step.is_correct) || false;
+          
+          // Check for all difficulty levels
+          const { data: completedQuestDifficulties } = await supabase
+            .from('user_quests')
+            .select('quests(difficulty)')
+            .eq('user_id', userId)
+            .eq('is_completed', true);
+            
+          const difficulties = new Set(completedQuestDifficulties?.map(q => q.quests?.difficulty).filter(Boolean));
+          const hasAllDifficulties = difficulties.size === 3; // easy, medium, hard
+          
+          // Unlock achievements
+          await generalAchievementsService.checkAndUnlockAchievements(userId, {
+            hasStartedFirstQuest: isFirstQuest,
+            questsCompleted,
+            questPerfectScore: allCorrect,
+            hasCompletedAllDifficulties: hasAllDifficulties
+          });
+        } catch (error) {
+          console.error('Error processing quest completion achievements:', error);
+        }
       }
 
       return data;
