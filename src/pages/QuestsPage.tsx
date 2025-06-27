@@ -34,13 +34,13 @@ const QuestsPage: React.FC = () => {
   const sortedQuests = React.useMemo(() => {
     return [...quests].sort((a, b) => {
       // First sort by completion status (incomplete first)
-      if (a.is_completed !== b.is_completed) {
-        return a.is_completed ? 1 : -1;
+      if (a.user_completed !== b.user_completed) {
+        return a.user_completed ? 1 : -1;
       }
       
       // Then sort by difficulty (easy to hard for incomplete, hard to easy for completed)
       const difficultyOrder = { 'easy': 0, 'medium': 1, 'hard': 2 };
-      if (a.is_completed) {
+      if (a.user_completed) {
         // For completed quests, show hard ones first
         return difficultyOrder[b.difficulty as keyof typeof difficultyOrder] - 
                difficultyOrder[a.difficulty as keyof typeof difficultyOrder];
@@ -147,7 +147,7 @@ const QuestsPage: React.FC = () => {
       ) : (
         <div className="space-y-6">
           {/* Incomplete Quests Section */}
-          {sortedQuests.filter(quest => !quest.is_completed).length > 0 && (
+          {sortedQuests.filter(quest => !quest.user_completed).length > 0 && (
             <div className="mb-4">
               <h2 className="text-xl font-black text-dark-teal mb-4 border-b-3 border-black pb-2">
                 AVAILABLE QUESTS
@@ -156,7 +156,7 @@ const QuestsPage: React.FC = () => {
           )}
           
           {/* Completed Quests Section */}
-          {sortedQuests.filter(quest => quest.is_completed).length > 0 && (
+          {sortedQuests.filter(quest => quest.user_completed).length > 0 && (
             <div className="mb-4 mt-8">
               <h2 className="text-xl font-black text-dark-teal mb-4 border-b-3 border-black pb-2 flex items-center">
                 <CheckCircle className="h-5 w-5 text-green-teal mr-2" />
@@ -169,7 +169,7 @@ const QuestsPage: React.FC = () => {
             <div 
               key={quest.quest_id} 
               className={`bg-white border-3 border-black shadow-brutal hover:shadow-brutal-sm transition-all transform hover:translate-x-1 hover:translate-y-1 ${
-                quest.is_completed ? 'border-green-teal' : ''
+                quest.user_completed ? 'border-green-teal' : ''
               }`}
             >
               <div className="p-6 border-b-3 border-black">
@@ -177,7 +177,7 @@ const QuestsPage: React.FC = () => {
                   <div className="flex items-start space-x-4">
                     <div className="relative">
                       <div className="text-4xl">{quest.emoji}</div>
-                      {quest.is_completed && (
+                      {quest.user_completed && (
                         <div className="absolute -top-2 -right-2 bg-green-teal text-white rounded-full w-6 h-6 flex items-center justify-center border-2 border-black">
                           <CheckCircle className="h-3 w-3" />
                         </div>
@@ -210,7 +210,7 @@ const QuestsPage: React.FC = () => {
               {/* Progress Section */}
               <div className="p-6 flex flex-col sm:flex-row items-center justify-between">
                 <div className="w-full sm:w-2/3 mb-4 sm:mb-0">
-                  {quest.is_started ? (
+                  {quest.user_started ? (
                     <div className="space-y-2">
                       <div className="flex items-center justify-between mb-1">
                         <div className="flex items-center space-x-2 text-sm text-dark-teal font-bold">
@@ -235,7 +235,7 @@ const QuestsPage: React.FC = () => {
                   )}
                 </div>
                 <div>
-                  {quest.is_completed ? (
+                  {quest.user_completed ? (
                     <div className="flex items-center space-x-2 bg-green-teal text-white px-4 py-2 font-black border-3 border-black">
                       <CheckCircle size={18} />
                       <span>COMPLETED</span>
@@ -246,7 +246,7 @@ const QuestsPage: React.FC = () => {
                       onClick={() => handleStartQuest(quest.id)}
                       className="bg-vivid-orange hover:bg-orange-600 text-white px-4 py-2 font-black border-3 border-black shadow-brutal hover:shadow-brutal-sm transition-all transform hover:translate-x-1 hover:translate-y-1 flex items-center space-x-2"
                     >
-                      <span>{quest.is_started ? 'CONTINUE' : 'START QUEST'}</span>
+                      <span>{quest.user_started ? 'CONTINUE' : 'START QUEST'}</span>
                       <ArrowRight size={18} />
                     </button>
                   )}

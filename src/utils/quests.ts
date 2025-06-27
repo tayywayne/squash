@@ -12,8 +12,8 @@ export interface Quest {
   unlocks_tool: string | null;
   difficulty: 'easy' | 'medium' | 'hard';
   theme: string;
-  is_started: boolean;
-  is_completed: boolean;
+  user_started: boolean;
+  user_completed: boolean;
   current_step: number;
   total_steps: number;
   progress_percentage: number;
