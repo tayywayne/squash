@@ -298,11 +298,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
       {/* Mobile Menu */}
       {showMobileMenu && (
-        <div className="fixed inset-0 z-30 bg-black/50 md:hidden" onClick={(e) => {
-          e.stopPropagation();
+        <div className="fixed inset-0 z-30 bg-black/50 md:hidden" onClick={() => {
           setShowMobileMenu(false);
         }}>
-          <div className="absolute right-0 top-20 bottom-0 w-64 bg-white border-l-3 border-black shadow-brutal" onClick={e => e.stopPropagation()}>
+          <div className="absolute right-0 top-20 bottom-0 w-64 bg-white border-l-3 border-black shadow-brutal" onClick={(e) => e.stopPropagation()}>
             <div className="p-4 border-b-3 border-black">
               <span className="text-sm text-dark-teal font-bold">
                 HEY, <UserDisplayName 
@@ -320,7 +319,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 {mainNavigation.map((item) => (
                   <button
                     key={item.name}
-                    onClick={() => navigate(item.href)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setTimeout(() => {
+                        navigate(item.href);
+                        setShowMobileMenu(false);
+                      }, 0);
+                    }}
                     className={`w-full flex items-center space-x-3 px-4 py-3 text-left transition-colors border-2 mb-2 ${
                       location.pathname === item.href
                         ? 'bg-lime-chartreuse text-dark-teal border-black'
@@ -356,8 +361,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                           key={item.name}
                           onClick={(e) => {
                             e.stopPropagation();
-                            navigate(item.href);
-                            setShowMobileMenu(false);
+                            // Use setTimeout to ensure the click event completes before navigation
+                            setTimeout(() => {
+                              navigate(item.href);
+                              setShowMobileMenu(false);
+                            }, 0);
                           }}
                           className={`w-full flex items-center space-x-3 px-4 py-2 text-left transition-colors border-2 mb-1 ${
                             location.pathname === item.href
@@ -397,8 +405,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                           key={item.name}
                           onClick={(e) => {
                             e.stopPropagation();
-                            navigate(item.href);
-                            setShowMobileMenu(false);
+                            // Use setTimeout to ensure the click event completes before navigation
+                            setTimeout(() => {
+                              navigate(item.href);
+                              setShowMobileMenu(false);
+                            }, 0);
                           }}
                           className={`w-full flex items-center space-x-3 px-4 py-2 text-left transition-colors border-2 mb-1 ${
                             location.pathname === item.href
@@ -418,7 +429,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 {additionalNavigation.map((item) => (
                   <button
                     key={item.name}
-                    onClick={() => navigate(item.href)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setTimeout(() => {
+                        navigate(item.href);
+                        setShowMobileMenu(false);
+                      }, 0);
+                    }}
                     className={`w-full flex items-center space-x-3 px-4 py-3 text-left transition-colors border-2 mb-2 ${
                       location.pathname === item.href
                         ? 'bg-lime-chartreuse text-dark-teal border-black'
@@ -432,7 +449,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 
                 {/* Logout Button */}
                 <button
-                  onClick={handleSignOut}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setTimeout(() => {
+                      handleSignOut();
+                    }, 0);
+                  }}
                   className="w-full flex items-center space-x-3 px-4 py-3 text-left transition-colors border-2 text-vivid-orange hover:bg-vivid-orange/10 border-vivid-orange"
                 >
                   <LogOut size={18} />
