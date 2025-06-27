@@ -185,7 +185,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     {learnNavigation.map((item) => (
                       <button
                         key={item.name}
-                        onClick={() => navigate(item.href)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(item.href);
+                        }}
                         className={`flex items-center space-x-3 w-full text-left px-4 py-3 font-bold transition-colors ${
                           location.pathname === item.href
                             ? 'bg-lime-chartreuse text-dark-teal'
@@ -221,7 +224,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     {dramaNavigation.map((item) => (
                       <button
                         key={item.name}
-                        onClick={() => navigate(item.href)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(item.href);
+                        }}
                         className={`flex items-center space-x-3 w-full text-left px-4 py-3 font-bold transition-colors ${
                           location.pathname === item.href
                             ? 'bg-lime-chartreuse text-dark-teal'
@@ -292,7 +298,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
       {/* Mobile Menu */}
       {showMobileMenu && (
-        <div className="fixed inset-0 z-30 bg-black/50 md:hidden" onClick={() => setShowMobileMenu(false)}>
+        <div className="fixed inset-0 z-30 bg-black/50 md:hidden" onClick={(e) => {
+          e.stopPropagation();
+          setShowMobileMenu(false);
+        }}>
           <div className="absolute right-0 top-20 bottom-0 w-64 bg-white border-l-3 border-black shadow-brutal" onClick={e => e.stopPropagation()}>
             <div className="p-4 border-b-3 border-black">
               <span className="text-sm text-dark-teal font-bold">
@@ -345,7 +354,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                       {learnNavigation.map((item) => (
                         <button
                           key={item.name}
-                          onClick={() => navigate(item.href)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(item.href);
+                            setShowMobileMenu(false);
+                          }}
                           className={`w-full flex items-center space-x-3 px-4 py-2 text-left transition-colors border-2 mb-1 ${
                             location.pathname === item.href
                               ? 'bg-lime-chartreuse/50 text-dark-teal border-black'
@@ -382,7 +395,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                       {dramaNavigation.map((item) => (
                         <button
                           key={item.name}
-                          onClick={() => navigate(item.href)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(item.href);
+                            setShowMobileMenu(false);
+                          }}
                           className={`w-full flex items-center space-x-3 px-4 py-2 text-left transition-colors border-2 mb-1 ${
                             location.pathname === item.href
                               ? 'bg-lime-chartreuse/50 text-dark-teal border-black'
