@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BookOpen, Award, Star, ArrowRight, CheckCircle, Clock } from 'lucide-react';
 import { questsService, Quest } from '../utils/quests';
+import { useAuth } from '../hooks/useAuth';
 import Toast from '../components/Toast';
 
 const QuestsPage: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [quests, setQuests] = useState<Quest[]>([]);
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
@@ -27,6 +29,28 @@ const QuestsPage: React.FC = () => {
 
     loadQuests();
   }, []);
+
+  // Sort quests to show completed ones at the bottom
+  const sortedQuests = React.useMemo(() => {
+    return [...quests].sort((a, b) => {
+      // First sort by completion status (incomplete first)
+      if (a.is_completed !== b.is_completed) {
+        return a.is_completed ? 1 : -1;
+      }
+      
+      // Then sort by difficulty (easy to hard for incomplete, hard to easy for completed)
+      const difficultyOrder = { 'easy': 0, 'medium': 1, 'hard': 2 };
+      if (a.is_completed) {
+        // For completed quests, show hard ones first
+        return difficultyOrder[b.difficulty as keyof typeof difficultyOrder] - 
+               difficultyOrder[a.difficulty as keyof typeof difficultyOrder];
+      } else {
+        // For incomplete quests, show easy ones first
+        return difficultyOrder[a.difficulty as keyof typeof difficultyOrder] - 
+               difficultyOrder[b.difficulty as keyof typeof difficultyOrder];
+      }
+    });
+  }, [quests]);
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
@@ -122,15 +146,43 @@ const QuestsPage: React.FC = () => {
         </div>
       ) : (
         <div className="space-y-6">
-          {quests.map((quest) => (
+          {/* Incomplete Quests Section */}
+          {sortedQuests.filter(quest => !quest.is_completed).length > 0 && (
+            <div className="mb-4">
+              <h2 className="text-xl font-black text-dark-teal mb-4 border-b-3 border-black pb-2">
+                AVAILABLE QUESTS
+              </h2>
+            </div>
+          )}
+          
+          {/* Completed Quests Section */}
+          {sortedQuests.filter(quest => quest.is_completed).length > 0 && (
+            <div className="mb-4 mt-8">
+              <h2 className="text-xl font-black text-dark-teal mb-4 border-b-3 border-black pb-2 flex items-center">
+                <CheckCircle className="h-5 w-5 text-green-teal mr-2" />
+                COMPLETED QUESTS
+              </h2>
+            </div>
+          )}
+          
+          {sortedQuests.map((quest) => (
             <div 
               key={quest.quest_id} 
-              className="bg-white border-3 border-black shadow-brutal hover:shadow-brutal-sm transition-all transform hover:translate-x-1 hover:translate-y-1"
+              className={`bg-white border-3 border-black shadow-brutal hover:shadow-brutal-sm transition-all transform hover:translate-x-1 hover:translate-y-1 ${
+                quest.is_completed ? 'border-green-teal' : ''
+              }`}
             >
               <div className="p-6 border-b-3 border-black">
                 <div className="flex items-start justify-between">
                   <div className="flex items-start space-x-4">
-                    <div className="text-4xl">{quest.emoji}</div>
+                    <div className="relative">
+                      <div className="text-4xl">{quest.emoji}</div>
+                      {quest.is_completed && (
+                        <div className="absolute -top-2 -right-2 bg-green-teal text-white rounded-full w-6 h-6 flex items-center justify-center border-2 border-black">
+                          <CheckCircle className="h-3 w-3" />
+                        </div>
+                      )}
+                    </div>
                     <div className="flex-1">
                       <h3 className="text-xl font-black text-dark-teal mb-2">{quest.title}</h3>
                       <p className="text-dark-teal mb-3 font-bold">{quest.description}</p>
@@ -187,6 +239,7 @@ const QuestsPage: React.FC = () => {
                     <div className="flex items-center space-x-2 bg-green-teal text-white px-4 py-2 font-black border-3 border-black">
                       <CheckCircle size={18} />
                       <span>COMPLETED</span>
+                      <span className="ml-1 text-xs bg-white text-green-teal px-2 py-0.5 rounded-full">+{quest.reward_cred}</span>
                     </div>
                   ) : (
                     <button
