@@ -64,6 +64,8 @@ export interface StepSubmissionResult {
   quest_completed: boolean;
   next_step: number;
   total_steps: number;
+  is_quest_achievement_unlocked: boolean;
+  quest_id: string;
   quest_title?: string;
   quest_difficulty?: string;
 }
@@ -174,44 +176,46 @@ export const questsService = {
       // If quest is completed, trigger achievement
       if (data.quest_completed) {
         try {
-          // Award SquashCred for completing the quest
-          await squashCredService.awardForAction(userId, 'QUEST_COMPLETED');
-          
-          // Check if this is the first quest completed
-          const { data: userQuests } = await supabase
-            .from('user_quests')
-            .select('id')
-            .eq('user_id', userId)
-            .eq('is_completed', true);
+          // If the quest achievement was newly unlocked, trigger the client-side notification
+          if (data.is_quest_achievement_unlocked) {
+            // Trigger the achievement notification
+            await generalAchievementsService.unlockAchievement(userId, 'quest_' + data.quest_id);
             
-          const questsCompleted = userQuests?.length || 0;
-          const isFirstQuest = questsCompleted === 1;
-          
-          // Check for perfect score
-          const { data: questSteps } = await supabase
-            .from('user_quest_steps')
-            .select('is_correct')
-            .eq('user_quest_id', userQuestId);
+            // Also check for general quest-related achievements
+            const { data: userQuests } = await supabase
+              .from('user_quests')
+              .select('id')
+              .eq('user_id', userId)
+              .eq('is_completed', true);
+              
+            const questsCompleted = userQuests?.length || 0;
             
-          const allCorrect = questSteps?.every(step => step.is_correct) || false;
-          
-          // Check for all difficulty levels
-          const { data: completedQuestDifficulties } = await supabase
-            .from('user_quests')
-            .select('quests(difficulty)')
-            .eq('user_id', userId)
-            .eq('is_completed', true);
+            // Check for perfect score
+            const { data: questSteps } = await supabase
+              .from('user_quest_steps')
+              .select('is_correct')
+              .eq('user_quest_id', userQuestId);
+              
+            const allCorrect = questSteps?.every(step => step.is_correct) || false;
             
-          const difficulties = new Set(completedQuestDifficulties?.map(q => q.quests?.difficulty).filter(Boolean));
-          const hasAllDifficulties = difficulties.size === 3; // easy, medium, hard
-          
-          // Unlock achievements
-          await generalAchievementsService.checkAndUnlockAchievements(userId, {
-            hasStartedFirstQuest: isFirstQuest,
-            questsCompleted,
-            questPerfectScore: allCorrect,
-            hasCompletedAllDifficulties: hasAllDifficulties
-          });
+            // Check for all difficulty levels
+            const { data: completedQuestDifficulties } = await supabase
+              .from('user_quests')
+              .select('quests(difficulty)')
+              .eq('user_id', userId)
+              .eq('is_completed', true);
+              
+            const difficulties = new Set(completedQuestDifficulties?.map(q => q.quests?.difficulty).filter(Boolean));
+            const hasAllDifficulties = difficulties.size === 3; // easy, medium, hard
+            
+            // Check for general quest-related achievements
+            await generalAchievementsService.checkAndUnlockAchievements(userId, {
+              hasStartedFirstQuest: questsCompleted === 1,
+              questsCompleted,
+              questPerfectScore: allCorrect,
+              hasCompletedAllDifficulties: hasAllDifficulties
+            });
+          }
         } catch (error) {
           console.error('Error processing quest completion achievements:', error);
         }
