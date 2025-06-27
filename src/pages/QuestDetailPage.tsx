@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, BookOpen, Award, CheckCircle, X, Send, AlertTriangle, Sparkles } from 'lucide-react';
+import { ArrowLeft, BookOpen, Award, CheckCircle, X, Send, AlertTriangle, Sparkles, Info, ChevronDown, ChevronUp, Lightbulb } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { questsService, QuestDetails, QuestStep, StepSubmissionResult } from '../utils/quests';
 import Toast from '../components/Toast';
@@ -19,6 +19,7 @@ const QuestDetailPage: React.FC = () => {
   const [stepResult, setStepResult] = useState<StepSubmissionResult | null>(null);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
   const [showCompletionModal, setShowCompletionModal] = useState(false);
+  const [showReading, setShowReading] = useState(true);
 
   // Load quest details
   useEffect(() => {
@@ -156,6 +157,621 @@ const QuestDetailPage: React.FC = () => {
     setStepResult(null);
   };
 
+  // Get educational content based on quest ID and step number
+  const getEducationalContent = (questId: string, stepNumber: number) => {
+    // Content for "How to Speak Up Without Imploding"
+    if (questId === '11111111-1111-1111-1111-111111111111') {
+      if (stepNumber === 1) {
+        return {
+          title: "Drop the Sorry Spiral",
+          content: (
+            <>
+              <p className="text-dark-teal font-bold mb-4">
+                Speaking up doesn't mean spiraling. Here's how to say what you mean without apologizing for your existence:
+              </p>
+              <div className="bg-lime-chartreuse p-4 border-2 border-black mb-4">
+                <div className="flex items-start">
+                  <Lightbulb className="h-5 w-5 text-dark-teal mt-1 mr-2 flex-shrink-0" />
+                  <p className="text-dark-teal font-bold">
+                    <span className="font-black">Drop the Sorry Spiral:</span> "Sorry to bother you, but…" weakens your message. Unless you've spilled hot soup on their lap, you probably don't need to apologize.
+                  </p>
+                </div>
+              </div>
+              <p className="text-dark-teal font-bold mb-4">
+                When we over-apologize, we're essentially telling the other person (and ourselves) that our needs, thoughts, and feelings aren't as important. It's the communication equivalent of making yourself smaller.
+              </p>
+              <p className="text-dark-teal font-bold">
+                Ready to spot unnecessary apologies? Let's see if you can identify them...
+              </p>
+            </>
+          )
+        };
+      } else if (stepNumber === 2) {
+        return {
+          title: "Rewrite with Clarity",
+          content: (
+            <>
+              <p className="text-dark-teal font-bold mb-4">
+                Hedging language like "kind of," "maybe," and "sorry if" undermines your message and makes it easy for others to dismiss your concerns.
+              </p>
+              <div className="bg-vivid-orange p-4 border-2 border-black mb-4">
+                <div className="flex items-start">
+                  <Lightbulb className="h-5 w-5 text-white mt-1 mr-2 flex-shrink-0" />
+                  <p className="text-white font-bold">
+                    <span className="font-black">Rewrite with Clarity:</span> Be direct but kind. "I feel ignored" lands better than "maybe I'm being too sensitive..."
+                  </p>
+                </div>
+              </div>
+              <p className="text-dark-teal font-bold mb-4">
+                Strong communication doesn't mean being harsh—it means being clear. Remove the "maybes" and "kind ofs" when you're expressing a genuine concern or need.
+              </p>
+              <p className="text-dark-teal font-bold">
+                Time to practice! Let's rewrite a message that's drowning in unnecessary apologies...
+              </p>
+            </>
+          )
+        };
+      } else if (stepNumber === 3) {
+        return {
+          title: "Assertive > Aggressive",
+          content: (
+            <>
+              <p className="text-dark-teal font-bold mb-4">
+                There's a world of difference between being assertive and being aggressive. One builds respect, the other builds resentment.
+              </p>
+              <div className="bg-green-teal p-4 border-2 border-black mb-4">
+                <div className="flex items-start">
+                  <Lightbulb className="h-5 w-5 text-white mt-1 mr-2 flex-shrink-0" />
+                  <p className="text-white font-bold">
+                    <span className="font-black">Assertive > Aggressive:</span> Assertiveness means owning your feelings and setting expectations without attacking. "Please don't use my shampoo without asking" is assertive. "Touch it again and I'll shave your head" is… something else.
+                  </p>
+                </div>
+              </div>
+              <p className="text-dark-teal font-bold mb-4">
+                Assertive communication is about standing up for yourself while still respecting others. It's firm but fair, clear but not cruel.
+              </p>
+              <p className="text-dark-teal font-bold">
+                Let's see if you can identify the truly assertive response in this scenario...
+              </p>
+            </>
+          )
+        };
+      } else if (stepNumber === 4) {
+        return {
+          title: "Own Your Emotions",
+          content: (
+            <>
+              <p className="text-dark-teal font-bold mb-4">
+                No one "makes" you feel anything. Your emotions are valid, but they're yours to own.
+              </p>
+              <div className="bg-dark-teal p-4 border-2 border-black mb-4">
+                <div className="flex items-start">
+                  <Lightbulb className="h-5 w-5 text-lime-chartreuse mt-1 mr-2 flex-shrink-0" />
+                  <p className="text-lime-chartreuse font-bold">
+                    <span className="font-black">Own Your Emotions:</span> Say "I feel frustrated when..." not "You're making me insane." You control your feelings — don't hand them over to someone else.
+                  </p>
+                </div>
+              </div>
+              <p className="text-dark-teal font-bold mb-4">
+                When you take ownership of your emotions, you reclaim your power in the conversation. It also makes the other person less defensive because you're not blaming them for how you feel.
+              </p>
+              <p className="text-dark-teal font-bold">
+                Let's identify which statement truly takes ownership of feelings...
+              </p>
+            </>
+          )
+        };
+      }
+    }
+    // Content for "Mastering the Group Chat"
+    else if (questId === '22222222-2222-2222-2222-222222222222') {
+      if (stepNumber === 1) {
+        return {
+          title: "Avoid the Group Chat Crimes",
+          content: (
+            <>
+              <p className="text-dark-teal font-bold mb-4">
+                Welcome to the arena of unspoken rules and emoji landmines. Group chats thrive on clarity and respect.
+              </p>
+              <div className="bg-lime-chartreuse p-4 border-2 border-black mb-4">
+                <div className="flex items-start">
+                  <Lightbulb className="h-5 w-5 text-dark-teal mt-1 mr-2 flex-shrink-0" />
+                  <p className="text-dark-teal font-bold">
+                    <span className="font-black">Avoid the Crimes:</span> Ghosting, drama-bombing, or side conversations in a main thread are the social equivalent of stepping on a Lego barefoot.
+                  </p>
+                </div>
+              </div>
+              <p className="text-dark-teal font-bold mb-4">
+                Group chats have their own social ecosystem. What might seem fine in a one-on-one conversation can create tension when seven people are watching it unfold.
+              </p>
+              <p className="text-dark-teal font-bold">
+                Let's identify which behavior is most likely to create tension in a group chat...
+              </p>
+            </>
+          )
+        };
+      } else if (stepNumber === 2) {
+        return {
+          title: "When You're Ignored",
+          content: (
+            <>
+              <p className="text-dark-teal font-bold mb-4">
+                It happens to everyone: you drop what you think is a brilliant message into the group chat, and... crickets. The conversation just flows right past you.
+              </p>
+              <div className="bg-vivid-orange p-4 border-2 border-black mb-4">
+                <div className="flex items-start">
+                  <Lightbulb className="h-5 w-5 text-white mt-1 mr-2 flex-shrink-0" />
+                  <p className="text-white font-bold">
+                    <span className="font-black">When You're Ignored:</span> It stings. But reacting with grace ("Hey just checking if anyone saw this 👀") is better than rage-leaving.
+                  </p>
+                </div>
+              </div>
+              <p className="text-dark-teal font-bold mb-4">
+                Remember that group chats move fast, and people might be reading while distracted. Your message probably wasn't intentionally ignored—it just got lost in the flow.
+              </p>
+              <p className="text-dark-teal font-bold">
+                What's the healthiest way to handle being ignored? Let's find out...
+              </p>
+            </>
+          )
+        };
+      } else if (stepNumber === 3) {
+        return {
+          title: "Rewrite for Clarity",
+          content: (
+            <>
+              <p className="text-dark-teal font-bold mb-4">
+                Vague, rambling messages are the quickest way to get ignored in a group chat. No one wants to decode your stream of consciousness.
+              </p>
+              <div className="bg-green-teal p-4 border-2 border-black mb-4">
+                <div className="flex items-start">
+                  <Lightbulb className="h-5 w-5 text-white mt-1 mr-2 flex-shrink-0" />
+                  <p className="text-white font-bold">
+                    <span className="font-black">Rewrite for Clarity:</span> Vague, rambling messages get ignored. Say what you mean in one clean sentence.
+                  </p>
+                </div>
+              </div>
+              <p className="text-dark-teal font-bold mb-4">
+                A good group chat message includes:
+                <br />• Context (what are you referring to?)
+                <br />• Clear question or statement
+                <br />• Specific details when needed
+              </p>
+              <p className="text-dark-teal font-bold">
+                Time to practice! Let's rewrite this confusing message...
+              </p>
+            </>
+          )
+        };
+      } else if (stepNumber === 4) {
+        return {
+          title: "Diffuse, Don't Detonate",
+          content: (
+            <>
+              <p className="text-dark-teal font-bold mb-4">
+                Every group chat eventually has that moment: two friends getting heated about politics, sports, or whether pineapple belongs on pizza (it does, fight me).
+              </p>
+              <div className="bg-dark-teal p-4 border-2 border-black mb-4">
+                <div className="flex items-start">
+                  <Lightbulb className="h-5 w-5 text-lime-chartreuse mt-1 mr-2 flex-shrink-0" />
+                  <p className="text-lime-chartreuse font-bold">
+                    <span className="font-black">Diffuse, Don't Detonate:</span> If tensions rise, step in with empathy — not more gasoline. Acknowledge both sides, suggest a pause, or shift the tone.
+                  </p>
+                </div>
+              </div>
+              <p className="text-dark-teal font-bold mb-4">
+                Being the peacemaker doesn't mean shutting down important conversations. It means helping create space where those conversations can happen productively—which is rarely in a group chat.
+              </p>
+              <p className="text-dark-teal font-bold">
+                Let's see which approach best diffuses tension without dismissing concerns...
+              </p>
+            </>
+          )
+        };
+      }
+    }
+    // Content for "Emotional Boundaries 101"
+    else if (questId === '33333333-3333-3333-3333-333333333333') {
+      if (stepNumber === 1) {
+        return {
+          title: "Spot Boundary Violations",
+          content: (
+            <>
+              <p className="text-dark-teal font-bold mb-4">
+                Boundaries aren't walls — they're doors with doorknobs you control. But first, you need to recognize when someone's trying to kick the door down.
+              </p>
+              <div className="bg-lime-chartreuse p-4 border-2 border-black mb-4">
+                <div className="flex items-start">
+                  <Lightbulb className="h-5 w-5 text-dark-teal mt-1 mr-2 flex-shrink-0" />
+                  <p className="text-dark-teal font-bold">
+                    <span className="font-black">Spot Violations:</span> Repeatedly crossing lines after being told not to, oversharing, or guilt-tripping are boundary red flags.
+                  </p>
+                </div>
+              </div>
+              <p className="text-dark-teal font-bold mb-4">
+                Not every uncomfortable interaction is a boundary violation. The key is whether your expressed limits are being respected or ignored.
+              </p>
+              <p className="text-dark-teal font-bold">
+                Let's identify which scenario represents a clear boundary violation...
+              </p>
+            </>
+          )
+        };
+      } else if (stepNumber === 2) {
+        return {
+          title: "Set Boundaries Clearly",
+          content: (
+            <>
+              <p className="text-dark-teal font-bold mb-4">
+                Setting boundaries isn't rude—it's responsible. Clear boundaries protect your energy and actually improve relationships.
+              </p>
+              <div className="bg-vivid-orange p-4 border-2 border-black mb-4">
+                <div className="flex items-start">
+                  <Lightbulb className="h-5 w-5 text-white mt-1 mr-2 flex-shrink-0" />
+                  <p className="text-white font-bold">
+                    <span className="font-black">Set Boundaries Clearly:</span> "I'm not comfortable discussing that right now" is strong. "Haha maybe let's not?" is not.
+                  </p>
+                </div>
+              </div>
+              <p className="text-dark-teal font-bold mb-4">
+                A good boundary statement:
+                <br />• Is clear and direct
+                <br />• Focuses on your needs, not their character
+                <br />• Offers an alternative when possible
+              </p>
+              <p className="text-dark-teal font-bold">
+                Let's identify which statement sets a clear, healthy boundary...
+              </p>
+            </>
+          )
+        };
+      } else if (stepNumber === 3) {
+        return {
+          title: "Turn Accusations Into Boundaries",
+          content: (
+            <>
+              <p className="text-dark-teal font-bold mb-4">
+                Accusations create defensiveness. Boundaries create clarity. The difference is how you phrase it.
+              </p>
+              <div className="bg-green-teal p-4 border-2 border-black mb-4">
+                <div className="flex items-start">
+                  <Lightbulb className="h-5 w-5 text-white mt-1 mr-2 flex-shrink-0" />
+                  <p className="text-white font-bold">
+                    <span className="font-black">Turn Accusations Into Boundaries:</span> Instead of "You're so draining," try "I need to take space when I feel emotionally overwhelmed."
+                  </p>
+                </div>
+              </div>
+              <p className="text-dark-teal font-bold mb-4">
+                Accusations focus on what's wrong with the other person. Boundaries focus on what you need to feel safe and respected. One leads to fights, the other leads to understanding.
+              </p>
+              <p className="text-dark-teal font-bold">
+                Let's practice rewriting an accusation as a boundary statement...
+              </p>
+            </>
+          )
+        };
+      } else if (stepNumber === 4) {
+        return {
+          title: "Enforce Calmly",
+          content: (
+            <>
+              <p className="text-dark-teal font-bold mb-4">
+                Setting a boundary is step one. Enforcing it when it's crossed is step two—and often the harder part.
+              </p>
+              <div className="bg-dark-teal p-4 border-2 border-black mb-4">
+                <div className="flex items-start">
+                  <Lightbulb className="h-5 w-5 text-lime-chartreuse mt-1 mr-2 flex-shrink-0" />
+                  <p className="text-lime-chartreuse font-bold">
+                    <span className="font-black">Enforce Calmly:</span> Repeating your boundary is okay. "Like I mentioned, I'm not discussing that tonight."
+                  </p>
+                </div>
+              </div>
+              <p className="text-dark-teal font-bold mb-4">
+                Enforcing boundaries in the moment takes courage, especially in group settings. But addressing it immediately is usually more effective than stewing about it later.
+              </p>
+              <p className="text-dark-teal font-bold">
+                Let's see which approach most effectively enforces a boundary in this uncomfortable situation...
+              </p>
+            </>
+          )
+        };
+      } else if (stepNumber === 5) {
+        return {
+          title: "Recognize Guilt Trips",
+          content: (
+            <>
+              <p className="text-dark-teal font-bold mb-4">
+                Guilt trips are the passive-aggressive cousin of boundary violations. They're designed to make you feel bad for having boundaries at all.
+              </p>
+              <div className="bg-lime-chartreuse p-4 border-2 border-black mb-4">
+                <div className="flex items-start">
+                  <Lightbulb className="h-5 w-5 text-dark-teal mt-1 mr-2 flex-shrink-0" />
+                  <p className="text-dark-teal font-bold">
+                    <span className="font-black">Watch for Guilt Trips:</span> "I guess I'll just sit here alone then, since you clearly don't care about me..." = manipulation in a cardigan.
+                  </p>
+                </div>
+              </div>
+              <p className="text-dark-teal font-bold mb-4">
+                When someone respects your boundary, they might be disappointed but they don't try to punish you for it. Guilt trips are a form of emotional manipulation.
+              </p>
+              <p className="text-dark-teal font-bold">
+                Let's identify which response is attempting to guilt-trip you for setting a boundary...
+              </p>
+            </>
+          )
+        };
+      }
+    }
+    // Content for "Conflict Detox"
+    else if (questId === '44444444-4444-4444-4444-444444444444') {
+      if (stepNumber === 1) {
+        return {
+          title: "Spot Escalation Language",
+          content: (
+            <>
+              <p className="text-dark-teal font-bold mb-4">
+                You're not here to win. You're here to not make it worse. First step: recognize the language that turns disagreements into dumpster fires.
+              </p>
+              <div className="bg-lime-chartreuse p-4 border-2 border-black mb-4">
+                <div className="flex items-start">
+                  <Lightbulb className="h-5 w-5 text-dark-teal mt-1 mr-2 flex-shrink-0" />
+                  <p className="text-dark-teal font-bold">
+                    <span className="font-black">Escalation Triggers:</span> Absolutes like "You always..." or "You never..." or using sarcasm during real tension — instant gasoline.
+                  </p>
+                </div>
+              </div>
+              <p className="text-dark-teal font-bold mb-4">
+                Words like "always," "never," and "clearly" are rarely accurate and almost always inflammatory. They make the other person focus on defending themselves rather than understanding you.
+              </p>
+              <p className="text-dark-teal font-bold">
+                Let's identify which phrase is most likely to escalate a conflict...
+              </p>
+            </>
+          )
+        };
+      } else if (stepNumber === 2) {
+        return {
+          title: "De-escalate Like a Pro",
+          content: (
+            <>
+              <p className="text-dark-teal font-bold mb-4">
+                When someone comes at you hot, your instinct might be to match their energy. Resist! De-escalation is your superpower.
+              </p>
+              <div className="bg-vivid-orange p-4 border-2 border-black mb-4">
+                <div className="flex items-start">
+                  <Lightbulb className="h-5 w-5 text-white mt-1 mr-2 flex-shrink-0" />
+                  <p className="text-white font-bold">
+                    <span className="font-black">De-escalate Like a Pro:</span> Try "I hear you, and I want to talk about it calmly," instead of defending or attacking.
+                  </p>
+                </div>
+              </div>
+              <p className="text-dark-teal font-bold mb-4">
+                De-escalation often means:
+                <br />• Acknowledging their feelings
+                <br />• Taking responsibility for your part
+                <br />• Focusing on solutions, not blame
+              </p>
+              <p className="text-dark-teal font-bold">
+                Let's see which response would best de-escalate this heated situation...
+              </p>
+            </>
+          )
+        };
+      } else if (stepNumber === 3) {
+        return {
+          title: "Rewrite the Flames",
+          content: (
+            <>
+              <p className="text-dark-teal font-bold mb-4">
+                Sometimes we draft messages when we're at peak frustration. Before hitting send, rewrite the flames into something constructive.
+              </p>
+              <div className="bg-green-teal p-4 border-2 border-black mb-4">
+                <div className="flex items-start">
+                  <Lightbulb className="h-5 w-5 text-white mt-1 mr-2 flex-shrink-0" />
+                  <p className="text-white font-bold">
+                    <span className="font-black">Rewrite the Flames:</span> Instead of "You ruined everything," try "I was surprised by the last-minute changes — can we align better next time?"
+                  </p>
+                </div>
+              </div>
+              <p className="text-dark-teal font-bold mb-4">
+                A good de-escalating rewrite:
+                <br />• Removes character attacks
+                <br />• Focuses on specific behaviors, not patterns
+                <br />• Includes a path forward
+              </p>
+              <p className="text-dark-teal font-bold">
+                Let's practice rewriting this inflammatory message into something more constructive...
+              </p>
+            </>
+          )
+        };
+      } else if (stepNumber === 4) {
+        return {
+          title: "Use the Pause",
+          content: (
+            <>
+              <p className="text-dark-teal font-bold mb-4">
+                When emotions run high, your prefrontal cortex (the rational part of your brain) goes offline. The pause is your emergency reboot button.
+              </p>
+              <div className="bg-dark-teal p-4 border-2 border-black mb-4">
+                <div className="flex items-start">
+                  <Lightbulb className="h-5 w-5 text-lime-chartreuse mt-1 mr-2 flex-shrink-0" />
+                  <p className="text-lime-chartreuse font-bold">
+                    <span className="font-black">Use the Pause:</span> Walk away, breathe, drink water, scream into a pillow (silently) — then return with a level head.
+                  </p>
+                </div>
+              </div>
+              <p className="text-dark-teal font-bold mb-4">
+                A good pause is:
+                <br />• Communicated clearly ("I need a moment")
+                <br />• Brief (minutes, not days)
+                <br />• Followed by re-engagement
+              </p>
+              <p className="text-dark-teal font-bold">
+                Let's identify which technique is most effective when emotions are running high...
+              </p>
+            </>
+          )
+        };
+      } else if (stepNumber === 5) {
+        return {
+          title: "Build Bridges, Not Walls",
+          content: (
+            <>
+              <p className="text-dark-teal font-bold mb-4">
+                After a conflict, someone needs to make the first move toward repair. Be that someone.
+              </p>
+              <div className="bg-lime-chartreuse p-4 border-2 border-black mb-4">
+                <div className="flex items-start">
+                  <Lightbulb className="h-5 w-5 text-dark-teal mt-1 mr-2 flex-shrink-0" />
+                  <p className="text-dark-teal font-bold">
+                    <span className="font-black">Bridge Builders:</span> Say things like "I still care about our connection and want to fix this." It re-centers the relationship, not the fight.
+                  </p>
+                </div>
+              </div>
+              <p className="text-dark-teal font-bold mb-4">
+                Bridge-building statements:
+                <br />• Acknowledge the disagreement
+                <br />• Express care for the relationship
+                <br />• Show curiosity about their perspective
+              </p>
+              <p className="text-dark-teal font-bold">
+                Let's identify which statement best builds a bridge toward resolution...
+              </p>
+            </>
+          )
+        };
+      }
+    }
+    // Content for "I-Statement Bootcamp"
+    else if (questId === '55555555-5555-5555-5555-555555555555') {
+      if (stepNumber === 1) {
+        return {
+          title: "Real I-Statements",
+          content: (
+            <>
+              <p className="text-dark-teal font-bold mb-4">
+                I-statements are the secret weapon of emotionally evolved humans. They express your feelings without triggering defensiveness.
+              </p>
+              <div className="bg-lime-chartreuse p-4 border-2 border-black mb-4">
+                <div className="flex items-start">
+                  <Lightbulb className="h-5 w-5 text-dark-teal mt-1 mr-2 flex-shrink-0" />
+                  <p className="text-dark-teal font-bold">
+                    <span className="font-black">Real I-Statements:</span> "I feel [emotion] when [situation], because [reason]." That's it. That's the tweet.
+                  </p>
+                </div>
+              </div>
+              <p className="text-dark-teal font-bold mb-4">
+                A proper I-statement:
+                <br />• Names a genuine emotion (not a thought)
+                <br />• Describes a specific situation
+                <br />• Explains the impact on you
+              </p>
+              <p className="text-dark-teal font-bold">
+                Let's identify which of these is a proper I-statement...
+              </p>
+            </>
+          )
+        };
+      } else if (stepNumber === 2) {
+        return {
+          title: "Rewrite the Blame",
+          content: (
+            <>
+              <p className="text-dark-teal font-bold mb-4">
+                Accusations create walls. I-statements create windows. Let's transform blame into something more productive.
+              </p>
+              <div className="bg-vivid-orange p-4 border-2 border-black mb-4">
+                <div className="flex items-start">
+                  <Lightbulb className="h-5 w-5 text-white mt-1 mr-2 flex-shrink-0" />
+                  <p className="text-white font-bold">
+                    <span className="font-black">Rewrite the Blame:</span> "You never help!" becomes "I feel overwhelmed when I do all the dishes by myself."
+                  </p>
+                </div>
+              </div>
+              <p className="text-dark-teal font-bold mb-4">
+                When rewriting accusations:
+                <br />• Remove "you" as the subject
+                <br />• Focus on how you feel
+                <br />• Describe the situation objectively
+                <br />• Avoid character judgments
+              </p>
+              <p className="text-dark-teal font-bold">
+                Time to practice! Let's rewrite this accusation as an I-statement...
+              </p>
+            </>
+          )
+        };
+      } else if (stepNumber === 3) {
+        return {
+          title: "Beware Fake I-Statements",
+          content: (
+            <>
+              <p className="text-dark-teal font-bold mb-4">
+                Not all statements that start with "I" are true I-statements. Some are just accusations wearing a disguise.
+              </p>
+              <div className="bg-green-teal p-4 border-2 border-black mb-4">
+                <div className="flex items-start">
+                  <Lightbulb className="h-5 w-5 text-white mt-1 mr-2 flex-shrink-0" />
+                  <p className="text-white font-bold">
+                    <span className="font-black">Beware Fake I-Statements:</span> "I feel like you're an inconsiderate jerk" is not an I-statement — it's a glitter-coated accusation.
+                  </p>
+                </div>
+              </div>
+              <p className="text-dark-teal font-bold mb-4">
+                Red flags for fake I-statements:
+                <br />• "I feel like you..." (that's a thought, not a feeling)
+                <br />• "I feel that you..." (again, a thought)
+                <br />• Any statement where "you" is the real subject
+              </p>
+              <p className="text-dark-teal font-bold">
+                Let's spot which of these is actually a "you-statement" in disguise...
+              </p>
+            </>
+          )
+        };
+      } else if (stepNumber === 4) {
+        return {
+          title: "Fill in the Gaps",
+          content: (
+            <>
+              <p className="text-dark-teal font-bold mb-4">
+                Now it's time to create your own I-statement from scratch. This is where the rubber meets the road!
+              </p>
+              <div className="bg-dark-teal p-4 border-2 border-black mb-4">
+                <div className="flex items-start">
+                  <Lightbulb className="h-5 w-5 text-lime-chartreuse mt-1 mr-2 flex-shrink-0" />
+                  <p className="text-lime-chartreuse font-bold">
+                    <span className="font-black">Fill in the Gaps:</span> Practice completing real I-statements like: "I feel disappointed when _____ because _____."
+                  </p>
+                </div>
+              </div>
+              <p className="text-dark-teal font-bold mb-4">
+                A strong I-statement completion:
+                <br />• Names a specific behavior (not a character trait)
+                <br />• Explains the concrete impact on you
+                <br />• Stays focused on your experience
+              </p>
+              <p className="text-dark-teal font-bold">
+                Let's practice completing this I-statement with your own words...
+              </p>
+            </>
+          )
+        };
+      }
+    }
+    
+    // Default content if no specific content is found
+    return {
+      title: "Let's Learn Something New",
+      content: (
+        <p className="text-dark-teal font-bold">
+          Ready to improve your conflict resolution skills? Let's dive into this step!
+        </p>
+      )
+    };
+  };
+
   const handleCloseCompletionModal = () => {
     setShowCompletionModal(false);
     navigate('/quests');
@@ -263,6 +879,10 @@ const QuestDetailPage: React.FC = () => {
   const totalSteps = questDetails.steps.length;
   const progressPercentage = Math.round(((currentStepIndex + 1) / totalSteps) * 100);
 
+  // Get educational content for current step
+  const currentStepNumber = currentStepIndex + 1;
+  const educationalContent = questDetails ? getEducationalContent(questDetails.quest.id, currentStepNumber) : null;
+
   return (
     <div className="max-w-4xl mx-auto p-4 sm:p-6">
       {toast && (
@@ -324,11 +944,37 @@ const QuestDetailPage: React.FC = () => {
       </div>
 
       {/* Current Step */}
-      <div className="bg-white border-3 border-black shadow-brutal mb-6">
+      <div className="bg-white border-3 border-black shadow-brutal mb-6 overflow-hidden">
         <div className="p-6 border-b-3 border-black">
           <h2 className="text-xl font-black text-dark-teal mb-2">{currentStep.title}</h2>
           <p className="text-dark-teal font-bold">{currentStep.instruction}</p>
         </div>
+        
+        {/* Educational Content */}
+        {educationalContent && (
+          <div className="border-b-3 border-black">
+            <div 
+              className="p-4 bg-white flex items-center justify-between cursor-pointer"
+              onClick={() => setShowReading(!showReading)}
+            >
+              <div className="flex items-center">
+                <Info className="h-5 w-5 text-vivid-orange mr-2" />
+                <h3 className="font-black text-dark-teal">{educationalContent.title}</h3>
+              </div>
+              {showReading ? (
+                <ChevronUp className="h-5 w-5 text-dark-teal" />
+              ) : (
+                <ChevronDown className="h-5 w-5 text-dark-teal" />
+              )}
+            </div>
+            
+            {showReading && (
+              <div className="p-6 bg-white/50">
+                {educationalContent.content}
+              </div>
+            )}
+          </div>
+        )}
         
         <div className="p-6">
           {renderStepContent(currentStep)}
