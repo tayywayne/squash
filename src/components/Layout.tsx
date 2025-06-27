@@ -150,12 +150,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             </div>
             
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-6">
+            <div className="hidden md:flex items-center space-x-4">
               {mainNavigation.map((item) => (
                 <button
                   key={item.name}
                   onClick={() => navigate(item.href)}
-                  className={`flex items-center space-x-2 px-3 py-2 text-white font-bold hover:text-lime-chartreuse transition-colors ${
+                  className={`flex items-center space-x-1 px-2 py-2 text-white font-bold hover:text-lime-chartreuse transition-colors ${
                     location.pathname === item.href ? 'text-lime-chartreuse' : ''
                   }`}
                 >
@@ -171,7 +171,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     setShowLearnDropdown(!showLearnDropdown);
                     setShowDramaDropdown(false);
                   }}
-                  className={`flex items-center space-x-2 px-3 py-2 text-white font-bold hover:text-lime-chartreuse transition-colors ${
+                  className={`flex items-center space-x-1 px-2 py-2 text-white font-bold hover:text-lime-chartreuse transition-colors ${
                     learnNavigation.some(item => location.pathname === item.href) ? 'text-lime-chartreuse' : ''
                   }`}
                 >
@@ -207,7 +207,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     setShowDramaDropdown(!showDramaDropdown);
                     setShowLearnDropdown(false);
                   }}
-                  className={`flex items-center space-x-2 px-3 py-2 text-white font-bold hover:text-lime-chartreuse transition-colors ${
+                  className={`flex items-center space-x-1 px-2 py-2 text-white font-bold hover:text-lime-chartreuse transition-colors ${
                     dramaNavigation.some(item => location.pathname === item.href) ? 'text-lime-chartreuse' : ''
                   }`}
                 >
@@ -240,7 +240,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <button
                   key={item.name}
                   onClick={() => navigate(item.href)}
-                  className={`flex items-center space-x-2 px-3 py-2 text-white font-bold hover:text-lime-chartreuse transition-colors ${
+                  className={`flex items-center space-x-1 px-2 py-2 text-white font-bold hover:text-lime-chartreuse transition-colors ${
                     location.pathname === item.href ? 'text-lime-chartreuse' : ''
                   }`}
                 >
@@ -251,7 +251,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             </div>
             
             <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2">
                 <span className="text-sm text-white font-bold">
                   HEY, <UserDisplayName 
                     username={user?.username}
@@ -280,7 +280,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               
               <button
                 onClick={handleSignOut}
-                className="hidden md:flex items-center space-x-1 text-white hover:text-vivid-orange transition-colors"
+                className="hidden md:flex items-center space-x-1 text-white hover:text-vivid-orange transition-colors whitespace-nowrap"
               >
                 <LogOut size={18} />
                 <span className="hidden sm:inline font-bold">LOGOUT</span>
