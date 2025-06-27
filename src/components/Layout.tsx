@@ -82,7 +82,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   // Main navigation items
   const mainNavigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: Home, emoji: '🧃' },
+    { name: 'Home', href: '/dashboard', icon: Home, emoji: '🧃' },
   ];
   
   // Learn dropdown items
@@ -99,7 +99,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   
   // Additional navigation items
   const additionalNavigation = [
-    { name: 'Support Us', href: '/support-us', icon: Sparkles, emoji: '✨' },
+    { name: 'Tip Us', href: '/support-us', icon: Sparkles, emoji: '✨' },
     { name: 'Profile', href: '/profile', icon: User, emoji: '👤' },
   ];
 
