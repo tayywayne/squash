@@ -133,7 +133,7 @@ const RedditConflictPage: React.FC = () => {
         <div className="text-center mb-6">
           <div className="text-6xl mb-4">🤔</div>
           <h1 className="text-4xl font-black text-dark-teal mb-2 border-b-3 border-black pb-2">
-            REDDIT CONFLICT OF THE DAY
+            PUBLIC SPECTACLE
           </h1>
           <p className="text-xl text-dark-teal font-bold max-w-2xl mx-auto leading-relaxed">
             Fresh drama from r/AmItheAsshole, processed through Squashie's AI for your judgment.

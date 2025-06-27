@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Home, MessageSquare, History, User, LogOut, Trophy, BookOpen } from 'lucide-react';
+import { Home, MessageSquare, User, LogOut, Trophy, BookOpen, ChevronDown, ChevronUp, Menu, X, Flame, Sparkles } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import UserDisplayName from './UserDisplayName';
 import SquashCredDisplay from './SquashCredDisplay';
@@ -24,6 +24,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const previousArchetypeRef = useRef<string | undefined>(undefined);
   const { pendingNotification, clearNotification } = useArchetypeAchievements();
   const { pendingNotification: pendingGeneralNotification, clearNotification: clearGeneralNotification } = useGeneralAchievements();
+  const [showLearnDropdown, setShowLearnDropdown] = useState(false);
+  const [showDramaDropdown, setShowDramaDropdown] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
+  
+  const learnDropdownRef = useRef<HTMLDivElement>(null);
+  const dramaDropdownRef = useRef<HTMLDivElement>(null);
 
   // Watch for archetype changes and show toast notification
   useEffect(() => {
@@ -49,15 +55,52 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     // Always update the ref with current archetype for next comparison
     previousArchetypeRef.current = currentArchetype;
   }, [user?.conflict_archetype]);
+  
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (learnDropdownRef.current && !learnDropdownRef.current.contains(event.target as Node)) {
+        setShowLearnDropdown(false);
+      }
+      if (dramaDropdownRef.current && !dramaDropdownRef.current.contains(event.target as Node)) {
+        setShowDramaDropdown(false);
+      }
+    };
+    
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+  
+  // Close dropdowns when navigating
+  useEffect(() => {
+    setShowLearnDropdown(false);
+    setShowDramaDropdown(false);
+    setShowMobileMenu(false);
+  }, [location.pathname]);
 
-  const navigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: Home, emoji: '🎛️' },
-    { name: 'Public Shame', href: '/public-shame', icon: Trophy, emoji: '🧨' },
-    { name: 'Quests', href: '/quests', icon: BookOpen, emoji: '📚' },
-    { name: 'Leaderboard',  href: '/leaderboard', icon: Trophy, emoji: '🏆' },
-    { name: 'Support Us', href: '/support-us', icon: User, emoji: '🎁' },
-    { name: 'Reddit Drama', href: '/reddit-conflict', icon: MessageSquare, emoji: '👓' },
-    { name: 'Profile', href: '/profile', icon: User, emoji: '👾' },
+  // Main navigation items
+  const mainNavigation = [
+    { name: 'Dashboard', href: '/dashboard', icon: Home, emoji: '🧃' },
+  ];
+  
+  // Learn dropdown items
+  const learnNavigation = [
+    { name: 'Quests', href: '/quests', icon: BookOpen, emoji: '🧠' },
+    { name: 'Leaderboard', href: '/leaderboard', icon: Trophy, emoji: '👑' },
+  ];
+  
+  // Drama dropdown items
+  const dramaNavigation = [
+    { name: 'Public Shame', href: '/public-shame', icon: Trophy, emoji: '⚖️' },
+    { name: 'Public Spectacle', href: '/reddit-conflict', icon: MessageSquare, emoji: '🍿' },
+  ];
+  
+  // Additional navigation items
+  const additionalNavigation = [
+    { name: 'Support Us', href: '/support-us', icon: Sparkles, emoji: '✨' },
+    { name: 'Profile', href: '/profile', icon: User, emoji: '👤' },
   ];
 
   const handleSignOut = async () => {
@@ -98,12 +141,113 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       )}
 
       {/* Top Navigation */}
-      <nav className="bg-dark-teal border-b-3 border-black">
+      <nav className="bg-dark-teal border-b-3 border-black sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             <div className="flex items-center space-x-3">
-              <div className="text-3xl animate-float">💣</div>
+              <div className="text-3xl animate-float">🧃</div>
               <h1 className="text-2xl font-black text-white tracking-tight">SQUASHIE</h1>
+            </div>
+            
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-6">
+              {mainNavigation.map((item) => (
+                <button
+                  key={item.name}
+                  onClick={() => navigate(item.href)}
+                  className={`flex items-center space-x-2 px-3 py-2 text-white font-bold hover:text-lime-chartreuse transition-colors ${
+                    location.pathname === item.href ? 'text-lime-chartreuse' : ''
+                  }`}
+                >
+                  <span>{item.emoji}</span>
+                  <span>{item.name}</span>
+                </button>
+              ))}
+              
+              {/* Learn Dropdown */}
+              <div ref={learnDropdownRef} className="relative">
+                <button
+                  onClick={() => {
+                    setShowLearnDropdown(!showLearnDropdown);
+                    setShowDramaDropdown(false);
+                  }}
+                  className={`flex items-center space-x-2 px-3 py-2 text-white font-bold hover:text-lime-chartreuse transition-colors ${
+                    learnNavigation.some(item => location.pathname === item.href) ? 'text-lime-chartreuse' : ''
+                  }`}
+                >
+                  <span>📚</span>
+                  <span>Learn</span>
+                  {showLearnDropdown ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                </button>
+                
+                {showLearnDropdown && (
+                  <div className="absolute top-full left-0 mt-1 w-48 bg-white border-3 border-black shadow-brutal z-50">
+                    {learnNavigation.map((item) => (
+                      <button
+                        key={item.name}
+                        onClick={() => navigate(item.href)}
+                        className={`flex items-center space-x-3 w-full text-left px-4 py-3 font-bold transition-colors ${
+                          location.pathname === item.href
+                            ? 'bg-lime-chartreuse text-dark-teal'
+                            : 'text-dark-teal hover:bg-lime-chartreuse/20'
+                        }`}
+                      >
+                        <span>{item.emoji}</span>
+                        <span>{item.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+              
+              {/* Drama Dropdown */}
+              <div ref={dramaDropdownRef} className="relative">
+                <button
+                  onClick={() => {
+                    setShowDramaDropdown(!showDramaDropdown);
+                    setShowLearnDropdown(false);
+                  }}
+                  className={`flex items-center space-x-2 px-3 py-2 text-white font-bold hover:text-lime-chartreuse transition-colors ${
+                    dramaNavigation.some(item => location.pathname === item.href) ? 'text-lime-chartreuse' : ''
+                  }`}
+                >
+                  <span>🔥</span>
+                  <span>Drama</span>
+                  {showDramaDropdown ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                </button>
+                
+                {showDramaDropdown && (
+                  <div className="absolute top-full left-0 mt-1 w-48 bg-white border-3 border-black shadow-brutal z-50">
+                    {dramaNavigation.map((item) => (
+                      <button
+                        key={item.name}
+                        onClick={() => navigate(item.href)}
+                        className={`flex items-center space-x-3 w-full text-left px-4 py-3 font-bold transition-colors ${
+                          location.pathname === item.href
+                            ? 'bg-lime-chartreuse text-dark-teal'
+                            : 'text-dark-teal hover:bg-lime-chartreuse/20'
+                        }`}
+                      >
+                        <span>{item.emoji}</span>
+                        <span>{item.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+              
+              {additionalNavigation.map((item) => (
+                <button
+                  key={item.name}
+                  onClick={() => navigate(item.href)}
+                  className={`flex items-center space-x-2 px-3 py-2 text-white font-bold hover:text-lime-chartreuse transition-colors ${
+                    location.pathname === item.href ? 'text-lime-chartreuse' : ''
+                  }`}
+                >
+                  <span>{item.emoji}</span>
+                  <span>{item.name}</span>
+                </button>
+              ))}
             </div>
             
             <div className="flex items-center space-x-4">
@@ -125,9 +269,18 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   />
                 )}
               </div>
+              
+              {/* Mobile Menu Button */}
+              <button
+                onClick={() => setShowMobileMenu(!showMobileMenu)}
+                className="md:hidden text-white hover:text-lime-chartreuse transition-colors"
+              >
+                {showMobileMenu ? <X size={24} /> : <Menu size={24} />}
+              </button>
+              
               <button
                 onClick={handleSignOut}
-                className="flex items-center space-x-1 text-white hover:text-vivid-orange transition-colors"
+                className="hidden md:flex items-center space-x-1 text-white hover:text-vivid-orange transition-colors"
               >
                 <LogOut size={18} />
                 <span className="hidden sm:inline font-bold">LOGOUT</span>
@@ -137,56 +290,146 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </div>
       </nav>
 
-      <div className="flex flex-1">
-        {/* Sidebar */}
-        <aside className="w-64 bg-white border-r-3 border-black hidden md:block">
-          <nav className="mt-6 px-4">
-            <ul className="space-y-4">
-              {navigation.map((item) => {
-                const isActive = location.pathname === item.href;
-                return (
-                  <li key={item.name}>
-                    <button
-                      onClick={() => navigate(item.href)}
-                      className={`w-full flex items-center space-x-3 px-4 py-4 text-left transition-colors border-3 ${
-                        isActive
-                          ? 'bg-lime-chartreuse text-dark-teal border-black shadow-brutal'
-                          : 'text-dark-teal border-transparent hover:border-black hover:shadow-brutal-sm'
-                      }`}
-                    >
-                      <span className="text-2xl">{item.emoji}</span>
-                      <span className="font-black">{item.name.toUpperCase()}</span>
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-          </nav>
-        </aside>
-
-        {/* Mobile Bottom Navigation */}
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t-3 border-black md:hidden z-10">
-          <nav className="flex justify-around py-2">
-            {navigation.map((item) => {
-              const isActive = location.pathname === item.href;
-              return (
+      {/* Mobile Menu */}
+      {showMobileMenu && (
+        <div className="fixed inset-0 z-30 bg-black/50 md:hidden" onClick={() => setShowMobileMenu(false)}>
+          <div className="absolute right-0 top-20 bottom-0 w-64 bg-white border-l-3 border-black shadow-brutal" onClick={e => e.stopPropagation()}>
+            <div className="p-4 border-b-3 border-black">
+              <span className="text-sm text-dark-teal font-bold">
+                HEY, <UserDisplayName 
+                  username={user?.username}
+                  archetypeEmoji={user?.archetype_emoji}
+                  supporterEmoji={user?.supporter_emoji}
+                  fallback={user?.first_name || user?.email || 'User'}
+                />
+              </span>
+            </div>
+            
+            <div className="overflow-y-auto h-full pb-20">
+              <div className="p-4">
+                {/* Main Navigation */}
+                {mainNavigation.map((item) => (
+                  <button
+                    key={item.name}
+                    onClick={() => navigate(item.href)}
+                    className={`w-full flex items-center space-x-3 px-4 py-3 text-left transition-colors border-2 mb-2 ${
+                      location.pathname === item.href
+                        ? 'bg-lime-chartreuse text-dark-teal border-black'
+                        : 'text-dark-teal border-transparent hover:border-black'
+                    }`}
+                  >
+                    <span className="text-xl">{item.emoji}</span>
+                    <span className="font-bold">{item.name}</span>
+                  </button>
+                ))}
+                
+                {/* Learn Section */}
+                <div className="mb-2">
+                  <button
+                    onClick={() => setShowLearnDropdown(!showLearnDropdown)}
+                    className={`w-full flex items-center justify-between px-4 py-3 text-left border-2 ${
+                      learnNavigation.some(item => location.pathname === item.href)
+                        ? 'bg-lime-chartreuse text-dark-teal border-black'
+                        : 'text-dark-teal border-black'
+                    }`}
+                  >
+                    <div className="flex items-center space-x-3">
+                      <span className="text-xl">📚</span>
+                      <span className="font-bold">Learn</span>
+                    </div>
+                    {showLearnDropdown ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                  </button>
+                  
+                  {showLearnDropdown && (
+                    <div className="pl-4 border-l-2 border-black ml-4 mt-1 mb-2">
+                      {learnNavigation.map((item) => (
+                        <button
+                          key={item.name}
+                          onClick={() => navigate(item.href)}
+                          className={`w-full flex items-center space-x-3 px-4 py-2 text-left transition-colors border-2 mb-1 ${
+                            location.pathname === item.href
+                              ? 'bg-lime-chartreuse/50 text-dark-teal border-black'
+                              : 'text-dark-teal border-transparent hover:border-black'
+                          }`}
+                        >
+                          <span className="text-xl">{item.emoji}</span>
+                          <span className="font-bold">{item.name}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                
+                {/* Drama Section */}
+                <div className="mb-2">
+                  <button
+                    onClick={() => setShowDramaDropdown(!showDramaDropdown)}
+                    className={`w-full flex items-center justify-between px-4 py-3 text-left border-2 ${
+                      dramaNavigation.some(item => location.pathname === item.href)
+                        ? 'bg-lime-chartreuse text-dark-teal border-black'
+                        : 'text-dark-teal border-black'
+                    }`}
+                  >
+                    <div className="flex items-center space-x-3">
+                      <span className="text-xl">🔥</span>
+                      <span className="font-bold">Drama</span>
+                    </div>
+                    {showDramaDropdown ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                  </button>
+                  
+                  {showDramaDropdown && (
+                    <div className="pl-4 border-l-2 border-black ml-4 mt-1 mb-2">
+                      {dramaNavigation.map((item) => (
+                        <button
+                          key={item.name}
+                          onClick={() => navigate(item.href)}
+                          className={`w-full flex items-center space-x-3 px-4 py-2 text-left transition-colors border-2 mb-1 ${
+                            location.pathname === item.href
+                              ? 'bg-lime-chartreuse/50 text-dark-teal border-black'
+                              : 'text-dark-teal border-transparent hover:border-black'
+                          }`}
+                        >
+                          <span className="text-xl">{item.emoji}</span>
+                          <span className="font-bold">{item.name}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                
+                {/* Additional Navigation */}
+                {additionalNavigation.map((item) => (
+                  <button
+                    key={item.name}
+                    onClick={() => navigate(item.href)}
+                    className={`w-full flex items-center space-x-3 px-4 py-3 text-left transition-colors border-2 mb-2 ${
+                      location.pathname === item.href
+                        ? 'bg-lime-chartreuse text-dark-teal border-black'
+                        : 'text-dark-teal border-transparent hover:border-black'
+                    }`}
+                  >
+                    <span className="text-xl">{item.emoji}</span>
+                    <span className="font-bold">{item.name}</span>
+                  </button>
+                ))}
+                
+                {/* Logout Button */}
                 <button
-                  key={item.name}
-                  onClick={() => navigate(item.href)}
-                  className={`flex flex-col items-center p-2 rounded-lg transition-colors ${
-                    isActive ? 'text-vivid-orange' : 'text-dark-teal'
-                  }`}
+                  onClick={handleSignOut}
+                  className="w-full flex items-center space-x-3 px-4 py-3 text-left transition-colors border-2 text-vivid-orange hover:bg-vivid-orange/10 border-vivid-orange"
                 >
-                  <span className="text-2xl">{item.emoji}</span>
-                  <span className="text-xs font-bold">{item.name}</span>
+                  <LogOut size={18} />
+                  <span className="font-bold">LOGOUT</span>
                 </button>
-              );
-            })}
-          </nav>
+              </div>
+            </div>
+          </div>
         </div>
+      )}
 
+      <div className="flex flex-1">
         {/* Main Content */}
-        <main className="flex-1 pb-16 md:pb-0 bg-white">
+        <main className="flex-1 pb-16 md:pb-0 bg-white w-full">
           {children}
         </main>
       </div>
