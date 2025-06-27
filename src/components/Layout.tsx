@@ -298,7 +298,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
       {/* Mobile Menu */}
       {showMobileMenu && (
-        <div className="fixed inset-0 z-30 bg-black/50 md:hidden" onClick={() => {
+        <div className="fixed inset-0 z-50 bg-black/50 md:hidden" onClick={() => {
           setShowMobileMenu(false);
         }}>
           <div className="absolute right-0 top-20 bottom-0 w-64 bg-white border-l-3 border-black shadow-brutal" onClick={(e) => e.stopPropagation()}>
