@@ -5,6 +5,7 @@ import { useAuth } from '../hooks/useAuth';
 import { profileService } from '../utils/profiles';
 import { redditConflictsService } from '../utils/redditConflicts';
 import QuestProgressWidget from '../components/QuestProgressWidget';
+import AdminControls from '../components/AdminControls';
 import ArchetypeWidget from '../components/ArchetypeWidget';
 import MoodIndicator from '../components/MoodIndicator';
 import UserDisplayName from '../components/UserDisplayName';
@@ -288,9 +289,14 @@ const DashboardPage: React.FC = () => {
 
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-4xl font-black text-dark-teal mb-4 border-b-3 border-black pb-2">
-          DASHBOARD
-        </h1>
+        <div className="flex items-center justify-between mb-4 border-b-3 border-black pb-2">
+          <h1 className="text-4xl font-black text-dark-teal">
+            DASHBOARD
+          </h1>
+          {user?.is_admin && (
+            <AdminControls isAdmin={!!user?.is_admin} />
+          )}
+        </div>
         <p className="text-dark-teal font-bold text-lg">
           Time to face the music. How's your conflict resolution game today?
         </p>
