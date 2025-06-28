@@ -5,6 +5,7 @@ import { useAuth } from '../hooks/useAuth';
 import { profileService } from '../utils/profiles';
 import { redditConflictsService } from '../utils/redditConflicts';
 import QuestProgressWidget from '../components/QuestProgressWidget';
+import ArchetypeWidget from '../components/ArchetypeWidget';
 import MoodIndicator from '../components/MoodIndicator';
 import UserDisplayName from '../components/UserDisplayName';
 import { archetypeService } from '../utils/archetypes';
@@ -330,7 +331,10 @@ const DashboardPage: React.FC = () => {
       
       {/* Quest Progress Widget - In its own row */}
       <div className="mb-8">
-        <QuestProgressWidget />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <QuestProgressWidget />
+          <ArchetypeWidget />
+        </div>
       </div>
 
       {/* Tabs */}
