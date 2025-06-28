@@ -68,7 +68,7 @@ const QuestProgressWidget: React.FC = () => {
 
   if (inProgressQuest) {
     return (
-      <div className="bg-white p-6 border-3 border-black shadow-brutal">
+      <div className="bg-white p-6 border-3 border-black shadow-brutal max-w-xl mx-auto">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-2">
             <BookOpen className="h-5 w-5 text-vivid-orange" />
@@ -119,7 +119,7 @@ const QuestProgressWidget: React.FC = () => {
 
   // Suggested quest (when no in-progress quest)
   return (
-    <div className="bg-white p-6 border-3 border-black shadow-brutal">
+    <div className="bg-white p-6 border-3 border-black shadow-brutal max-w-xl mx-auto">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-2">
           <BookOpen className="h-5 w-5 text-vivid-orange" />

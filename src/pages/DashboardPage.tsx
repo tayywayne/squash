@@ -295,45 +295,42 @@ const DashboardPage: React.FC = () => {
         </p>
       </div>
       
-      {/* Stats and Quest Progress */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-8">
-        {/* Quick Stats */}
-        <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-lime-chartreuse p-6 border-3 border-black shadow-brutal">
-            <div className="flex items-center">
-              <MessageSquare className="h-8 w-8 text-dark-teal" />
-              <div className="ml-4">
-                <p className="text-3xl font-black text-dark-teal">{activeConflicts.length}</p>
-                <p className="text-dark-teal font-bold">ACTIVE CONFLICTS</p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="bg-green-teal p-6 border-3 border-black shadow-brutal">
-            <div className="flex items-center">
-              <CheckCircle className="h-8 w-8 text-white" />
-              <div className="ml-4">
-                <p className="text-3xl font-black text-white">{resolvedConflicts.length}</p>
-                <p className="text-white font-bold">SQUASHES RESOLVED</p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="bg-vivid-orange p-6 border-3 border-black shadow-brutal">
-            <div className="flex items-center">
-              <Users className="h-8 w-8 text-white" />
-              <div className="ml-4">
-                <p className="text-3xl font-black text-white">{uniqueConnectedAccounts}</p>
-                <p className="text-white font-bold">PEOPLE TOLERATE YOU</p>
-              </div>
+      {/* Quick Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div className="bg-lime-chartreuse p-6 border-3 border-black shadow-brutal">
+          <div className="flex items-center">
+            <MessageSquare className="h-8 w-8 text-dark-teal" />
+            <div className="ml-4">
+              <p className="text-3xl font-black text-dark-teal">{activeConflicts.length}</p>
+              <p className="text-dark-teal font-bold">ACTIVE CONFLICTS</p>
             </div>
           </div>
         </div>
         
-        {/* Quest Progress Widget */}
-        <div className="lg:col-span-1">
-          <QuestProgressWidget />
+        <div className="bg-green-teal p-6 border-3 border-black shadow-brutal">
+          <div className="flex items-center">
+            <CheckCircle className="h-8 w-8 text-white" />
+            <div className="ml-4">
+              <p className="text-3xl font-black text-white">{resolvedConflicts.length}</p>
+              <p className="text-white font-bold">SQUASHES RESOLVED</p>
+            </div>
+          </div>
         </div>
+        
+        <div className="bg-vivid-orange p-6 border-3 border-black shadow-brutal">
+          <div className="flex items-center">
+            <Users className="h-8 w-8 text-white" />
+            <div className="ml-4">
+              <p className="text-3xl font-black text-white">{uniqueConnectedAccounts}</p>
+              <p className="text-white font-bold">PEOPLE TOLERATE YOU</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Quest Progress Widget - In its own row */}
+      <div className="mb-8">
+        <QuestProgressWidget />
       </div>
 
       {/* Tabs */}
