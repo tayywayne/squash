@@ -133,7 +133,7 @@ export const redditConflictsService = {
   fetchNewDailyConflict: async (): Promise<{ success: boolean; error?: string }> => {
     try {
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-      const functionUrl = `${supabaseUrl}/functions/v1/fetch-reddit-conflict`;
+      const functionUrl = `${supabaseUrl}/functions/v1/daily-reddit-fetch`;
       
       const { data: { session } } = await supabase.auth.getSession();
       
@@ -144,9 +144,13 @@ export const redditConflictsService = {
       const response = await fetch(functionUrl, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
           'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json',
         },
+        body: JSON.stringify({
+          manual_trigger: true,
+          admin_requested: true
+        }),
       });
 
       if (!response.ok) {

@@ -16,11 +16,16 @@ const AdminControls: React.FC<AdminControlsProps> = ({ isAdmin }) => {
   const handleFetchRedditConflict = async () => {
     setLoading(true);
     try {
+      setToast({ 
+        message: 'Fetching new Reddit conflict... This may take a moment.', 
+        type: 'info' 
+      });
+      
       const result = await redditConflictsService.fetchNewDailyConflict();
       
       if (result.success) {
         setToast({ 
-          message: 'New Reddit conflict fetched successfully!', 
+          message: 'New Reddit conflict fetched and processed successfully!', 
           type: 'success' 
         });
       } else {
@@ -53,7 +58,7 @@ const AdminControls: React.FC<AdminControlsProps> = ({ isAdmin }) => {
       <button
         onClick={handleFetchRedditConflict}
         disabled={loading}
-        className="bg-dark-teal text-lime-chartreuse p-1 border-2 border-black hover:bg-teal-800 transition-colors"
+        className="bg-dark-teal text-lime-chartreuse p-1 border-2 border-black hover:bg-teal-800 transition-colors disabled:opacity-50"
         title="Fetch new Reddit conflict"
       >
         <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
