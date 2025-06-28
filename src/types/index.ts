@@ -17,6 +17,7 @@ export interface Profile {
   archetype_emoji?: string;
   archetype_assigned_at?: string;
   supporter_level?: string;
+  is_admin?: boolean;
   supporter_emoji?: string;
   supporter_since?: string;
 }

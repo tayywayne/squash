@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, User, Calendar, MessageSquare, CheckCircle } from 'lucide-react';
 import { profileService } from '../utils/profiles';
 import { conflictService, Conflict } from '../utils/conflicts';
+import AdminBadge from '../components/AdminBadge';
 import { useAuth } from '../hooks/useAuth';
 import UserDisplayName from '../components/UserDisplayName';
 import SupporterCard from '../components/SupporterCard';
@@ -180,10 +181,14 @@ const OtherUserProfilePage: React.FC = () => {
                 archetypeEmoji={profile.archetype_emoji}
                 supporterEmoji={profile.supporter_emoji}
                 supporterEmoji={profile.supporter_emoji}
-                supporterEmoji={profile.supporter_emoji}
                 fallback="Anonymous User"
               />
             </h1>
+            {profile.is_admin && (
+              <div className="mt-2">
+                <AdminBadge size="sm" />
+              </div>
+            )}
             {profile.username && (
               <p className="text-dark-teal mb-2 text-sm sm:text-base break-all font-bold">@{profile.username}</p>
             )}

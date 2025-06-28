@@ -14,6 +14,7 @@ interface AuthUser {
   conflict_archetype?: string;
   archetype_emoji?: string;
   archetype_assigned_at?: string;
+  is_admin?: boolean;
   supporter_level?: string;
   supporter_emoji?: string;
   supporter_since?: string;
@@ -99,6 +100,7 @@ export const useAuth = () => {
         avatar_url: profile?.avatar_url,
         conflict_archetype: profile?.conflict_archetype,
         archetype_emoji: profile?.archetype_emoji,
+        is_admin: profile?.is_admin,
         archetype_assigned_at: profile?.archetype_assigned_at,
         supporter_level: profile?.supporter_level,
         supporter_emoji: profile?.supporter_emoji,

@@ -3,6 +3,7 @@ import React from 'react';
 interface UserDisplayNameProps {
   username?: string;
   archetypeEmoji?: string;
+  isAdmin?: boolean;
   supporterEmoji?: string;
   fallback?: string;
   showEmoji?: boolean;
@@ -12,7 +13,8 @@ interface UserDisplayNameProps {
 
 const UserDisplayName: React.FC<UserDisplayNameProps> = ({ 
   username, 
-  archetypeEmoji, 
+  archetypeEmoji,
+  isAdmin,
   supporterEmoji,
   fallback = 'Anonymous User',
   showEmoji = true,
@@ -27,6 +29,11 @@ const UserDisplayName: React.FC<UserDisplayNameProps> = ({
       {showEmoji && archetypeEmoji && (
         <span className="ml-1 inline-block" title="Conflict Archetype">
           {archetypeEmoji}
+        </span>
+      )}
+      {isAdmin && (
+        <span className="ml-1 inline-block text-xs bg-dark-teal text-lime-chartreuse px-1 font-black border border-black" title="Admin">
+          A
         </span>
       )}
       {showSupporterEmoji && supporterEmoji && (

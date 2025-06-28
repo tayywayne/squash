@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { User, Bell, Trash2, Download, Shield, Edit3, Save, X, Camera, Upload, AlertCircle, Award } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { conflictService, Conflict } from '../utils/conflicts';
+import AdminBadge from '../components/AdminBadge';
 import { storageService } from '../utils/storage';
 import { archetypeService, ARCHETYPES } from '../utils/archetypes';
 import { generalAchievementsService } from '../utils/generalAchievements';
@@ -20,6 +21,7 @@ const ProfilePage: React.FC = () => {
     first_name: user?.first_name || '',
     last_name: user?.last_name || '',
     avatar_url: user?.avatar_url || '',
+    is_admin: user?.is_admin || false,
   });
   const [loading, setLoading] = useState(false);
   const [conflicts, setConflicts] = useState<Conflict[]>([]);
@@ -41,6 +43,7 @@ const ProfilePage: React.FC = () => {
         first_name: user.first_name || '',
         last_name: user.last_name || '',
         avatar_url: user.avatar_url || '',
+        is_admin: user.is_admin || false,
       });
     }
   }, [isEditing, user]);
@@ -89,6 +92,7 @@ const ProfilePage: React.FC = () => {
         first_name: user?.first_name || '',
         last_name: user?.last_name || '',
         avatar_url: user?.avatar_url || '',
+        is_admin: user?.is_admin || false,
       });
     }
     setIsEditing(!isEditing);
@@ -101,6 +105,7 @@ const ProfilePage: React.FC = () => {
         first_name: editForm.first_name.trim() || undefined,
         last_name: editForm.last_name.trim() || undefined,
         avatar_url: editForm.avatar_url.trim() || undefined,
+        is_admin: editForm.is_admin,
       });
 
       if (error) {
@@ -203,6 +208,7 @@ const ProfilePage: React.FC = () => {
                 <div className="min-w-0 flex-1">
                   {isEditing ? (
                     <div className="space-y-2">
+                      {/* Name fields */}
                       <div className="space-y-2">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                           <input
@@ -226,6 +232,23 @@ const ProfilePage: React.FC = () => {
                         <p className="text-xs text-dark-teal">
                           Username cannot be changed after account creation
                         </p>
+                        
+                        {/* Admin toggle - only visible to existing admins */}
+                        {user?.is_admin && (
+                          <div className="mt-3 flex items-center space-x-2">
+                            <input
+                              type="checkbox"
+                              id="is_admin"
+                              checked={editForm.is_admin}
+                              onChange={(e) => setEditForm(prev => ({ ...prev, is_admin: e.target.checked }))}
+                              className="h-4 w-4 border-2 border-black"
+                            />
+                            <label htmlFor="is_admin" className="text-dark-teal font-bold flex items-center space-x-2">
+                              <Shield className="h-4 w-4 text-dark-teal" />
+                              <span>Admin privileges</span>
+                            </label>
+                          </div>
+                        )}
                       </div>
                       
                       {/* Avatar URL Section */}
@@ -257,18 +280,19 @@ const ProfilePage: React.FC = () => {
                         <p className="text-dark-teal text-sm sm:text-base truncate">@{user.username}</p>
                       )}
                       <p className="text-dark-teal text-xs sm:text-sm truncate">{user?.email}</p>
-                      <p className="text-sm text-dark-teal">
-                                        {user?.id && (
-                    <div className="mt-2 overflow-hidden">
-                      <SquashCredDisplay 
-                        userId={user.id} 
-                        showTier={true}
-                        showTooltip={false}
-                        size="md"
-                      />
-                    </div>
-                  )}
-                      </p>
+                      <div className="flex items-center space-x-2 mt-1">
+                        {user?.is_admin && <AdminBadge size="sm" />}
+                        {user?.id && (
+                          <div className="overflow-hidden">
+                            <SquashCredDisplay 
+                              userId={user.id} 
+                              showTier={true}
+                              showTooltip={false}
+                              size="md"
+                            />
+                          </div>
+                        )}
+                      </div>
                     </>
                   )}
                 </div>
