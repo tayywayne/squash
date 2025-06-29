@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Home, MessageSquare, User, LogOut, Trophy, BookOpen, Menu, X, Flame, Sparkles, MessageCircle } from 'lucide-react';
+import { Home, MessageSquare, User, LogOut, Trophy, BookOpen, Menu, X, Flame, Sparkles, MessageCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import UserDisplayName from './UserDisplayName';
 import SquashCredDisplay from './SquashCredDisplay';
