@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, User, Calendar, MessageSquare, CheckCircle } from 'lucide-react';
 import { profileService } from '../utils/profiles';
 import { conflictService, Conflict } from '../utils/conflicts';
+import { debatesService } from '../utils/debates';
 import AdminBadge from '../components/AdminBadge';
 import { useAuth } from '../hooks/useAuth';
 import UserDisplayName from '../components/UserDisplayName';
@@ -22,6 +23,7 @@ const OtherUserProfilePage: React.FC = () => {
   const [sharedConflicts, setSharedConflicts] = useState<Conflict[]>([]);
   const [loading, setLoading] = useState(true);
   const [conflictsLoading, setConflictsLoading] = useState(true);
+  const [debateStats, setDebateStats] = useState<{ wins: number; participations: number }>({ wins: 0, participations: 0 });
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
 
   // Get archetype info
@@ -83,6 +85,22 @@ const OtherUserProfilePage: React.FC = () => {
 
     loadSharedConflicts();
   }, [userId, currentUser?.id, currentUser?.email]);
+
+  // Load user debate stats
+  useEffect(() => {
+    const loadDebateStats = async () => {
+      if (!userId) return;
+      
+      try {
+        const stats = await debatesService.getUserDebateStats(userId);
+        setDebateStats(stats);
+      } catch (error) {
+        console.error('Error loading debate stats:', error);
+      }
+    };
+
+    loadDebateStats();
+  }, [userId]);
 
   const formatTimeAgo = (dateString: string) => {
     const date = new Date(dateString);
@@ -272,7 +290,7 @@ const OtherUserProfilePage: React.FC = () => {
         ) : (
           <>
             {/* Stats */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-6">
               <div className="text-center p-4 bg-white border-3 border-black shadow-brutal">
                 <div className="text-xl sm:text-2xl font-black text-vivid-orange">{sharedConflicts.length}</div>
                 <div className="text-sm text-dark-teal font-bold">Total Conflicts</div>
@@ -286,6 +304,10 @@ const OtherUserProfilePage: React.FC = () => {
                   {sharedConflicts.length > 0 ? Math.round((totalClosedConflicts / sharedConflicts.length) * 100) : 0}%
                 </div>
                 <div className="text-sm text-dark-teal font-bold">Resolution Rate</div>
+              </div>
+              <div className="text-center p-4 bg-white border-3 border-black shadow-brutal">
+                <div className="text-xl sm:text-2xl font-black text-dark-teal">{debateStats.wins}/{debateStats.participations}</div>
+                <div className="text-sm text-dark-teal font-bold">Debate Wins</div>
               </div>
             </div>
 
