@@ -183,10 +183,14 @@ function selectFallbackConflict(): any {
   const randomIndex = Math.floor(Math.random() * FALLBACK_CONFLICTS.length)
   const conflict = FALLBACK_CONFLICTS[randomIndex]
   
+  // Create a unique ID by combining the fallback ID with today's date
+  const today = new Date().toISOString().split('T')[0] // YYYY-MM-DD format
+  const uniqueId = `${conflict.id}_${today}`
+  
   console.log(`📋 Using fallback conflict: ${conflict.title}`)
   
   return {
-    id: conflict.id,
+    id: uniqueId,
     title: conflict.title,
     author: conflict.author,
     selftext: conflict.selftext,
