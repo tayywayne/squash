@@ -10,6 +10,10 @@ import QuestsPage from './pages/QuestsPage';
 import QuestDetailPage from './pages/QuestDetailPage';
 import ConflictPage from './pages/ConflictPage';
 import ProfilePage from './pages/ProfilePage';
+import DebatesPage from './pages/DebatesPage';
+import NewDebatePage from './pages/NewDebatePage';
+import DebateDetailPage from './pages/DebateDetailPage';
+import RespondToDebatePage from './pages/RespondToDebatePage';
 import OtherUserProfilePage from './pages/OtherUserProfilePage';
 import LeaderboardPage from './pages/LeaderboardPage';
 import SupportUsPage from './pages/SupportUsPage';
@@ -87,6 +91,10 @@ function App() {
                     <Route path="/profile" element={<ProfilePage />} />
                     <Route path="/quests" element={<QuestsPage />} />
                     <Route path="/quest/:questId" element={<QuestDetailPage />} />
+                    <Route path="/debates" element={<DebatesPage />} />
+                    <Route path="/new-debate" element={<NewDebatePage />} />
+                    <Route path="/debates/:debateId" element={<DebateDetailPage />} />
+                    <Route path="/debates/respond/:debateId" element={<RespondToDebatePage />} />
                     <Route path="/user-profile/:userId" element={<OtherUserProfilePage />} />
                     <Route path="/leaderboard" element={<LeaderboardPage />} />
                     <Route path="/support-us" element={<SupportUsPage />} />

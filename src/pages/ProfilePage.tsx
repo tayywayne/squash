@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { User, Bell, Trash2, Download, Shield, Edit3, Save, X, Camera, Upload, AlertCircle, Award } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { conflictService, Conflict } from '../utils/conflicts';
+import { debatesService } from '../utils/debates';
 import AdminBadge from '../components/AdminBadge';
 import { storageService } from '../utils/storage';
 import { archetypeService, ARCHETYPES } from '../utils/archetypes';
@@ -26,6 +27,7 @@ const ProfilePage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [conflicts, setConflicts] = useState<Conflict[]>([]);
   const [statsLoading, setStatsLoading] = useState(true);
+  const [debateStats, setDebateStats] = useState<{ wins: number; participations: number }>({ wins: 0, participations: 0 });
   const [notifications, setNotifications] = useState({
     conflictUpdates: true,
     followUps: true,
@@ -66,6 +68,22 @@ const ProfilePage: React.FC = () => {
 
     loadConflictStats();
   }, [user?.id, user?.email]);
+
+  // Load user debate stats
+  React.useEffect(() => {
+    const loadDebateStats = async () => {
+      if (!user?.id) return;
+      
+      try {
+        const stats = await debatesService.getUserDebateStats(user.id);
+        setDebateStats(stats);
+      } catch (error) {
+        console.error('Error loading debate stats:', error);
+      }
+    };
+
+    loadDebateStats();
+  }, [user?.id]);
 
   // Calculate statistics
   const totalConflictsCount = conflicts.length;
@@ -344,7 +362,7 @@ const ProfilePage: React.FC = () => {
                 ))}
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+              <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 text-center">
                 <div className="p-4 bg-white border-3 border-black shadow-brutal">
                   <p className="text-xl sm:text-2xl font-black text-vivid-orange">{totalConflictsCount}</p>
                   <p className="text-sm text-dark-teal font-bold">Total Conflicts</p>
@@ -357,6 +375,10 @@ const ProfilePage: React.FC = () => {
                   <p className="text-xl sm:text-2xl font-black text-lime-chartreuse">{resolutionRate}%</p>
                   <p className="text-sm text-dark-teal font-bold">Resolution Rate</p>
 
+                <div className="p-4 bg-white border-3 border-black shadow-brutal">
+                  <p className="text-xl sm:text-2xl font-black text-dark-teal">{debateStats.wins}/{debateStats.participations}</p>
+                  <p className="text-sm text-dark-teal font-bold">Debate Wins</p>
+                </div>
                 </div>
               </div>
             )}

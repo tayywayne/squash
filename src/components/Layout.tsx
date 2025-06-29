@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Home, MessageSquare, User, LogOut, Trophy, BookOpen, ChevronDown, ChevronUp, Menu, X, Flame, Sparkles } from 'lucide-react';
+import { Home, MessageSquare, User, LogOut, Trophy, BookOpen, Menu, X, Flame, Sparkles, MessageCircle } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import UserDisplayName from './UserDisplayName';
 import SquashCredDisplay from './SquashCredDisplay';
@@ -94,7 +94,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   // Drama dropdown items
   const dramaNavigation = [
     { name: 'Public Shame', href: '/public-shame', icon: Trophy, emoji: '⚖️' },
-    { name: 'Public Spectacle', href: '/reddit-conflict', icon: MessageSquare, emoji: '🍿' },
+    { name: 'Reddit Conflict', href: '/reddit-conflict', icon: MessageSquare, emoji: '🍿' },
+    { name: 'Public Debates', href: '/debates', icon: MessageCircle, emoji: '🎭' },
   ];
   
   // Additional navigation items
