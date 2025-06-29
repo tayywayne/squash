@@ -39,7 +39,7 @@ export const inviteService = {
       console.error('Error sending conflict invite:', error);
       return { success: false, error: 'Network error occurred' };
     }
-  }
+  },
 
   sendDebateInvite: async (data: SendInviteData): Promise<{ success: boolean; error?: string }> => {
     try {
